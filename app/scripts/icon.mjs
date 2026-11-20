@@ -1,10 +1,10 @@
-// Draws the app icon from the brand's little orange in ../ds-bot and writes assets/icon.svg,
+// Draws the app icon from the 橘巴拉 IP avatar in brand/ip-avatar.jpg and writes assets/icon.svg,
 // assets/icon.png (1024 px), assets/icon.ico (Windows, 16 to 256 px), the tray marks:
 // assets/tray.ico (Windows), assets/tray.png (Linux) and assets/trayTemplate.png with its
 // @2x (macOS), and the icons of ../mobile/assets.
 // Usage: npm run icon. It runs itself again inside Electron, which turns the SVG into PNGs.
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,6 +14,9 @@ const here = fileURLToPath(import.meta.url)
 const assets = join(dirname(here), '..', 'assets')
 const mobileAssets = join(dirname(here), '..', '..', 'mobile', 'assets')
 const ICO_SIZES = [16, 20, 24, 32, 36, 40, 48, 64, 72, 96, 128, 256]
+// The app tile shows the IP avatar; the tray and the mobile icons keep the little orange, which
+// still reads at 16 px and as a one-colour template.
+const AVATAR = `data:image/jpeg;base64,${readFileSync(join(dirname(here), '..', 'brand', 'ip-avatar.jpg')).toString('base64')}`
 // The tray icon is small: the sizes a notification area shows, and one plain png for Linux.
 const TRAY_ICO_SIZES = [16, 20, 24, 32]
 const TRAY_PNG_SIZE = 24
@@ -46,10 +49,11 @@ function iconSvg(plate, size = 1024) {
 <defs>
 <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${PLATE[0]}"/><stop offset="1" stop-color="${PLATE[1]}"/></linearGradient>
 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="${size * 0.012}" stdDeviation="${size * 0.012}" flood-color="#000" flood-opacity=".22"/></filter>
+<clipPath id="tile"><path d="${path}"/></clipPath>
 </defs>
 <path d="${path}" fill="url(#plate)" filter="url(#shadow)"/>
+<image href="${AVATAR}" x="${inset}" y="${inset}" width="${size - 2 * inset}" height="${size - 2 * inset}" clip-path="url(#tile)" preserveAspectRatio="xMidYMid slice"/>
 <path d="${path}" fill="none" stroke="rgba(20,20,40,.1)" stroke-width="${size * 0.004}"/>
-${placed(size, (size - 2 * inset) * 0.84)}
 </svg>
 `
 }
