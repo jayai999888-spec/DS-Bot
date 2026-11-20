@@ -144,7 +144,7 @@ The launch URL of the Host is good for one use only. When the first load never c
 | File | What it does |
 |---|---|
 | `src/main.mjs` | Main process: one instance, the start window and the team window, which loads the Host's loopback address as DSH Web does, and the sign-in page DSH opens, which goes to the system browser |
-| `src/start/`, `src/start-window.mjs`, `src/start-frame.mjs`, `scripts/start-assets.mjs` | The start window (720 × 540, Mica on Windows 11, the vibrancy on macOS): the whale swims across the waterline as the real startup phases finish, cards morph in place, and the window grows to the team window's rectangle on hand-off |
+| `src/start/`, `src/start-window.mjs`, `src/start-frame.mjs`, `scripts/start-assets.mjs` | The start window (720 × 540, Mica on Windows 11, the vibrancy on macOS): the little orange sits in a ring whose arcs fill as the real startup phases finish, cards morph in place, and the window grows to the team window's rectangle on hand-off |
 | `src/shell.mjs`, `src/tray.mjs`, `src/background-notice.mjs` | The window and the tray: the window hides instead of closing, the tray opens it again and quits the app, and the one-time confirmation before the window hides |
 | `src/update-prompt.mjs` | An update prompt that waits for the window to be shown again |
 | `src/host-port.mjs` | The Host's port, kept between starts, since the page keeps its storage per address |

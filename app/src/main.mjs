@@ -522,7 +522,7 @@ async function placeAnswer(value) {
   await startOver(root)
 }
 
-// The start begins again in the root R (start-window §7): the whale sinks at once, the engine
+// The start begins again in the root R (start-window §7): the orange shrinks away at once, the engine
 // that may be up on the default folder stops, what this start made there goes, and the boot runs
 // again. The places are saved at once: the import question has been answered by now.
 async function startOver(root) {
@@ -536,7 +536,7 @@ async function startOver(root) {
     // restart() also takes the card away, without letting a held hand-off of the old engine go;
     // the line names the new place from here on. The Host on the old folder is ended at once:
     // neither its boot nor an orderly shutdown of a folder about to go is of any use, and either
-    // would keep the whale under water for up to 10 s.
+    // would keep the orange away for up to 10 s.
     startWindow.restart()
     tellPlace(root.dataDir)
     await stopOld({ now: true })
@@ -793,7 +793,7 @@ function handleIpc() {
   })
   app.on('before-quit', () => { computerIndicator.dispose(); computerCursor.dispose() })
   ipcMain.on(IPC.ready, (event, report) => { if (fromWindow(event)) startWindow.ready(report) })
-  // It has drawn the whale the start window hands over: the windows cross-fade.
+  // It has drawn the orange the start window hands over: the windows cross-fade.
   ipcMain.on(IPC.handoffReady, (event) => { if (fromWindow(event)) startWindow.teamReady() })
   ipcMain.on(IPC.cardShown, (event, id) => { if (fromWindow(event)) cards.get(id)?.shown() })
   ipcMain.on(IPC.cardAnswer, (event, id, index) => { if (fromWindow(event)) cards.get(id)?.settle(Number.isInteger(index) ? index : -1) })

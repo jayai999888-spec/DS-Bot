@@ -5,7 +5,7 @@
 // mirrors it key by key with the same placeholders.
 //
 // A key is <layer>.<thing>[.<part>]; the layer says where the line is on screen:
-//   voice   the whale's line: one line, at most 16 characters, no full stop (a question mark is fine)
+//   voice   the orange's line: one line, at most 16 characters, no full stop (a question mark is fine)
 //   say     a card's first line: at most 12 characters, no full stop
 //   hint    the hint row: the one thing to know next, at most 22 characters, no full stop
 //   card    card text: whole sentences ending in 。 or ？; card.<card>.<part>
