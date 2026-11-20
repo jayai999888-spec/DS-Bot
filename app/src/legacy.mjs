@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-export const PRODUCT_NAME = 'Jubala Bot'
+export const PRODUCT_NAME = '橘巴拉Bot'
 export const APP_ID = 'io.github.jayai999888.jubalabot'
 export const LEGACY_PRODUCT_NAME = 'DeepSeek Bot'
 export const LEGACY_ENGINE = 'deepseek-bot-engine'

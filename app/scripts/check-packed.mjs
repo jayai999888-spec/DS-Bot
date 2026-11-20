@@ -20,11 +20,11 @@ const executable = given || packedExecutable()
 
 function packedExecutable() {
   const out = join(root, 'dist-pack')
-  if (process.platform === 'win32') return join(out, 'win-unpacked', 'Jubala Bot.exe')
+  if (process.platform === 'win32') return join(out, 'win-unpacked', '橘巴拉Bot.exe')
   // executableName in electron-builder.yml.
   if (process.platform === 'linux') return join(out, 'linux-unpacked', 'jubalabot')
   const dir = ['mac-arm64', 'mac'].find(name => existsSync(join(out, name))) ?? 'mac'
-  return join(out, dir, 'Jubala Bot.app', 'Contents', 'MacOS', 'Jubala Bot')
+  return join(out, dir, '橘巴拉Bot.app', 'Contents', 'MacOS', '橘巴拉Bot')
 }
 
 if (!existsSync(executable)) {

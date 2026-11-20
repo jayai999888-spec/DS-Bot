@@ -1,5 +1,5 @@
 appId: io.github.jayai999888.jubalabot
-productName: Jubala Bot
+productName: 橘巴拉Bot
 copyright: Copyright 2026 Fei2411 and the DS Bot contributors
 artifactName: Jubala-Bot-${version}-${os}-${arch}.${ext}
 directories:
@@ -95,7 +95,7 @@ linux:
       arch: [x64]
     - target: deb
       arch: [x64]
-  # The binary and the deb's menu entry take this name; productName has a space, which a
+  # The binary and the deb's menu entry take this name; productName has Chinese characters, which a
   # terminal command should not have.
   executableName: jubalabot
   # A deb needs a maintainer; package.json's author has no email, so it goes here.
