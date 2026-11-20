@@ -149,7 +149,7 @@ test('the release becomes Latest last, after every job that attaches files', () 
 test('both READMEs link the latest release and do not hard-code release version numbers', () => {
   for (const file of ['../../README.md', '../../README.zh.md']) {
     const text = read(file)
-    assert.match(text, /\(https:\/\/github\.com\/Fei2411\/DS-Bot\/releases\/latest\)/u, file)
+    assert.match(text, /\(https:\/\/github\.com\/jayai999888-spec\/DS-Bot\/releases\/latest\)/u, file)
     assert.doesNotMatch(text, /ds-bot-\d+\.\d+\.\d+\.tgz|DS-Bot#v\d/u, file)
   }
 })

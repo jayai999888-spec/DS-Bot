@@ -1,8 +1,8 @@
-# DS Bot mobile
+# 橘巴拉Bot mobile
 
-The DS Bot app for iOS and Android. It controls the Bot team that runs on your computer; nothing runs on the phone. The design is in [docs/plans/2026-10-24-mobile-app.md](../docs/plans/2026-10-24-mobile-app.md).
+The 橘巴拉Bot app for iOS and Android. It controls the Bot team that runs on your computer; nothing runs on the phone. The design is in [docs/plans/2026-10-24-mobile-app.md](../docs/plans/2026-10-24-mobile-app.md).
 
-Pair the app with your computer by scanning the QR code in DS Bot's Settings → Phone. The encrypted link to the computer is in [../link](../link); run `npm ci` there too before you build.
+Pair the app with your computer by scanning the QR code in 橘巴拉Bot's Settings → Phone. The encrypted link to the computer is in [../link](../link); run `npm ci` there too before you build.
 
 ## Run
 

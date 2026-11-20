@@ -14,7 +14,7 @@ and model changes all work the same way.
 ## Decided behavior
 
 - An abot is a normal Bot whose model route is a local-agent route served by a
-  DSH LLM adapter that DS Bot registers. Built-in routes: `local-devin-cli`,
+  DSH LLM adapter that 橘巴拉Bot registers. Built-in routes: `local-devin-cli`,
   `local-claude-code`, `local-codex-cli`, `local-cursor-cli`,
   `local-copilot-cli`, `local-gemini-cli`, `local-antigravity`,
   `local-opencode`, `local-cline`, `local-kilo`, `local-goose`,
@@ -31,17 +31,17 @@ and model changes all work the same way.
   Bot that ran on the local CLI or on its "CLI default"; otherwise it stays on
   DSH's OpenCode provider.
 - A route's models are what its CLI reports, plus a "CLI default" entry.
-- Every DS Bot Session maps to one CLI session. A Bot's own chat and each of
+- Every 橘巴拉Bot Session maps to one CLI session. A Bot's own chat and each of
   its group sessions are separate CLI sessions, so no content crosses between
   them. Switching to an earlier part resumes its mapped CLI session; a part
   that belongs to another run mode moves on first (see Run mode).
 - The CLI gets only new input since the last handed message: the user, other
   Bots, and tool results for calls it made. On a new or lost CLI session, the
-  DS Bot system prompt plus a bounded recent window of the history is sent as
+  橘巴拉Bot system prompt plus a bounded recent window of the history is sent as
   the first prompt. The system prompt is sent as appended instructions — never
   over the CLI's own — and is re-sent, marked as an update, only when it
   changes.
-- The DS Bot team tools the Bot's role allows are offered to the CLI over a
+- The 橘巴拉Bot team tools the Bot's role allows are offered to the CLI over a
   loopback MCP server (one random port and bearer token per CLI session; a bad
   token is refused). When the CLI calls one, the call leaves the stream as a
   normal assistant tool call so DSH runs it — logged, with approvals and the
@@ -52,10 +52,10 @@ and model changes all work the same way.
   Bot's thinking rows, one compact line per action. Its final answer is the
   message text. Usage it reports is recorded.
 - An abot's long conversation is handled like any Bot's (see Context below):
-  the user keeps talking in one chat, and DS Bot moves it to a fresh part at a
+  the user keeps talking in one chat, and 橘巴拉Bot moves it to a fresh part at a
   stopping point.
 - A permission prompt from the CLI becomes an `approve_agent_action` tool call
-  that DS Bot shows as a normal approval card. Allow picks the agent's
+  that 橘巴拉Bot shows as a normal approval card. Allow picks the agent's
   allow-once option; anything else denies it. It fails closed: only an explicit
   allow option counts. The Bot's permission preset maps to the closest mode the
   agent advertises.
@@ -84,7 +84,7 @@ and model changes all work the same way.
 ## Context (decided 2026-11-14, #1593)
 
 The CLI holds the working context of its session; the DSH Session keeps the
-whole record for `read_own_chat` and is never condensed. DS Bot applies the
+whole record for `read_own_chat` and is never condensed. 橘巴拉Bot applies the
 rules of [context and memory](2026-10-09-context-and-memory.md) to the CLI
 session:
 
@@ -99,7 +99,7 @@ session:
   near its window, which may lie below the check line; each time it did, the
   steward decides as well, and the compactions so far count as the part's
   checkpoints, so a fresh part grows likelier as they add up.
-- Inside a running turn DS Bot cannot step in between the CLI's model calls:
+- Inside a running turn 橘巴拉Bot cannot step in between the CLI's model calls:
   the CLI's own compaction covers it, and a CLI that reports its context is past
   its window fails the turn as an overflow, which moves the part on.
 - The steward runs on what the conversation runs on, as for any Bot: the Bot's
@@ -123,14 +123,14 @@ session:
 
 ## Run mode
 
-How a Bot runs is a property of the Bot: on DS Bot models, or on one local
+How a Bot runs is a property of the Bot: on 橘巴拉Bot models, or on one local
 agent CLI. The two do not share tools, context, permissions, or memory
 handling, so they do not mix in one model list.
 
 - The run mode is derived from the Bot's model ref: a ref whose provider is a
-  local-agent route runs on that CLI; any other ref runs on DS Bot models. No
+  local-agent route runs on that CLI; any other ref runs on 橘巴拉Bot models. No
   new field is stored, and routing stays on the existing LLM adapter.
-- The Create Bot form starts with a choice at its top: "DS Bot model" or
+- The Create Bot form starts with a choice at its top: "橘巴拉Bot model" or
   "Local agent". Local agent lists the CLIs found on this machine as cards with logo, name, and
   sign-in state (signed in, not signed in, unknown).
 - After creation, only the user changes the run mode, only in the Bot's
@@ -148,11 +148,11 @@ handling, so they do not mix in one model list.
   part together, with the deterministic handoff, and the next turn runs on the
   new mode. A chat in the middle of a turn moves before its next step. A part
   with no request yet is already fresh.
-- Another model of the same CLI, or another DS Bot model, is an ordinary model
+- Another model of the same CLI, or another 橘巴拉Bot model, is an ordinary model
   change: no confirmation, no new part.
-- Model menus list only the Bot's own kind: a Bot on DS Bot models never sees a
+- Model menus list only the Bot's own kind: a Bot on 橘巴拉Bot models never sees a
   local agent, and a local agent Bot sees only its CLI's models. The team
-  default model and the first-model card list DS Bot models only.
+  default model and the first-model card list 橘巴拉Bot models only.
 - Listing the team state, the models, or the local agents starts no CLI. A
   local agent Bot's own model menu, or picking a CLI's card when creating a
   Bot, asks that one CLI for its models once; later looks read that answer
@@ -187,7 +187,7 @@ handling, so they do not mix in one model list.
 ## Known limits
 
 - ACP agents receive team tools via Streamable HTTP MCP when advertised, or via
-  DS Bot's stdio MCP bridge (`mcp-stdio.js`) when HTTP MCP is unsupported or
+  橘巴拉Bot's stdio MCP bridge (`mcp-stdio.js`) when HTTP MCP is unsupported or
   rejected. Only an agent that rejects MCP servers altogether runs without team
   tools; its text, approvals, and sessions still work.
 - Cursor CLI saves the last model selected over ACP as its own global default
@@ -196,7 +196,7 @@ handling, so they do not mix in one model list.
 - A custom agent whose ACP dialect differs from what these drivers understand
   needs its own driver before its tools work.
 - A CLI that reports no context usage (some ACP agents, custom agents) keeps
-  its context to itself: DS Bot moves it on only for an overflow, a new
+  its context to itself: 橘巴拉Bot moves it on only for an overflow, a new
   session, a work-folder change, or a run-mode change.
 - The sign-in state comes from each CLI's own status command or credential
   file. A CLI that has neither, or whose check does not answer in time, shows

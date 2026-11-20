@@ -16,7 +16,7 @@ miss a Bot.
 - The user selects several Bots and picks one model once. Each selected Bot gets
   the same model change its own settings would make; there is no new host
   endpoint and no bulk state in the team.
-- The picker lists DS Bot models only, because a model menu lists the Bot's own
+- The picker lists 橘巴拉Bot models only, because a model menu lists the Bot's own
   kind (see `2026-11-04-local-agents.md`, Run mode). A Bot on a local agent is
   listed with its model and a Local agent tag, and cannot be selected; how a Bot
   runs changes only in its own settings, after a confirmation.
@@ -42,12 +42,12 @@ miss a Bot.
 
 - Changing models from a group chat's member panel (#1300): that is a group's
   members, a different scope.
-- Moving a Bot between DS Bot models and a local agent CLI in bulk.
+- Moving a Bot between 橘巴拉Bot models and a local agent CLI in bulk.
 - Listing or changing the team default model here.
 
 ## Known limits
 
 - A local agent Bot's model changes only in its own settings. The page says so
   on the row and in the summary.
-- A DS Bot model whose provider has no API key can still be picked; the Bot's
+- A 橘巴拉Bot model whose provider has no API key can still be picked; the Bot's
   own chat then asks for the key, as it does after a pick in its settings.
