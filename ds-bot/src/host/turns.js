@@ -677,7 +677,7 @@ export function install(rt) {
     })
   }
 
-  // The repair card reads DSH's own failure row, which can carry a code DS Bot has
+  // The repair card reads DSH's own failure row, which can carry a code Jubala Bot has
   // corrected (a 403 content audit arrives as AUTH). Keep the corrected failure with
   // the part and turn it belongs to; the view sends it to the card, and the next
   // completed turn in that part drops it.

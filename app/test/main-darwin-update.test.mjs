@@ -20,10 +20,10 @@ test('startApp on darwin never fetches GitHub Releases or pops a live update car
     if (target.startsWith('https://')) {
       return new Response(JSON.stringify([{
         tag_name: 'v9.9.9',
-        html_url: 'https://github.com/Fei2411/DS-Bot/releases/tag/v9.9.9',
+        html_url: 'https://github.com/jayai999888-spec/DS-Bot/releases/tag/v9.9.9',
         draft: false,
         prerelease: false,
-        assets: [{ name: `DS-Bot-9.9.9-mac-${process.arch}.zip` }],
+        assets: [{ name: `Jubala-Bot-9.9.9-mac-${process.arch}.zip` }],
       }]), { status: 200, headers: { 'content-type': 'application/json' } })
     }
     return origFetch(url, init)

@@ -79,7 +79,7 @@ function BrowserCards({ bot, sessionId, roster, actions, useBrowserTabs, useBrow
   const pages = useBrowserPages(map => map)
   useEffect(() => { actions.browserEnsure?.(bot.id) }, [bot.id])
   if (roster.browser !== true || !actions.browserShow) {
-    return h('div', { className: 'bt-muted' }, t('The browser is in DSH Desktop and the DS Bot app.'))
+    return h('div', { className: 'bt-muted' }, t('The browser is in DSH Desktop and the Jubala Bot app.'))
   }
   if (state.ids.length === 0) {
     return h('div', { className: 'bt-browser-empty-mark' },
@@ -233,7 +233,7 @@ function GroupOverview({ room, roster, actions, usage, useWork, openSettings }) 
 
 // A Bot's chat sessions: the current one first, then the parts opened while the Bot
 // was busy (each still live, marked when its turn runs), then the earlier ones, newest
-// first. Every Bot's chat has parts, whether it answers with a DS Bot model or a local
+// first. Every Bot's chat has parts, whether it answers with a Jubala Bot model or a local
 // CLI. A running part opened from here is read-only until its turn ends: two sessions
 // running at once means two model calls.
 function BotSessions({ bot, part, run, useSessions, actions, running }) {

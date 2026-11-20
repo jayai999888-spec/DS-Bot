@@ -40,7 +40,7 @@ export function Pair({ identity, offer, onPaired, onCancel }: { identity: PhoneI
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, backgroundColor: p.main }}>
       <ScrollView contentContainerStyle={[styles.center, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]} keyboardShouldPersistTaps="handled">
         <Text style={[typeScale.largeTitle, { color: p.ink, textAlign: 'center' }]}>{t('Pair with your computer')}</Text>
-        <Text style={[typeScale.settingsRow, { color: p.ink2, marginTop: 12, textAlign: 'center' }]}>{t('On the computer, open DS Bot, go to Settings → Phone and show a QR code. Then scan it here.')}</Text>
+        <Text style={[typeScale.settingsRow, { color: p.ink2, marginTop: 12, textAlign: 'center' }]}>{t('On the computer, open Jubala Bot, go to Settings → Phone and show a QR code. Then scan it here.')}</Text>
         <View style={[styles.camera, { backgroundColor: p.sidebar, borderColor: p.line }]}>
           {permission?.granted
             ? <CameraView style={StyleSheet.absoluteFill} barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={busy ? undefined : ({ data }) => void pair(data)} />

@@ -80,7 +80,7 @@ export async function resolveClient(entry, discovery, redirectUri, fixedPort, st
   }
   if (typeof metadata?.registration_endpoint === 'string') {
     const clientMetadata = {
-      client_name: 'DS Bot',
+      client_name: 'Jubala Bot',
       redirect_uris: [redirectUri],
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],

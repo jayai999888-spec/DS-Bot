@@ -84,7 +84,7 @@ test('the pill shows only inside a reply taller than the band whose start has sc
   assert.deepEqual(pillPlace(rect(-500, 2000), band, { left: 640, right: 800, top: 66, bottom: 94 }), { top: 66, left: 240 })
 })
 
-test('the band starts under DS Bot\'s header over the scroller and ends above DSH\'s composer', () => {
+test('the band starts under Jubala Bot\'s header over the scroller and ends above DSH\'s composer', () => {
   const scroller = document.createElement('div')
   scroller.style.setProperty('--dsh-composer-height', '140px')
   const head = document.createElement('div')

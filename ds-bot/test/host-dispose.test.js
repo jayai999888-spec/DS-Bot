@@ -106,7 +106,7 @@ test('a model catalog asked for after the host is gone returns its last answer',
 })
 
 
-test('unloading only DS Bot stops its model work while the parent LLM stays available', async (t) => {
+test('unloading only Jubala Bot stops its model work while the parent LLM stays available', async (t) => {
   const { root, fork, rt } = await startHost(t, { listDelayMs: 80 })
   await rt.channelCall('state', {})
   await fork.dispose()

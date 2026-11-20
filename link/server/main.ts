@@ -17,7 +17,7 @@ const server = await startRelayServer({
   maxBytesPerHour: mbPerHour === undefined ? undefined : mbPerHour * 1024 * 1024,
   deviceTtlMs: ttlDays === undefined ? undefined : ttlDays * 86_400_000,
 })
-console.log(`DS Bot link Server: ${server.url}`)
+console.log(`Jubala Bot link Server: ${server.url}`)
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.once(signal, () => { void server.close().then(() => process.exit(0)) })
 }

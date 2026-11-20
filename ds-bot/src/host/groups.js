@@ -372,7 +372,7 @@ export function install(rt) {
   // the round is.
   const noteFailure = (room, member, failure) => {
     const { code, status, message } = failure
-    say(room, { who: 'DS Bot', kind: 'notice', reason: 'failed', names: [member.name], about: member.id, detail: failureLine(failure), code, ...(status ? { status } : {}), message })
+    say(room, { who: 'Jubala Bot', kind: 'notice', reason: 'failed', names: [member.name], about: member.id, detail: failureLine(failure), code, ...(status ? { status } : {}), message })
   }
 
   // A failed background helper appends a structured notice directly to the group's
@@ -390,7 +390,7 @@ export function install(rt) {
     const summary = `subagent ended (${reason})${cleanClosing ? `: ${cleanClosing}` : ''}`
     const detail = cleanHelper ? `${cleanHelper} — ${summary}` : summary
     say(room, {
-      who: 'DS Bot',
+      who: 'Jubala Bot',
       kind: 'notice',
       reason: 'helper-failed',
       names: [member.name],
@@ -407,7 +407,7 @@ export function install(rt) {
     const room = rt.roomOf(roomId)
     if (room === undefined || folder === undefined || room.workDir !== folder || room.folderNotice === folder) return
     room.folderNotice = folder
-    say(room, { who: 'DS Bot', kind: 'notice', reason: 'folder', path: folder })
+    say(room, { who: 'Jubala Bot', kind: 'notice', reason: 'folder', path: folder })
     await rt.save()
   }
   rt.roomFolderNotice = roomFolderNotice
@@ -999,7 +999,7 @@ export function install(rt) {
     if (room.idlePaused === undefined || room.idlePaused.noticed === true) return
     room.idlePaused.noticed = true
     const names = callees.map(peer => peer.name)
-    say(room, { who: 'DS Bot', kind: 'notice', reason: 'paused', idle: true, from: member.name, about: member.id, count: room.idlePaused.count ?? ROOM_IDLE_RELAY_LIMIT, limit: ROOM_IDLE_RELAY_LIMIT, names })
+    say(room, { who: 'Jubala Bot', kind: 'notice', reason: 'paused', idle: true, from: member.name, about: member.id, count: room.idlePaused.count ?? ROOM_IDLE_RELAY_LIMIT, limit: ROOM_IDLE_RELAY_LIMIT, names })
     void rt.save().catch(() => {})
   }
 
@@ -1074,7 +1074,7 @@ export function install(rt) {
     // An answer that came, or is still coming, means the round is not left silent.
     const answered = round.slots.some(slot => ['posted', 'working', 'waiting-approval'].includes(slot.status))
     if (alone && !answered) {
-      say(room, { who: 'DS Bot', kind: 'notice', reason: 'admin-passed', names: [round.soleAdmin.name], about: round.soleAdmin.id })
+      say(room, { who: 'Jubala Bot', kind: 'notice', reason: 'admin-passed', names: [round.soleAdmin.name], about: round.soleAdmin.id })
       await rt.save()
     }
   }
@@ -1182,7 +1182,7 @@ export function install(rt) {
         // The round moved on without this member: the log shows the call and then
         // silence, which reads as a lost message. The group is told the baton was
         // dropped, and what brings the member back.
-        say(room, { who: 'DS Bot', kind: 'notice', reason: 'missed', names: [member.name], about: member.id, minutes: Math.round(ROOM_REPLY_TIMEOUT_MS / 60000) })
+        say(room, { who: 'Jubala Bot', kind: 'notice', reason: 'missed', names: [member.name], about: member.id, minutes: Math.round(ROOM_REPLY_TIMEOUT_MS / 60000) })
       }
     }
     // A result the admin asked for reports its goal task; a failed model call puts it back.
@@ -1214,7 +1214,7 @@ export function install(rt) {
     }
   }
 
-  // A round runs in DS Bot, not inside the group_relay call that opened it: the call ends
+  // A round runs in Jubala Bot, not inside the group_relay call that opened it: the call ends
   // at once, so DSH neither cuts a long round short (PTC) nor holds the group's Session.
   // One round runs in a group at a time; what comes in meanwhile joins it (joinRound) or
   // waits for the next one (laterPosts).
@@ -1993,7 +1993,7 @@ export function install(rt) {
 
   // A group chat's own Session never consults the model: models drift from "only call
   // group_relay" (they message one member directly when the user names it), so the
-  // relay step is synthesized here. Auxiliary calls such as titles, and DS Bot's own
+  // relay step is synthesized here. Auxiliary calls such as titles, and Jubala Bot's own
   // calls for the room such as image readings, still reach the model.
   ctx.on('llm/stream', (options, next) => {
     if (options.sessionId === undefined || options.purpose !== undefined || rt.ownRequest(options)) return next()
@@ -2021,7 +2021,7 @@ export function install(rt) {
       // step ends with a line the user can read instead.
       if (!declared.has('group_relay') && !declared.has('run_code')) {
         rt.warn('ds-bot: group %s cannot relay: group_relay is not available in its Session', room.name)
-        const text = 'This group could not pass the message on: its relay tool is not available. Restart DS Bot; if it keeps happening, report it.'
+        const text = 'This group could not pass the message on: its relay tool is not available. Restart Jubala Bot; if it keeps happening, report it.'
         yield { type: 'block-start', index: 0, blockType: 'text' }
         yield { type: 'text-delta', index: 0, text }
         yield { type: 'block-end', index: 0, block: { type: 'text', text } }

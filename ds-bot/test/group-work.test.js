@@ -1058,7 +1058,7 @@ test('the user stops a member\'s work in a group, and the group shows it', async
 })
 
 // #592: stopping only the round left a member the round moved on from working. The round
-// runs in DS Bot, not in the group's Session, so the Session has nothing to cancel.
+// runs in Jubala Bot, not in the group's Session, so the Session has nothing to cancel.
 test('one press stops the group\'s round and every member at work there, and nothing elsewhere', async (t) => {
   const host = await start(t)
   assert.equal((await host.call('stop-room-work', { roomId: 'r1' })).value, false)
@@ -2422,7 +2422,7 @@ test('a reply announcing work with nothing running is marked, with its missing l
 test('work that did run, a peer handoff and an existing file in a spaced folder carry no marker (#977)', async (t) => {
   const root = mkdtempSync(join(tmpdir(), 'ds-bot-977-file-'))
   t.after(() => rmSync(root, { recursive: true, force: true }))
-  const spaced = join(root, 'DS Bot')
+  const spaced = join(root, 'Jubala Bot')
   mkdirSync(spaced, { recursive: true })
   const done = join(spaced, 'report.pptx')
   writeFileSync(done, 'x')
@@ -2444,7 +2444,7 @@ test('work that did run, a peer handoff and an existing file in a spaced folder 
 })
 
 // #977 review: the check must use the Session's own folder, the one its header reports
-// or DS Bot gave it. A group's folder outranks the member's own, and neither is the team
+// or Jubala Bot gave it. A group's folder outranks the member's own, and neither is the team
 // folder the old code fell back to.
 test('a relative file link is checked in the group folder (#977)', async (t) => {
   const root = mkdtempSync(join(tmpdir(), 'ds-bot-977-room-'))
@@ -2581,7 +2581,7 @@ test('after a restart a batch nobody finished is dropped without waking anyone',
   assert.equal(host.agentOf('r1').calls.length, 0)
 })
 
-// The round runs in DS Bot, not inside the group_relay call: the call returns at once, so
+// The round runs in Jubala Bot, not inside the group_relay call: the call returns at once, so
 // the group's Session is free and DSH cuts nothing short.
 test('the relay call returns at once and the round goes on without it', async (t) => {
   const host = await start(t)

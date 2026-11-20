@@ -1,4 +1,4 @@
-// The ledger: what is said in a conversation between Bots, kept by DS Bot itself. Each
+// The ledger: what is said in a conversation between Bots, kept by Jubala Bot itself. Each
 // conversation has one book, a file that is only ever appended to, one record per line,
 // oldest first. A record is written to its book before anything reads or delivers it; a
 // change to it (delivered, answered) is a record of its own, so no line is rewritten.
