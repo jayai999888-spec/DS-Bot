@@ -339,10 +339,10 @@ test('the start window takes acts only from its own page, each in its own view',
   assert.equal(s.calls.retry, 0)
 })
 
-// The page's whale and ring come about 1 s after the window: shown at once, it was an empty panel.
+// The page's orange and ring come about 1 s after the window: shown at once, it was an empty panel.
 // Windows draws a window it has just shown a few frames before its page, under its own opening
 // transition: the window shows see-through and turns opaque OPEN_MS later, and only then does the
-// snapshot say `shown`, which starts the whale's entrance (start.js).
+// snapshot say `shown`, which starts the orange's entrance (start.js).
 test('the start window shows once its page says it has painted, see-through until OPEN_MS', (t) => {
   const s = startWindow(t)
   s.start.open('first')
@@ -511,7 +511,7 @@ test('a data folder that cannot be written fails at the data stage, a stopped en
   }
 })
 
-test('a retry after the engine was up guards the new engine, while the whale keeps its stop', (t) => {
+test('a retry after the engine was up guards the new engine, while the orange keeps its stop', (t) => {
   const s = startWindow(t)
   s.start.open('first')
   s.start.done('data')
@@ -586,19 +586,19 @@ for (const [kind, wait] of [['first', 2500], ['later', 800]]) {
   })
 }
 
-test('the whale the start page hands over is put in the team page\'s own coordinates', () => {
+test('the orange the start page hands over is put in the team page\'s own coordinates', () => {
   const team = { x: 300, y: 90, width: 1280, height: 860 }
   const start = { x: 580, y: 250 }
   assert.deepEqual(handoffBox({ x: 304, y: 147, size: 112 }, { start, team, viewportWidth: 1280 }), { x: 584, y: 307, size: 112 })
   // A team page zoomed to 125 %: its CSS px are larger than DIP.
   assert.deepEqual(handoffBox({ x: 304, y: 147, size: 112 }, { start, team, viewportWidth: 1024 }), { x: 467, y: 245.5, size: 89.5 })
-  for (const whale of [undefined, null, 'whale', { x: 1 }, { x: 1, y: 1, size: 4 }, { x: Number.NaN, y: 1, size: 112 }]) {
-    assert.equal(handoffBox(whale, { start, team, viewportWidth: 1280 }), undefined, JSON.stringify(whale))
+  for (const mark of [undefined, null, 'mark', { x: 1 }, { x: 1, y: 1, size: 4 }, { x: Number.NaN, y: 1, size: 112 }]) {
+    assert.equal(handoffBox(mark, { start, team, viewportWidth: 1280 }), undefined, JSON.stringify(mark))
   }
 })
 
 // The start window never resizes: the team window, see-through under it since ready(), takes the
-// whale, and the two windows cross-fade.
+// orange, and the two windows cross-fade.
 function handingOver(t, { focused = true, effects = 'full' } = {}) {
   const s = startWindow(t, { effects })
   s.start.open('later')
@@ -617,15 +617,15 @@ test('the team window waits see-through under the start window from ready() on',
   assert.equal(s.main.visible, true)
 })
 
-test('at handoffShow the team page gets the whale, and the windows cross-fade once it has drawn it', (t) => {
+test('at handoffShow the team page gets the orange, and the windows cross-fade once it has drawn it', (t) => {
   const s = handingOver(t)
   const from = s.win().getBounds()
-  assert.equal(s.act('handoffShow', { whale: { x: 304, y: 147, size: 112 } }), true)
+  assert.equal(s.act('handoffShow', { mark: { x: 304, y: 147, size: 112 } }), true)
   const [[channel, box]] = s.main.webContents.other
   assert.equal(channel, TEAM_HANDOFF)
   assert.equal(box.hold, HOLD_MS)
   assert.deepEqual({ x: box.x, y: box.y, size: box.size }, handoffBox({ x: 304, y: 147, size: 112 }, { start: from, team: s.main.bounds, viewportWidth: AVATAR.viewportWidth }))
-  assert.equal(s.main.calls.includes('skipTaskbar false'), false, 'it shows before the team page has the whale')
+  assert.equal(s.main.calls.includes('skipTaskbar false'), false, 'it shows before the team page has the orange')
   s.start.teamReady()
   assert.ok(s.main.calls.includes('skipTaskbar false'))
   const start = s.win()
@@ -654,17 +654,17 @@ test('when interface motion is off, the handoff reveals the team window at once 
   assert.equal(s.main.calls.at(-1), 'focus')
 })
 
-test('the cross-fade starts anyway when the team page does not say it drew the whale', (t) => {
+test('the cross-fade starts anyway when the team page does not say it drew the orange', (t) => {
   const s = handingOver(t)
-  s.act('handoffShow', { whale: { x: 304, y: 147, size: 112 } })
+  s.act('handoffShow', { mark: { x: 304, y: 147, size: 112 } })
   s.tick(TEAM_WAIT_MS - 1)
   assert.equal(s.main.calls.includes('skipTaskbar false'), false)
   s.tick(1)
   assert.ok(s.main.calls.includes('skipTaskbar false'))
 })
 
-test('without a whale to hand over (a dive, or no box) the windows cross-fade at once', (t) => {
-  for (const payload of [undefined, { whale: { x: 1 } }]) {
+test('without an orange to hand over (it shrinks away, or no box) the windows cross-fade at once', (t) => {
+  for (const payload of [undefined, { mark: { x: 1 } }]) {
     const s = handingOver(t)
     s.act('handoffShow', payload)
     assert.deepEqual(s.main.webContents.other, [])
@@ -705,7 +705,7 @@ test('closing the start window before the hand-off quits, and its timers go with
   assert.equal(s.start.owner(), undefined)
 })
 
-test('the whale lands on the avatar the team view reported, in the start page\'s own coordinates', () => {
+test('the orange lands on the avatar the team view reported, in the start page\'s own coordinates', () => {
   const team = { x: 300, y: 90, width: 1280, height: 860 }
   const avatar = { x: 98, y: 70, width: 60, height: 60, viewportWidth: 1280, viewportHeight: 860 }
   // Both windows frameless: the grown start page shares the team page\'s origin.

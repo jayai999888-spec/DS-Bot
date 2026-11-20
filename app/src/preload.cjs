@@ -20,13 +20,13 @@ if (startPage !== undefined) {
   let ready = false
   contextBridge.exposeInMainWorld('dsBotApp', {
     // The team view has mounted: the start window hands over to this one. With it, where the
-    // Main Bot's avatar is drawn, for the start window's whale to land on (start-window §8).
+    // Main Bot's avatar is drawn, for the start window's orange to land on (start-window §8).
     ready: (place) => {
       if (ready) return
       ready = true
       ipcRenderer.send('ds-bot:ready', placeOf(place))
     },
-    // The start window hands its whale over at the top of its jump (start-window.mjs): `run`
+    // The start window hands its orange over at the top of its jump (start-window.mjs): `run`
     // draws it where it is on this page, and once that is painted the main process cross-fades
     // the two windows.
     onHandoff: (run) => {
