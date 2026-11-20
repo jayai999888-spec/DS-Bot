@@ -340,7 +340,7 @@ test('an unchanged state answer skips the live fields a window already holds', a
 })
 
 test('a window holding live state gets fresh fields after the host restarts at the same revision', async (t) => {
-  const first = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', sessionId: 'chief', name: 'Chief' } } })
+  const first = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', sessionId: 'chief', name: '小橘' } } })
   t.after(first.stop)
   await rt.teamTools.find(d => d.name === 'list_bots').execute({}, { agent: { id: 'chief' } })
   // Start working before the first poll, so both runs' first live answer would
@@ -366,15 +366,16 @@ test('a window holding live state gets fresh fields after the host restarts at t
   assert.equal(quiet.activity, undefined)
 })
 
-test('a new team starts with a DeepSeek-blue whale as its Main Bot', async (t) => {
+test('a new team starts with the little orange as its Main Bot, 小橘', async (t) => {
   const { call, stop } = start()
   t.after(stop)
   const team = (await call('state', {})).value
   assert.equal(team.mainBotIds.length, 1)
   const main = team.bots.find(bot => bot.id === team.mainBotId)
-  assert.equal(main.name, 'Chief')
-  assert.equal(main.color, 'deepseek')
-  assert.deepEqual(main.avatar, { shape: 'whale' })
+  assert.equal(main.name, '小橘')
+  assert.equal(main.role, '团队总管')
+  assert.equal(main.color, 'mandarin')
+  assert.deepEqual(main.avatar, { shape: 'orange' })
 
   // Other Bots keep no stored look, so the client picks one from the id.
   const writer = (await call('create-bot', { name: 'Writer', role: '写作' })).value
@@ -392,7 +393,7 @@ const OLD_TEAM = {
   mainBotIds: ['m1', 'w2'],
   revision: 4,
   bots: {
-    m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', lab: 'deepseek', instructions: '', createdAt: 1, color: 'red' },
+    m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', lab: 'deepseek', instructions: '', createdAt: 1, color: 'red' },
     w2: { id: 'w2', sessionId: 'w2', name: 'Writer', role: '写作', lab: 'kimi', instructions: '', createdAt: 2 },
   },
   rooms: {},
@@ -428,9 +429,9 @@ test('another Bot takes the Main Bot place in one step', async (t) => {
   const team = (await call('set-main', { id: writer.id, main: true, replace: chief })).value
   assert.deepEqual(team.mainBotIds, [writer.id])
   assert.equal(team.mainBotId, writer.id)
-  // The whale stays with the Bot it was given to.
-  assert.deepEqual(team.bots.find(bot => bot.id === chief).avatar, { shape: 'whale' })
-  // The old Main Bot can now be deleted, and no new Chief is made in its place.
+  // The orange stays with the Bot it was given to.
+  assert.deepEqual(team.bots.find(bot => bot.id === chief).avatar, { shape: 'orange' })
+  // The old Main Bot can now be deleted, and no new 小橘 is made in its place.
   assert.equal((await call('delete-bot', { id: chief })).ok, true)
   const after = (await call('state', {})).value
   assert.deepEqual(after.mainBotIds, [writer.id])
@@ -487,7 +488,7 @@ const TEAM_WITH_PART = {
   mainBotIds: ['m1'],
   revision: 2,
   bots: {
-    m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', instructions: '', createdAt: 1 },
+    m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', instructions: '', createdAt: 1 },
     w1: { id: 'w1', sessionId: 'w2', name: 'Writer', role: '', instructions: '', createdAt: 2, segments: [{ sessionId: 'w1', endedAt: 3 }] },
   },
   rooms: {},
@@ -518,14 +519,14 @@ test('an archive failure on delete is warned instead of passing silently', async
   assert.equal(warnings.filter(text => text.includes('not archived')).length, 1)
 })
 
-test('a hidden Bot made Main Bot shows again, and a replaced Chief drops its held greeting', async (t) => {
+test('a hidden Bot made Main Bot shows again, and a replaced 小橘 drops its held greeting', async (t) => {
   const { call, stop, sent } = start(undefined, { models: ['deepseek-v4-flash'] })
   t.after(stop)
   const chief = (await call('state', {})).value.mainBotId
   const writer = (await call('create-bot', { name: 'Writer' })).value
   await call('set-flags', { id: writer.id, hidden: true })
   await settle()
-  // Only Chief's messages count: Writer's own greeting can go out late on a busy machine.
+  // Only 小橘's messages count: Writer's own greeting can go out late on a busy machine.
   const toChief = () => sent.filter(item => item.sessionId === chief).length
   const greeted = toChief()
   const team = (await call('set-main', { id: writer.id, main: true, replace: chief })).value
@@ -829,14 +830,14 @@ const takeover = (home, team) => {
 }
 
 test('a host that loses its lock to another dsh refuses changes instead of making a phantom Bot', async (t) => {
-  const { call, stop, home, ctx } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: 'Chief' } } })
+  const { call, stop, home, ctx } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: '小橘' } } })
   t.after(stop)
   assert.equal((await call('state', {})).value.readOnly, null)
   let created = 0
   const create = ctx.sessionController.create
   ctx.sessionController.create = async (...args) => { created += 1; return create(...args) }
   // Another live dsh takes the lock and writes its own team.
-  takeover(home, { version: 1, revision: 9, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: 'Chief' }, other: { id: 'other', name: 'FromB' } } })
+  takeover(home, { version: 1, revision: 9, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: '小橘' }, other: { id: 'other', name: 'FromB' } } })
   const answer = await call('create-bot', { name: 'Phantom' })
   assert.equal(answer.ok, false)
   assert.equal(answer.error.code, 'bot/read-only')
@@ -869,7 +870,7 @@ test('a delete whose save fails still stops the Sessions, and the next save writ
 })
 
 test('a rolled-back Bot does not come back with a save queued before the rollback', async (t) => {
-  const { call, stop, home } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: 'Chief' } } })
+  const { call, stop, home } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: '小橘' } } })
   t.after(async () => {
     fsp.rename = rename
     syncBuiltinESMExports()
@@ -906,11 +907,11 @@ test('a rolled-back Bot does not come back with a save queued before the rollbac
   // be what drops Phantom, so wait for that save itself.
   const names = () => Object.values(JSON.parse(readFileSync(statePath, 'utf8')).bots).map(bot => bot.name).sort()
   await until(() => !names().includes('Phantom'))
-  assert.deepEqual(names(), ['Chief', 'Kept', 'Warm'])
+  assert.deepEqual(names(), ['Kept', 'Warm', '小橘'])
 })
 
 test('a write that fails at save time archives the Session it made', async (t) => {
-  const { call, stop, home, ctx } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: 'Chief' } } })
+  const { call, stop, home, ctx } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', name: '小橘' } } })
   t.after(stop)
   await call('state', {})
   const created = []
@@ -941,7 +942,7 @@ test('a Bot cannot be named or renamed like the user; one named so before keeps 
     version: 1,
     mainBotIds: ['a'],
     bots: {
-      a: { id: 'a', name: 'Chief', role: '', instructions: '', sessionId: 'a', createdAt: 1 },
+      a: { id: 'a', name: '小橘', role: '', instructions: '', sessionId: 'a', createdAt: 1 },
       u: { id: 'u', name: 'User', role: '', instructions: '', sessionId: 'u', createdAt: 2 },
     },
     rooms: {},
@@ -1154,7 +1155,7 @@ test('a non-Main Bot still cannot change another Bot\u2019s thinking level', asy
   const writer = (await call('create-bot', { name: 'Writer', model: 'deepseek/deepseek-v4-flash', effort: 'high' })).value
   await until(() => sent.some(entry => entry.sessionId === writer.id))
   const exec = { agent: { id: writer.id } }
-  assert.match(await rt.teamTools.find(d => d.name === 'update_bot').execute({ bot: 'Chief', effort: 'low' }, exec), /^Only a Main Bot can change another Bot/)
+  assert.match(await rt.teamTools.find(d => d.name === 'update_bot').execute({ bot: '小橘', effort: 'low' }, exec), /^Only a Main Bot can change another Bot/)
   // Its own level it may change.
   assert.equal(await rt.teamTools.find(d => d.name === 'update_bot').execute({ effort: 'low' }, exec), 'Updated Writer.')
   assert.equal((await call('state', {})).value.bots.find(bot => bot.id === writer.id).effort, 'low')
@@ -1269,7 +1270,7 @@ test('a photo that cannot be read changes nothing, and a non-Main Bot cannot set
   await until(() => sent.some(entry => entry.sessionId === writer.id))
   const mine = { agent: { id: writer.id } }
   // Another Bot's photo is a Main Bot's to change, as its other settings are.
-  assert.match(await rt.teamTools.find(d => d.name === 'update_bot').execute({ bot: 'Chief', avatar: PNG_DATA_URL }, mine), /^Only a Main Bot can change another Bot/)
+  assert.match(await rt.teamTools.find(d => d.name === 'update_bot').execute({ bot: '小橘', avatar: PNG_DATA_URL }, mine), /^Only a Main Bot can change another Bot/)
   assert.equal((await call('state', {})).value.bots.find(bot => bot.id === chief).avatar?.image, undefined)
   // Its own it may set; a later bad photo leaves the good one alone.
   assert.equal(await rt.teamTools.find(d => d.name === 'update_bot').execute({ avatar: PNG_DATA_URL }, mine), 'Updated Writer.')
@@ -1279,11 +1280,11 @@ test('a photo that cannot be read changes nothing, and a non-Main Bot cannot set
 })
 
 test('old late-round and relay-limit fields of a group load away; calls it parked stay for the next round', async (t) => {
-  const parked = [{ id: 'writer', name: 'Writer', note: 'Chief mentioned you', by: 'chief' }]
+  const parked = [{ id: 'writer', name: 'Writer', note: '小橘 mentioned you', by: 'chief' }]
   const { call, stop, home } = start({
     version: 1,
     mainBotIds: ['chief'],
-    bots: { chief: { id: 'chief', name: 'Chief' }, writer: { id: 'writer', name: 'Writer' } },
+    bots: { chief: { id: 'chief', name: '小橘' }, writer: { id: 'writer', name: 'Writer' } },
     rooms: {
       r1: {
         id: 'r1', name: 'Ops', members: ['chief', 'writer'], mode: 'admin', admin: 'chief', named: true,
@@ -1310,7 +1311,7 @@ test('old late-round and relay-limit fields of a group load away; calls it parke
 const TEAM_MODEL = {
   version: 1,
   mainBotIds: ['chief'],
-  bots: { chief: { id: 'chief', sessionId: 'chief', name: 'Chief', instructions: '', createdAt: 1, model: 'deepseek/deepseek-v4-pro' } },
+  bots: { chief: { id: 'chief', sessionId: 'chief', name: '小橘', instructions: '', createdAt: 1, model: 'deepseek/deepseek-v4-pro' } },
   rooms: {},
   exchanges: [],
   exchangeTurns: {},
@@ -1420,7 +1421,7 @@ test('a model-less create-bot starts the Bot on the saved team default model', a
 test('a window learns that the other dsh closed and takes the team over without a reload', async (t) => {
   const holder = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'])
   t.after(() => holder.kill())
-  const { call, stop } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', sessionId: 'chief', name: 'Chief' } } }, {
+  const { call, stop } = start({ version: 1, mainBotIds: ['chief'], bots: { chief: { id: 'chief', sessionId: 'chief', name: '小橘' } } }, {
     models: ['deepseek-v4-flash'],
     lock: { pid: holder.pid, host: hostname(), token: 'other', since: Date.now() },
   })

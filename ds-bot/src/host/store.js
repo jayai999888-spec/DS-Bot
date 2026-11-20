@@ -195,7 +195,8 @@ export function install(rt) {
       }
     }
     // Teams from before the whale was stored at setup: their first Bot, while still a
-    // Main Bot, gets it once wherever it has no look of its own. After that the whale is
+    // Main Bot, gets it once wherever it has no look of its own. (New teams start with the
+    // little orange instead; these older teams keep the whale they were shown.) After that the whale is
     // an ordinary look the user can change, and it never passes to another Bot.
     if (state.whaleStored !== true) {
       const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)

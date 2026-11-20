@@ -646,7 +646,7 @@ export const ES = {
   'Manage models': 'Gestionar modelos',
 
   // Shapes
-  Whale: 'Ballena', Star: 'Estrella', Moon: 'Luna', Wave: 'Onda', Squircle: 'Cuadrículo', Bull: 'Toro', Blossom: 'Flor',
+  'Little Orange': 'Naranjita', Whale: 'Ballena', Star: 'Estrella', Moon: 'Luna', Wave: 'Onda', Squircle: 'Cuadrículo', Bull: 'Toro', Blossom: 'Flor',
   Gumdrop: 'Gominola', Peanut: 'Cacahuete', Bubbles: 'Burbujas', Saucer: 'Platillo', Sprout: 'Brote', Bunny: 'Conejo',
   Kitty: 'Gatito', Beacon: 'Faro', Plus: 'Más', Magnet: 'Imán', Acorn: 'Bellota', Pebbles: 'Guijarros', Cushion: 'Cojín',
   Ring: 'Anillo', Gem: 'Gema',

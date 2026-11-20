@@ -1,7 +1,7 @@
 import { createElement as h, Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { FishLogo } from './dsh-primitives.js'
-import { inkFill } from './inks.js'
+import { inkFill, INKS } from './inks.js'
 import { isMainOf } from './sources.js'
 import { currentPart, previewOf, relativeShort } from './text.js'
 import { PlusIcon, SearchIcon, SidebarIcon, GaugeIcon, ClockIcon, GearIcon, PinMarkIcon, ConnectorIcon, PlugIcon, SwitchIcon, CloudDownloadIcon, SignInIcon, SignOutIcon, SlidersIcon, ChevronRightIcon, DotsIcon, FolderIcon } from './icons.js'
@@ -970,7 +970,7 @@ const NO_SNAPSHOT = () => null
 
 // The footer avatar opens an account menu above itself, with Bot settings as one
 // entry. Shell panels hidden from the Bot sidebar (plugins, automation) live here too.
-// `seat` is the shell's settings.launcher seat: at priority -10 the whale wins it
+// `seat` is the shell's settings.launcher seat: at priority -10 the orange wins it
 // over a shell account plugin's own launcher (the Desktop's "··· More"), which comes
 // back in Agent mode; FooterAccount stands in while no seat exists at all.
 export function AccountLauncher({ seat = true, settingsOpen, actions }) {
@@ -1080,8 +1080,8 @@ export function AccountLauncher({ seat = true, settingsOpen, actions }) {
 
 // The desktop app keeps its main window hidden until the team interface has drawn
 // the first state, and shows its failure page when that never comes. The report
-// says where the Main Bot's avatar is when it wears the start window's whale: the
-// start window hands that whale over at the top of its jump, and it glides onto
+// says where the Main Bot's avatar is when it wears the default look (MAIN_LOOK): the
+// start window hands its mark over at the top of its jump, and it glides onto
 // the avatar here.
 let readyReported = false
 function useReportReady(drawn, roster) {
@@ -1109,7 +1109,7 @@ function mainMarkOf(id) {
 }
 
 // The Main Bot's avatar in the team column, in CSS px of the page, with the page's size.
-// Only the default look: a photo or another character would not match the start window's whale.
+// Only the default look: a photo or another character would not match the start window's mark.
 function mainAvatarPlace(roster) {
   const main = roster?.byId?.[roster.mainBotId]
   if (main === undefined || main.avatar?.image || typeof document === 'undefined') return undefined
@@ -1125,7 +1125,7 @@ function mainAvatarPlace(roster) {
 
 // The avatar's box where the team column comes to rest. The column also slides in as it first
 // draws (bt-leftcol-in, from off the left edge), and measured mid-slide the avatar would be
-// outside the page and the whale would have nowhere to land; offsetLeft and offsetTop leave the
+// outside the page and the mark would have nowhere to land; offsetLeft and offsetTop leave the
 // slide's transform out.
 function restingBox(mark) {
   const box = mark.getBoundingClientRect()
@@ -1137,7 +1137,7 @@ function restingBox(mark) {
   return { left: box.left + dx, top: box.top + dy, width: box.width, height: box.height }
 }
 
-// The whale the start window hands over (app/src/start-window.mjs): `from` is where it is on
+// The mark the start window hands over (app/src/start-window.mjs): `from` is where it is on
 // this page at the top of its jump. A copy of the avatar waits there for `hold` ms, while the two
 // windows cross-fade, then glides onto the avatar in one compositor animation, so the jump does
 // not stutter the way a window that resizes under it would. x and y ease differently, so the path
@@ -1156,7 +1156,8 @@ function glideOnto(mark, from) {
   Object.assign(outer.style, { position: 'fixed', left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, zIndex: '2147483647', pointerEvents: 'none' })
   Object.assign(inner.style, { width: '100%', height: '100%', transformOrigin: '0 0' })
   Object.assign(copy.style, { width: '100%', height: '100%' })
-  copy.style.setProperty('--bt-ink-deepseek', getComputedStyle(mark).getPropertyValue('--bt-ink-deepseek'))
+  const ink = `--bt-ink-${MAIN_LOOK.color}`
+  copy.style.setProperty(ink, getComputedStyle(mark).getPropertyValue(ink))
   inner.append(copy)
   outer.append(inner)
   outer.setAttribute('aria-hidden', 'true')
@@ -1253,21 +1254,21 @@ export const RETURN_CSS = `
 .bt-return:active{transform:scale(.96)}
 .bt-return .bt-mark{display:inline-flex;flex:none;line-height:0}
 .bt-return .bt-mark svg{width:100%;height:100%;overflow:visible}
-/* Shell styles carry --bt-ink-deepseek and Agent mode withdraws them; pin it here. */
-.bt-return .bt-mark{--bt-ink-deepseek:#4D6BFE}
+/* Shell styles carry the --bt-ink-* inks and Agent mode withdraws them; pin MAIN_LOOK's here. */
+.bt-return .bt-mark{--bt-ink-${MAIN_LOOK.color}:${INKS[MAIN_LOOK.color][0]}}
 .bt-return-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bt-return-swap{display:inline-flex;flex:none;line-height:0;opacity:.55}
 .bt-return-swap svg{width:16px;height:16px}
 `
 
 export function BrandMark({ size = 24 }) {
-  return h('span', { className: 'bt-brand-whale' }, h(BotMark, { look: MAIN_LOOK, size }))
+  return h('span', { className: 'bt-brand-mark' }, h(BotMark, { look: MAIN_LOOK, size }))
 }
 export function BrandName() {
   return h('span', { style: { fontWeight: 600, fontSize: 14 } }, t('Jubala Bot'))
 }
 
-// With the whale holding the settings seat, the Bot row is just the account menu;
+// With the orange holding the settings seat, the Bot row is just the account menu;
 // FooterAccount only shows when the seat went to no one. The shell's footer classes
 // are CSS-module names, so they match on their stems.
 export const SIDEBAR_CSS = `

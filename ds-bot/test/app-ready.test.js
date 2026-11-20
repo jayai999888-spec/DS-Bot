@@ -100,17 +100,17 @@ test('the desktop app hears once that the team sidebar drew the first state', as
   assert.deepEqual(calls, [[]], 'later states and a second mount report nothing more')
 })
 
-// The Main Bot in the start window's whale: the report says where its avatar is drawn, so the
-// desktop app's whale can land on it.
-const whaleTeam = { ...TEAM, byId: { main: { ...main, color: 'deepseek', avatar: { shape: 'whale' } } } }
+// The Main Bot in the default look: the report says where its avatar is drawn, so the
+// desktop app's start mark can land on it.
+const orangeTeam = { ...TEAM, byId: { main: { ...main, color: 'mandarin', avatar: { shape: 'orange' } } } }
 const avatarPage = app => page(app, {
   querySelector: selector => (selector === '.bt-side [data-bot-id="main"] .bt-mark' ? { checkVisibility: () => true, getBoundingClientRect: () => ({ left: 98, top: 70, width: 60, height: 60 }) } : null),
   documentElement: { clientWidth: 1280, clientHeight: 800, setAttribute() {}, removeAttribute() {} },
 })
 
-test('the report says where the Main Bot\'s whale is drawn', async () => {
+test('the report says where the Main Bot\'s orange is drawn', async () => {
   const { calls, app } = readyCalls()
-  mount(avatarPage(app).TeamSidebar)(sidebarProps(whaleTeam))
+  mount(avatarPage(app).TeamSidebar)(sidebarProps(orangeTeam))
   await setImmediate()
   // The place was made in the page's own realm: compared by value.
   assert.deepEqual(JSON.parse(JSON.stringify(calls)), [[{ x: 98, y: 70, width: 60, height: 60, viewportWidth: 1280, viewportHeight: 800 }]])
@@ -125,15 +125,16 @@ test('the place is where the team column comes to rest, not where its slide-in h
   mount(page(app, {
     querySelector: selector => (selector === '.bt-side [data-bot-id="main"] .bt-mark' ? mark : null),
     documentElement: { clientWidth: 1280, clientHeight: 800, setAttribute() {}, removeAttribute() {} },
-  }).TeamSidebar)(sidebarProps(whaleTeam))
+  }).TeamSidebar)(sidebarProps(orangeTeam))
   await setImmediate()
   assert.deepEqual(JSON.parse(JSON.stringify(calls)), [[{ x: 98, y: 70, width: 60, height: 60, viewportWidth: 1280, viewportHeight: 800 }]])
 })
 
 test('a Main Bot in another look or a photo reports no place', async () => {
-  for (const avatar of [{ shape: 'star' }, { shape: 'whale', image: 'data:image/png;base64,AA' }]) {
+  // The whale of a team from before the orange is another look too.
+  for (const avatar of [{ shape: 'star' }, { shape: 'whale' }, { shape: 'orange', image: 'data:image/png;base64,AA' }]) {
     const { calls, app } = readyCalls()
-    mount(avatarPage(app).TeamSidebar)(sidebarProps({ ...whaleTeam, byId: { main: { ...main, color: 'deepseek', avatar } } }))
+    mount(avatarPage(app).TeamSidebar)(sidebarProps({ ...orangeTeam, byId: { main: { ...main, color: 'mandarin', avatar } } }))
     await setImmediate()
     assert.deepEqual(calls, [[]], JSON.stringify(avatar))
   }
@@ -188,9 +189,9 @@ test('a ready() that throws is noted and the sidebar stays', async () => {
   assert.deepEqual(Array.from(clientErrors(), entry => entry.text), ['app ready: bridge gone'])
 })
 
-// The desktop app's start window hands its whale over at the top of its jump: the sidebar draws a
+// The desktop app's start window hands its mark over at the top of its jump: the sidebar draws a
 // copy of the avatar there, holds it while the windows cross-fade, then glides it onto the avatar.
-test('a whale handed over glides from where it was handed onto the Main Bot\'s avatar', async () => {
+test('a mark handed over glides from where it was handed onto the Main Bot\'s avatar', async () => {
   const made = []
   const element = () => {
     const el = { style: { setProperty() {} }, children: [], attributes: {}, animations: [], removed: false }
@@ -213,8 +214,8 @@ test('a whale handed over glides from where it was handed onto the Main Bot\'s a
     querySelector: selector => (selector === '.bt-side [data-bot-id="main"] .bt-mark' ? mark : null),
     documentElement: { clientWidth: 1280, clientHeight: 800, setAttribute() {}, removeAttribute() {} },
     createElement: element, body,
-  }, { getComputedStyle: () => ({ getPropertyValue: () => '#4D6BFE' }) })
-  mount(TeamSidebar)(sidebarProps(whaleTeam))
+  }, { getComputedStyle: () => ({ getPropertyValue: () => '#F39A1E' }) })
+  mount(TeamSidebar)(sidebarProps(orangeTeam))
   await setImmediate()
   // Listening before the report goes, so a quick hand-off is not missed.
   assert.deepEqual(calls.map(call => call[0]), ['onHandoff', 'ready'])

@@ -67,7 +67,7 @@ export function AboutPage({ useUpdate, actions, run, Section, Row }) {
     actions.repoStars().then((count) => { if (live && Number.isInteger(count)) setStars(count) }, () => {})
     return () => { live = false }
   }, [])
-  // The whale hops when the page opens, after a check, and when an update is in.
+  // The orange hops when the page opens, after a check, and when an update is in.
   const [cheer, setCheer] = useState(true)
   useEffect(() => {
     if (!cheer) return undefined

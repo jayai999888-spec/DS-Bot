@@ -646,7 +646,7 @@ export const KO = {
   'Manage models': '모델 관리',
 
   // Shapes
-  Whale: '고래', Star: '별', Moon: '달', Wave: '파동', Squircle: '둥근 사각형', Bull: '뿔', Blossom: '꽃',
+  'Little Orange': '꼬마 귤', Whale: '고래', Star: '별', Moon: '달', Wave: '파동', Squircle: '둥근 사각형', Bull: '뿔', Blossom: '꽃',
   Gumdrop: '젤리', Peanut: '땅콩', Bubbles: '거품', Saucer: '비행접시', Sprout: '새싹', Bunny: '토끼',
   Kitty: '고양이', Beacon: '등대', Plus: '플러스', Magnet: '자석', Acorn: '도토리', Pebbles: '조약돌', Cushion: '쿠션',
   Ring: '링', Gem: '보석',

@@ -310,7 +310,7 @@ export function install(rt) {
     const greeting = sentKickoffs.get(botId)
     sentKickoffs.delete(botId)
     if (bot === undefined || greeting === undefined || bot.kickoff !== undefined) return
-    // "You are the Main Bot" must not go out after a demotion.
+    // "You are a Main Bot" must not go out after a demotion.
     if (greeting.main && !rt.isMain(botId)) return
     bot.kickoff = greeting
     void rt.save().catch(() => {})
@@ -1012,9 +1012,9 @@ export function install(rt) {
     await rt.load()
     void rt.syncModels()
     if (state.mainBotIds.some(id => rt.botOf(id))) return
-    // Only the team's first Main Bot is stored as the DeepSeek whale; other Bots get a
+    // Only the team's first Main Bot is stored as the little orange; other Bots get a
     // look from their id, and a Bot made Main Bot later keeps its own.
-    bootstrapping ??= createBot({ name: defaults.mainName, role: defaults.mainRole, main: true, color: 'deepseek', avatar: { shape: 'whale' }, pickModel: true })
+    bootstrapping ??= createBot({ name: defaults.mainName, role: defaults.mainRole, main: true, color: 'mandarin', avatar: { shape: 'orange' }, pickModel: true })
       .finally(() => { bootstrapping = null })
     await bootstrapping
   }

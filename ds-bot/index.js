@@ -82,8 +82,8 @@ export function createRuntime(ctx, config = {}) {
     // Bot Session's own scope, never globally (see shareBotTools).
     teamTools: [],
     defaults: {
-      mainName: config.mainName ?? 'Chief',
-      mainRole: config.mainRole ?? 'Chief of Staff',
+      mainName: config.mainName ?? '小橘',
+      mainRole: config.mainRole ?? '团队总管',
     },
   }
   for (const module of MODULES) module.install(rt)

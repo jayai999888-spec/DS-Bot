@@ -619,6 +619,7 @@ export const FR = {
   "Harness default": "Par défaut de Harness",
   "Saving": "Enregistrement",
   "Manage models": "Gérer les modèles",
+  "Little Orange": "Petite orange",
   "Whale": "Baleine",
   "Star": "Étoile",
   "Moon": "Lune",

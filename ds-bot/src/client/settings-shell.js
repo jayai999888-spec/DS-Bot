@@ -215,7 +215,7 @@ export function DesktopUpdateBadge({ useDesktopUpdate, useConnectionState }) {
   return h(Tooltip, { label: copy.detail, side: 'right' }, h('span', { role: 'img', 'aria-label': copy.label, className: 'bt-dsh-update-badge' }))
 }
 
-// The trigger's own content where no Bot surface puts the whale there (Agent mode).
+// The trigger's own content where no Bot surface puts the orange there (Agent mode).
 export function TriggerContent({ wide }) {
   return h(Fragment, null, h(GearIcon), wide ? h('span', { className: 'bt-settings-trigger-label' }, t('Settings')) : null)
 }

@@ -133,7 +133,7 @@ function decide(body) {
     return [text(`Side note: ${pairs} earlier pair(s) seen.`)]
   }
   const me = /You are (.+?), a Bot on the user's team/.exec(system)?.[1] ?? 'Bot'
-  const isMain = system.includes('You are the Main Bot')
+  const isMain = system.includes('## You are a Main Bot')
   const isRelay = system.includes('# Group chat relay')
 
   // Summary requests: the Bot's handoff prompt, or the backend's own one when the

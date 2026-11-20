@@ -742,6 +742,7 @@ var JA = {
   "Harness default": "Harness デフォルト",
   "Saving": "保存中",
   "Manage models": "モデルを管理",
+  "Little Orange": "ちびみかん",
   "Whale": "クジラ",
   "Star": "星",
   "Moon": "月",
@@ -3174,6 +3175,7 @@ var KO = {
   Saving: "저장 중",
   "Manage models": "모델 관리",
   // Shapes
+  "Little Orange": "꼬마 귤",
   Whale: "고래",
   Star: "별",
   Moon: "달",
@@ -5635,6 +5637,7 @@ var ES = {
   Saving: "Guardando",
   "Manage models": "Gestionar modelos",
   // Shapes
+  "Little Orange": "Naranjita",
   Whale: "Ballena",
   Star: "Estrella",
   Moon: "Luna",
@@ -8080,6 +8083,7 @@ var FR = {
   "Harness default": "Par défaut de Harness",
   "Saving": "Enregistrement",
   "Manage models": "Gérer les modèles",
+  "Little Orange": "Petite orange",
   "Whale": "Baleine",
   "Star": "Étoile",
   "Moon": "Lune",
@@ -10512,6 +10516,7 @@ var DE = {
   Saving: "Wird gespeichert",
   "Manage models": "Modelle verwalten",
   // Shapes
+  "Little Orange": "Kleine Orange",
   Whale: "Wal",
   Star: "Stern",
   Moon: "Mond",
@@ -12947,6 +12952,7 @@ var ZH = {
   Saving: "保存中",
   "Manage models": "管理模型",
   // Shapes
+  "Little Orange": "小橘子",
   Whale: "鲸鱼",
   Star: "星星",
   Moon: "月亮",
@@ -14443,6 +14449,7 @@ var call = async (endpoint, payload, signal) => {
 
 // src/client/inks.js
 var INKS = {
+  mandarin: ["#F39A1E", "#F5A623"],
   deepseek: ["#4D6BFE", "#6A84FF"],
   charcoal: ["#141416", "#F1F2F4"],
   graphite: ["#2D2D2D", "#D6D6DA"],
@@ -14475,6 +14482,7 @@ var paintCss = (color) => GRADIENTS[color] ? `linear-gradient(135deg,${GRADIENTS
 
 // src/client/characters.js
 var CHARACTERS = {
+  orange: { label: "Little Orange", body: "M58 4.4l2.3-.4 1.1 .4 .6 1.7-.3 2.2-1.3 2.8-2.2 3.3-5.8 6.1 9 1 8.3 2.5 7.4 4.2 6.2 5.5 4.6 6.7 2.8 7.2 1.1 7.7-.2 4.5-.6 3.8-2.7 7.8-4.3 6.9-5.9 6.4-6.8 4.8-7.7 3.7-8.9 2.2-8.8 .6-8.3-1.1-7.2-2.3-6.1-3.3-5.6-4.3-4.5-5.3-3.3-6.1-2.1-6.6-.6-6.7 .8-7.2 1.7-5.5 2.4-5 2.9-4.4 3.9-4.5 4.4-3.7 5-3.3 4.9-2.4 6.7-2.3 .4-.4-.6-8.3 .7-1.7 1.7-.8 1.4 .3 1.2 1.1 .7 1.9 .6 .1 5.9-6.5 2.4-1.8z", paints: [["M42.9 11.1l1.3-.1 1.1 .6 .7 2.2 1.1 .6 0 1.1-.3 6.6-1.2 1.1-3.1 .8-.5-.1-.3-.7 .5-2.2-.5-.5-.1-5-.5-.6 0-1.6 .6-1.1z", "#7A4A1C", 1], ["M58.5 4.4l2.8 0 .7 1.7-.6 2.7-2.8 5-2.8 3.3-3.1 2.8-.5 1.7-4.7 1.1-2.2-.4-.6-1.3 2.1-6.6 .7-.2 1.5-2 6.3-6.2z", "#3FA34D", 1], ["M75.5 67.5l1.4-.5 .4 .5-.8 3.9-1.9 3.2-2.7 2.4-2.8 1.2-2.8 .1-2.2-.9-1.9-2.1-.9-2.8 .3-.6z", "#7A2414", 1], ["M70 73.6l1.9-.3 1.6 .6 .8 .8-.8 1-3.8 2.3-2.3 .4-2-.4-.2-.5 1.7-2z", "#FF7A7A", 1], ["M44.6 69.7l3.5 .3 2.7 1.7 1.1 2.4-.8 2.8-1.9 1.9-3.9 1.6-3.9 .1-3.3-1.2-1.3-1.3-.5-1.1 .1-1.6 .8-1.7 1.5-1.6 1.6-1.1z", "#FF5A7A", 0.55], ["M85.1 57l1.7-.5 1.1 .7 .7 1.5 .3 2.2-.2 2.2-.8 2.3-1.1 1.7-1.6 1-1.2-.4-.6-.7-.8-3.4 .6-3.8z", "#FF5A7A", 0.55]], shade: "M61 5l.4-.2 .5 .7-.5 3.3-1.6 3.4-2.9 3.8-4.2 3.9-.7 1.2-4.5 1-1.3-.5-.4-1.1 .6-1.5 2.6-1.3zM45.2 12.7l.1-.5 .6 .5 .5 1.7-.3 1.6-.8 .8-.9-.8-.2-1.6zM82.6 33.7l.3-.1 .7 .7 2.7 3.3 2.2 3.9 1.7 4.4 1 3.9 .6 4.4-.5 7.8-2.3 7.7-3.2 6.1-4.4 5.5-6.8 6.1-6.6 3.9-7.2 2.8-8.3 1.6-9.4 .1-6.6-1.2-7.8-2.8-5.5-3.2-6.2-5.6 2.9 .9 3.8 .2 5-.7 5-1.5 5.5-2.2 6.1-3.1 6.7-4 6-4.3 11.3-9.6 4.8-5.2 3.7-4.8 2.5-3.9 2-4.4 .7-3.9z", light: "M55.2 6.1l-3.6 3.3-3.5 4.5-.6-.1 3.8-4.4zM42.4 11.1l.4 .5-.4 .6-1 .6-.6-.1 .6-1.1zM39.6 22.7l1.8 0 1.1 .8 1.7 .4 .4 .4 .1 3.4-2.2 5.5-2.9 4.4-3.1 3.7-6.9 6.3-7.5 4.7-3.4 1.4-2.7 .5-2.8-.2-1.6-1-.9-1.5-.2-1.7 .9-3.9 3.4-6.1 4.5-5.4 4.4-4 5-3.4 6.7-3.2z", eyes: [[56.4, 62.5, 9.8, 12.4, -11.9], [77.8, 55.6, 7.5, 12.4, -16.8]] },
   whale: { label: "Whale", body: "M65.3 20.9l5.1 .1 4.8 .9 4.8 1.7 4.3 2.3 3.8 3.1 3 3.4 2.3 3.8 1.6 4.3 .9 4.3 0 4.8-.8 4.8-1.4 4.3-2.3 4.3-3.2 4.3-3.4 3.3-4.3 3.1-7.2 3.5-7.6 1.7-7.2 .1-9.6-1.6-3.3-1-2.9-1.7-8.8-8.9-6-4.7-3.3-.5-7.7 1.1-4.8-.1-4.7-1.2-1.9-1.2-1-1-.5-1.5 .4-1.4 1.1-1.3 1.9-1.3 4.7-1.5 7.7-.6 1.1-.5 .7-1 0-1.4-2.8-7.2-1.2-5.3-.1-4.3 .4-1.4 .9-1.2 1.9-.2 2 1 2.2 2.3 2.2 3.4 3.2 7.6 1.9 9.7 .5-.1 1.1-7.2 1.8-4.8 3.2-5.2 3.9-4.3 4.9-3.9 5.6-2.9 5.8-1.9z", paints: [["M93.3 55.8l1-.3 .1 1.2-2.4 5.3-3.4 4.8-3.8 3.8-4.8 3.4-5.7 2.8-4.8 1.5-4.8 .4 20.1-17.4 5.2-3.7z", "#fff", 1]], shade: "M88.6 29.5l2.4 2.9 1.9 2.8 2.4 6.3 .5 3.3 .1 5.3-1.5 6.6-1.9 4.3-2 3.3-4.8 5.4-5.7 4.3-7.2 3.3-6.2 1.5-6.7 .1-3.3-.2-9.6-1.8-3.3-1.5-2.4-1.9-8.6-8.9-5.3-3.9-3.3-.1-2.9 .2-3.3 .8-5.8 0-4.3-1-2.9-1.9 .6-.6 3.8-1.3 10.5-2.5 4.3 .9 1.4-.1 2.2-1.7 .5-1.4-.3-1.5-1.2-1.4-2.2-1.4-1.2-1.9-.6-12 .4-3.3 .5-.5 2.9 3.8 2.4 4.8 1.9 5.7 .7 5.8 .7 2.8 2.1 2.4 2.7 5.5 3.8 4.3 2.9 2.2 3.3 1 3.4-.4 6.2-3 7.1-4.5 7.3-5.6 6.6-5.9 5.9-6.5 3.7-5.3 1.7-4.2 .1-2.9z", light: "M55.6 22.8l1.9-.3 1.5 .3 .6 1 .1 .9-2 4.3-3.8 5.3-5.8 6.2-5.4 4.4-4.8 2.3-1.4 0-1.2-.5-.8-1.9 .5-3.3 2.5-4.8 3.3-4.3 2.4-2.4 5.3-3.9zM19.3 28.1l-1.4 2 .3-1.1zM21.7 49.1l.6 .5-.3 .5-.8 0zM35.8 52l1.2-.4 .9 .7 .7 1.6-.4 .9-1.2 .1-2.6-.5zM7.2 52.9l-2.9 2.9 1.2-1.6z", eyes: [[72.5, 48.4, 9.3, 23, -15.8], [85.6, 43.4, 7, 22.9, -21.2]] },
   star: { label: "Star", body: "M40.1 4.4l1.5-.4 1.9 .1 5.2 1.1 1.9 .9 13.2 14.9 17.1-.8 5.2 1.1 1.8 .9 1.7 1.6 .7 2.4-.4 1.9-9.7 23.6 5.6 23.7 .1 1.9-.6 1.4-2.1 1.8-2.3 .5-19.9-1.8-16.6 15.5-1.9 1-1.9 .3-7-1.5-2.6-2.1-.9-2.4-2.8-24.1-16-13.6-1.1-1.5-.5-1.9 .4-1.9 1.2-1.5 18.9-13.6 7.1-24.6 1-1.7z", shade: "M52 7.7l14.3 16.1 1 2.9 .3 3.1 19.4-1.3 2-1.4 .7-2.3-.4-1 .5 .5 .5 1.9-.4 1.9-9.8 23.2 5.5 23.1 .1 3.4-2 2.4-2.8 .8-19.4-2.1-1.9 1.4-14.7 14-2.4 1.4-3.3 .1-4.7-1-2-1 .6-.2 3.3 .8 2.8 .1 5.1-2.1 .7-.9 .4-2.4-2.6-22.7-.3-.3-1.4 .2-1.4 .7-5.7 .7-5.6-1.2-16.7-13.8 1-.1 5.2 1 3.8-1.1 1-.7 1.9-.4 .4-.4 1.5 .3 .4-.4 1 .2 18-12.8 6.7-23.5 0-1.8-.4-.5-.3-1.9 .4-2.4z", light: "M40.1 4.4l2-.1 4.7 1 .7 1-.5 1.4-2.8 1.5-6.6 23.1 .7 1.2 .6 .3-18.1 12.5-1.8 2.1-3.4 .7-5.2-1.2-.3-.4 .3-.9 1.4-1.4 18.3-12.9 .9-2.3 6.4-22.7 .8-1.4z", eyes: [[53.9, 53.4, 7.2, 18.8, -10], [65.1, 49.2, 7.2, 18.8, -10]] },
   moon: { label: "Moon", body: "M45.8 4.2l4.7-.2 4.2 .4 10.2 2.4 3.7 1.6 3.6 2.1 3.3 2.5 3 3.1 4.6 6.7 3.4 8.3 1.5 8.8 .1 4.6-.8 7.8-2.6 8.8-3.9 7.7-5.1 6.7-6.1 5.3-4.1 2.6-3.6 1.6-27.2 10.2-2.8 .7-2.6 0-5.7-1.3-2-.8-1.9-1.7-1.1-2.6-6.5-37.7-.2-5.2 .8-7.7 1.3-5.2 3.1-7.8 4.2-6.7 3-3.6 3.9-3.6 6.3-4.2 4.1-1.8z", paints: [["M57.6 9.9l.2-.3 .2 .3 2 4.7 1.9 1.9 2.6 .5 1.5-.7 1.1-1.1 .4 .4-.1 1.6-.7 1.5-2.2 2.5-1.6 .7-2 0-1.6-.8-1.3-1.4-.8-2-.4-2.6 .1-3.1z", "#1783FF", 1]], shade: "M74.3 13.5l2.1 1.5 .3-.4-.3-.6 2.1 2.1 4.6 6.7 3.1 7.4 1.5 7.6 .1 10.4-.6 4.6-2.5 8.3-4.2 8.2-3.1 4.2-5.7 5.7-6.2 4.2-4.6 2-28 10.3-4.1 0-5.2-1.1-2-.9-.5-.7 .5 .5 1.5 0 3.6 1 2.6-.3 5.7-2.1 2.1-2.1-5.4-31.5-.2-4.1 .4-1.1-.1-2.6 .5-3.6 1.8-7.7 2.8-6.7 1.9-3.1 3.9-5.2 3.2-3.1 2.5-2 5.2-2.9 3.1-1.1 3.1-.8 2.1 0 .5-.4 2.6 .2 1-.3 1.6 .4 1-.5 2.1 .8 1-.8 2.1 1.2z", light: "M38 6.3l1.7-.3 2.5 .2 .6 .4 1.5 0 .5 .5 1.6 .3-3.1 1.3 .4 .7-2.5 1.6-.5 1-2.5 2.1-2.7 2.9-6.2 7.9-1.5 2.7-1 .9-1.2 2.6-1.4 1-1.3 3.7-1.3 .3-6-1.4-1 3.6-.8 0 .9-3.6-.5-1 1.1-3.6 2.7-5.7 4.1-6.2 5.7-5.8 3.1-2.4 3.6-2.2z", eyes: [[51.6, 48.5, 8.4, 22.1, -10], [66.8, 42.9, 8.4, 22.1, -10]] },
@@ -14500,7 +14508,7 @@ var PICKER_SHAPES = Object.keys(CHARACTERS);
 var PICKER_COLUMNS = 5;
 var DEFAULT_SHAPES = ["star", "moon", "gumdrop", "peanut", "bunny", "kitty", "acorn"];
 var FALLBACK_SHAPE = "gumdrop";
-var MAIN_LOOK = Object.freeze({ shape: "whale", color: "deepseek" });
+var MAIN_LOOK = Object.freeze({ shape: "orange", color: "mandarin" });
 var CHARACTER_COLORS = ["black", "brown", "red", "orange", "yellow", "green", "cyan", "blue", "violet", "magenta", "gray", "aurora"];
 var DEFAULT_COLORS = CHARACTER_COLORS.filter((color) => !["black", "gray", "brown"].includes(color) && !GRADIENTS[color]);
 var isColor = (color) => isHex(color) || Object.hasOwn(INKS, color);
@@ -15995,7 +16003,7 @@ body[data-bt-motion=quiet] .bt-mark[data-poke]{cursor:default}
 .bt-side{display:flex;flex-direction:column;min-height:0;flex:1 1 auto;gap:2px;padding:0 12px 8px 0;color:var(--bt-ink);font-family:var(--bt-font)}
 .bt-side-top{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:6px 5px 0 0}
 .bt-brand{display:inline-flex;align-items:center;gap:6px;margin-right:auto;padding:4px 8px 4px 4px;border:0;border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.01em;color:var(--bt-ink);white-space:nowrap}
-.bt-brand-whale{display:inline-flex;color:var(--bt-accent)}
+.bt-brand-mark{display:inline-flex;color:var(--bt-accent)}
 .bt-round{width:36px;height:36px;border-radius:50%;border:1px solid var(--bt-line);background:var(--bt-main);color:var(--bt-ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background-color .12s ease,transform .12s ease}
 .bt-round:hover{background:var(--bt-hover)}
 .bt-round:active{transform:scale(.94)}
@@ -16634,7 +16642,7 @@ html[data-windows-titlebar] .bt-title-toggle:hover{background:var(--bt-hover)}
 /* Elsewhere the switch shows only while the column is hidden, where the column's
    own top row had it. */
 html:not([data-windows-titlebar]) .bt-title-toggle{position:fixed;left:12px;top:calc(var(--dsh-frame-top-clearance,0px) + 6px);z-index:30}
-/* The footer ends in the Bot row: the whale's settings seat, then the account menu
+/* The footer ends in the Bot row: the orange's settings seat, then the account menu
    when no plugin holds that seat. Every other plugin's entry takes a whole row above
    it, in the shell's order, so none of them squeezes the Bot row. */
 [class*="_footArea"]{grid-template-columns:auto minmax(0,1fr);grid-auto-flow:row dense;align-items:center;gap:4px 9px;padding:8px 6px 6px!important}
@@ -30834,7 +30842,8 @@ function glideOnto(mark2, from) {
   Object.assign(outer.style, { position: "fixed", left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, zIndex: "2147483647", pointerEvents: "none" });
   Object.assign(inner.style, { width: "100%", height: "100%", transformOrigin: "0 0" });
   Object.assign(copy2.style, { width: "100%", height: "100%" });
-  copy2.style.setProperty("--bt-ink-deepseek", getComputedStyle(mark2).getPropertyValue("--bt-ink-deepseek"));
+  const ink = `--bt-ink-${MAIN_LOOK.color}`;
+  copy2.style.setProperty(ink, getComputedStyle(mark2).getPropertyValue(ink));
   inner.append(copy2);
   outer.append(inner);
   outer.setAttribute("aria-hidden", "true");
@@ -30917,14 +30926,14 @@ var RETURN_CSS = `
 .bt-return:active{transform:scale(.96)}
 .bt-return .bt-mark{display:inline-flex;flex:none;line-height:0}
 .bt-return .bt-mark svg{width:100%;height:100%;overflow:visible}
-/* Shell styles carry --bt-ink-deepseek and Agent mode withdraws them; pin it here. */
-.bt-return .bt-mark{--bt-ink-deepseek:#4D6BFE}
+/* Shell styles carry the --bt-ink-* inks and Agent mode withdraws them; pin MAIN_LOOK's here. */
+.bt-return .bt-mark{--bt-ink-${MAIN_LOOK.color}:${INKS[MAIN_LOOK.color][0]}}
 .bt-return-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bt-return-swap{display:inline-flex;flex:none;line-height:0;opacity:.55}
 .bt-return-swap svg{width:16px;height:16px}
 `;
 function BrandMark({ size = 24 }) {
-  return (0, import_react36.createElement)("span", { className: "bt-brand-whale" }, (0, import_react36.createElement)(BotMark, { look: MAIN_LOOK, size }));
+  return (0, import_react36.createElement)("span", { className: "bt-brand-mark" }, (0, import_react36.createElement)(BotMark, { look: MAIN_LOOK, size }));
 }
 function BrandName() {
   return (0, import_react36.createElement)("span", { style: { fontWeight: 600, fontSize: 14 } }, t("Jubala Bot"));
@@ -46506,7 +46515,7 @@ function apply(ctx) {
     () => shadow("sidebar.brand.name", { priority: BOT_PRIORITY }, BrandName),
     () => shadow("sidebar.footer.action", { id: "bot-account", order: -200, inject: face }, FooterAccount),
     () => shadow("settings.trigger", { priority: BOT_PRIORITY }, YouAvatar),
-    // The whale wins the seat over a shell account plugin's own launcher (the
+    // The orange wins the seat over a shell account plugin's own launcher (the
     // Desktop's "··· More"), which comes back in Agent mode.
     () => shadow("settings.launcher", { priority: BOT_PRIORITY, inject: face }, AccountLauncher),
     () => shadow("shell.overlay", { id: "bot-computer", order: 40, inject: face }, ComputerIndicator),

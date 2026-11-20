@@ -88,8 +88,9 @@ Bot 形象用的颜色（`inks.js`），每种都有浅色、深色两个值：
 
 - 形象可选 12 色：black、brown、red、orange、yellow、green、cyan、blue、violet、magenta、gray，加一个渐变 aurora。
 - 强调色预设 7 色：deepseek、charcoal、graphite、rose、sky、tangerine、cobalt。
+- 品牌橘 mandarin（浅色 `#F39A1E`，深色 `#F5A623`）：只给第一个主 Bot 和插件自己的标志用，不在形象和强调色的选项里。
 - 新 Bot 没选颜色时，从去掉 black、gray、brown 和渐变后的颜色里，按 Bot id 确定地取一个。
-- 第一个主 Bot 固定是 deepseek 蓝的鲸鱼。
+- 第一个主 Bot 是 mandarin 橘色的小橘子（`orange`），默认叫「小橘」，角色「团队总管」。小橘子之前建的团队，第一个主 Bot 保留它的鲸鱼。
 
 Bot 名字、提及用同一个颜色写字；纯黑读起来像标题，所以写字时改用灰色。
 
@@ -260,9 +261,9 @@ Bot 名字、提及用同一个颜色写字；纯黑读起来像标题，所以�
 
 ### 8.1 形象
 
-- 20 个原创形象，用 `dev/characters.mjs` 生成：每个是一个小 3D 模型，从固定的三分之四视角描成平面层（身体、贴花、背光阴影、受光高光），放在 100 单位的画布里。
+- 21 个原创形象，用 `dev/characters.mjs` 生成：每个是一个小 3D 模型，从固定的三分之四视角描成平面层（身体、贴花、背光阴影、受光高光），放在 100 单位的画布里。
 - 眼睛是从所有层上挖掉的洞，所以能透出背后的颜色。眼睛的位置和倾斜随表面变化，近眼比远眼宽。
-- 形象列表：whale、star、moon、wave、squircle、zed、hex、gumdrop、peanut、saucer、bunny、kitty、beacon、plus、magnet、acorn、pebbles、cushion、ring、gem。
+- 形象列表：orange、whale、star、moon、wave、squircle、zed、hex、gumdrop、peanut、saucer、bunny、kitty、beacon、plus、magnet、acorn、pebbles、cushion、ring、gem。
 - 必须：新形象从生成器加，不手改 `characters.js` 里的数据；不能用任何厂商标志做贴花。
 - 用户也可以上传照片代替形象（圆形裁切）。
 

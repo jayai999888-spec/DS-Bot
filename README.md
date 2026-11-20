@@ -67,7 +67,7 @@ Each bot can have its own working folder and permission preset — just tell the
 
 ### Main bot
 
-The main bot is your chief. It has very high rights: it manages the other bots and the group chats. The first time you open 橘巴拉Bot, there is already a main bot called Chief. Talk to it, and it walks you through the setup.
+The main bot runs your team. It has very high rights: it manages the other bots and the group chats. The first time you open 橘巴拉Bot, there is already a main bot called 小橘 (Little Orange), with the role 团队总管 (team lead). Talk to it, and it walks you through the setup.
 
 In short: have a question? Ask the main bot.
 

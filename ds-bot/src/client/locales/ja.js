@@ -619,6 +619,7 @@ export const JA = {
   "Harness default": "Harness デフォルト",
   "Saving": "保存中",
   "Manage models": "モデルを管理",
+  "Little Orange": "ちびみかん",
   "Whale": "クジラ",
   "Star": "星",
   "Moon": "月",

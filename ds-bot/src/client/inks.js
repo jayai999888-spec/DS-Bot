@@ -1,6 +1,6 @@
 // Inks (light, dark) for characters, names, and mentions.
 export const INKS = {
-  deepseek: ['#4D6BFE', '#6A84FF'], charcoal: ['#141416', '#F1F2F4'], graphite: ['#2D2D2D', '#D6D6DA'],
+  mandarin: ['#F39A1E', '#F5A623'], deepseek: ['#4D6BFE', '#6A84FF'], charcoal: ['#141416', '#F1F2F4'], graphite: ['#2D2D2D', '#D6D6DA'],
   rose: ['#EC2F6B', '#FF5A7A'], sky: ['#0AA8D6', '#2EE6E0'], tangerine: ['#FF6900', '#FF8A2E'],
   cobalt: ['#082DFF', '#5C78FF'],
   black: ['#000000', '#FFFFFF'], brown: ['#9A6B44', '#7C5332'], red: ['#FF3E51', '#E02135'],
