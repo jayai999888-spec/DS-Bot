@@ -1,4 +1,4 @@
-// A local agent Bot's context, the way every other Bot's is handled: DS Bot reads how
+// A local agent Bot's context, the way every other Bot's is handled: Jubala Bot reads how
 // full the CLI session is from what the CLI reports, the steward decides past the
 // check line or after the CLI condensed on its own, the CLI condenses on request and
 // writes the handoff note, and the part moves on.

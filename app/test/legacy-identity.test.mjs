@@ -12,7 +12,7 @@ import { APP_ID, configureIdentity, LEGACY_ARTIFACT_PREFIX, LEGACY_PRODUCT_NAME 
 function fixture({ saved = [], packaged = true } = {}) {
   const app = new EventEmitter()
   const appData = join(tmpdir(), 'dsbot-identity-fixture')
-  const current = join(appData, 'DS Bot')
+  const current = join(appData, 'Jubala Bot')
   const legacy = join(appData, LEGACY_PRODUCT_NAME)
   const paths = { appData, userData: current }
   const names = []
@@ -41,7 +41,7 @@ for (const platform of ['win32', 'darwin', 'linux']) {
     } else {
       assert.deepEqual(f.names, [LEGACY_PRODUCT_NAME])
       f.app.emit('ready')
-      assert.deepEqual(f.names, [LEGACY_PRODUCT_NAME, 'DS Bot'])
+      assert.deepEqual(f.names, [LEGACY_PRODUCT_NAME, 'Jubala Bot'])
     }
   })
 }
@@ -76,11 +76,11 @@ test('a source installation also keeps its existing shell data', () => {
 })
 
 for (const suffix of ['mac-arm64.zip', 'mac-x64.zip', 'linux-amd64.deb']) {
-  test(`old update clients receive the identical DS Bot payload: ${suffix}`, () => {
+  test(`old update clients receive the identical Jubala Bot payload: ${suffix}`, () => {
     const root = mkdtempSync(join(tmpdir(), 'dsbot-release-alias-'))
     try {
-      const source = join(root, `DS-Bot-1.2.3-${suffix}`)
-      const payload = Buffer.from('new DS Bot package')
+      const source = join(root, `Jubala-Bot-1.2.3-${suffix}`)
+      const payload = Buffer.from('new Jubala Bot package')
       writeFileSync(source, payload)
       const result = spawnSync(process.execPath, ['scripts/legacy-release-assets.mjs', source], { cwd: new URL('../', import.meta.url), encoding: 'utf8' })
       assert.equal(result.status, 0, result.stderr)
@@ -92,9 +92,9 @@ for (const suffix of ['mac-arm64.zip', 'mac-x64.zip', 'linux-amd64.deb']) {
 }
 
 
-test('renaming the Windows application preserves the published installer GUID', () => {
+test('the Windows installer GUID is the one electron-builder derives from the appId', () => {
   const config = parse(readFileSync(new URL('../electron-builder.yml', import.meta.url), 'utf8'))
-  const published = UUID.v5('io.github.fei2411.deepseekbot', UUID.parse('50e065bc-3134-11e6-9bab-38c9862bdaf3'))
+  const published = UUID.v5(APP_ID, UUID.parse('50e065bc-3134-11e6-9bab-38c9862bdaf3'))
   assert.equal(config.appId, APP_ID)
   assert.equal(config.nsis.guid, published)
 })

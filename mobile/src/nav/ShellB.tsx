@@ -62,7 +62,7 @@ function DrawerContent() {
     <View style={{ flex: 1, backgroundColor: p.sidebar }}>
       {/* The desktop sidebar's head: the product name, search and New. */}
       <View style={[styles.drawerHead, { paddingTop: insets.top + 6 }]}>
-        <Text style={{ color: p.ink, fontSize: 17, fontWeight: '600', flex: 1 }}>DS Bot</Text>
+        <Text style={{ color: p.ink, fontSize: 17, fontWeight: '600', flex: 1 }}>Jubala Bot</Text>
         <Pressable accessibilityRole="button" accessibilityLabel={t('Search')} onPress={() => setSearching(on => !on)} hitSlop={4} style={[styles.round, { borderColor: p.line, backgroundColor: p.card }]}>
           <SearchIcon size={16} color={p.ink2} />
         </Pressable>

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// The README logo: the whale in the middle and the other first characters on a ring
-// around it, drawn from the plugin's own character table. Writes a light and a dark
+// The README logo: the brand's little orange in the middle and the first characters on a
+// ring around it, drawn from the plugin's own character table. Writes a light and a dark
 // version (the dark one uses the dark inks, as the app does in dark mode).
 //
 //   node dev/logo.mjs [out dir]        default: ../docs/images (logo.svg, logo-dark.svg)
@@ -8,10 +8,11 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { SHAPES, bodyOf, holes, maskBox } from '../src/client/characters.js'
 import { GRADIENTS, INKS } from '../src/client/inks.js'
+import { ORANGE_BOX, orangeMarkup } from './orange-mark.mjs'
 
 const BOX = 600
 const CENTER = BOX / 2
-const WHALE = { shape: 'whale', color: 'deepseek', size: 300 }
+const MARK_SIZE = 280
 // Clockwise from the top.
 const RING = [
   { shape: 'star', color: 'aurora' },
@@ -23,7 +24,7 @@ const RING = [
 ]
 const RING_SIZE = 116
 const RING_RADIUS = 228
-const ORBIT = { light: '#4D6BFE', dark: '#6A84FF' }
+const ORBIT = { light: '#F07800', dark: '#FFA940' }
 
 const out = resolve(process.argv[2] ?? join(import.meta.dirname, '../../docs/images'))
 mkdirSync(out, { recursive: true })
@@ -40,8 +41,10 @@ function logo(mode) {
     return { ...look, size: RING_SIZE, x: CENTER + RING_RADIUS * Math.cos(angle), y: CENTER + RING_RADIUS * Math.sin(angle) }
   })
   const orbit = `<circle cx="${CENTER}" cy="${CENTER}" r="${RING_RADIUS}" fill="none" stroke="${ORBIT[mode]}" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 10" stroke-linecap="round"/>`
-  const marks = [...seats, { ...WHALE, x: CENTER, y: CENTER }].map((seat, index) => character(seat, mode, `m${index}`))
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOX} ${BOX}" width="${BOX}" height="${BOX}" role="img" aria-label="DS Bot">${orbit}${marks.join('')}</svg>\n`
+  const marks = seats.map((seat, index) => character(seat, mode, `m${index}`))
+  const scale = MARK_SIZE / ORANGE_BOX.width
+  marks.push(`<g transform="translate(${CENTER - ORANGE_BOX.cx * scale} ${CENTER - ORANGE_BOX.cy * scale}) scale(${scale})">${orangeMarkup({ id: 'brand' })}</g>`)
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BOX} ${BOX}" width="${BOX}" height="${BOX}" role="img" aria-label="Jubala Bot">${orbit}${marks.join('')}</svg>\n`
 }
 
 // One character in a `size` box centered on (x, y). The eyes are cut out of the body,

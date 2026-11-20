@@ -1,4 +1,4 @@
-// Bridges an ACP agent's stdio MCP transport to DS Bot's loopback Streamable HTTP MCP server.
+// Bridges an ACP agent's stdio MCP transport to Jubala Bot's loopback Streamable HTTP MCP server.
 // Keep zero relative imports so packaged builds can copy this single file out of app.asar.
 import { createInterface } from 'node:readline'
 

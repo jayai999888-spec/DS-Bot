@@ -1,6 +1,6 @@
-# DS Bot phone link
+# 橘巴拉Bot phone link
 
-The encrypted link between the DS Bot phone app and the computer, and the Relay Server between them. The design is in [docs/plans/2026-10-24-mobile-app.md](../docs/plans/2026-10-24-mobile-app.md).
+The encrypted link between the 橘巴拉Bot phone app and the computer, and the Relay Server between them. The design is in [docs/plans/2026-10-24-mobile-app.md](../docs/plans/2026-10-24-mobile-app.md).
 
 - `src/`: code both ends share. The phone uses `RelayTransport`, `SecureTransport` and `RpcClient`; the computer uses `HostLink` and `DeviceRegistry`.
 - `server/`: the Relay Server. It forwards encrypted frames and cannot read them.
@@ -18,7 +18,7 @@ npm test
 PORT=8787 DSBOT_LINK_DATA=./data/devices.json npm run server
 ```
 
-The Server speaks plain `ws://`. Put it behind a TLS proxy and give phones the `wss://` address. DS Bot uses `wss://relay.dsbot.app/v1/link` unless the user enters another Server in Settings → Phone.
+The Server speaks plain `ws://`. Put it behind a TLS proxy and give phones the `wss://` address. 橘巴拉Bot uses `wss://relay.dsbot.app/v1/link` unless the user enters another Server in Settings → Phone.
 
 Settings, all optional:
 

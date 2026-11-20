@@ -131,14 +131,14 @@ var JA = {
   "Cannot reach the Server. Trying again…": "サーバーに接続できません。再試行しています…",
   "No phones yet": "スマートフォンはまだありません",
   "Off. Phones cannot reach this computer.": "オフ。スマートフォンからこのコンピューターに接続できません。",
-  "On. Paired phones can use DS Bot here.": "オン。ペアリング済みのスマートフォンからここで DS Bot を使えます。",
+  "On. Paired phones can use Jubala Bot here.": "オン。ペアリング済みのスマートフォンからここで Jubala Bot を使えます。",
   "Pair a phone": "スマートフォンをペアリング",
   "Paired on {date}": "{date} にペアリング",
   "Phone": "スマートフォン",
   "Phone access": "スマートフォンからのアクセス",
   "Phone app": "スマートフォンアプリ",
   "Phones": "スマートフォン",
-  "Scan this code with the DS Bot app on your phone.": "スマートフォンの DS Bot アプリでこのコードをスキャンしてください。",
+  "Scan this code with the Jubala Bot app on your phone.": "スマートフォンの Jubala Bot アプリでこのコードをスキャンしてください。",
   "Server": "サーバー",
   "Show a QR code": "QR コードを表示",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "スマートフォンとこのコンピューターの間で暗号化されたメッセージを中継するサーバーです。内容は読めません。",
@@ -355,7 +355,7 @@ var JA = {
   "Switch to classic Agent mode": "クラシック Agent モードに切り替え",
   "Bot mode": "Bot モード",
   "Switch": "切り替え",
-  "Back to DS Bot": "DS Bot に戻る",
+  "Back to Jubala Bot": "Jubala Bot に戻る",
   "{model} is not available anymore. Pick another model for me.": "{model} は現在利用できません。別のモデルを選んでください。",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "こんにちは、{name} です。まだモデルが設定されていません。どのように設定しますか？",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "こんにちは、{name} です。まずは使用するモデルを選んでください。後から詳細画面で変更できます。",
@@ -372,7 +372,7 @@ var JA = {
   "Add a provider": "プロバイダーを追加",
   "Needs an API key": "API キーが必要",
   "Key set": "キー設定済み",
-  "Key set outside DS Bot": "DS Bot 外でキー設定済み",
+  "Key set outside Jubala Bot": "Jubala Bot 外でキー設定済み",
   "No models": "モデルなし",
   "{count} models": "{count} 個のモデル",
   "Refresh models": "モデル一覧を更新",
@@ -388,7 +388,7 @@ var JA = {
   "{name} has no model to fall back to; its next turn will fail.": "{name} にはフォールバック先のモデルがなく、次のターンは失敗します。",
   "Local agent, not affected: {names}": "ローカルエージェントのため影響なし: {names}",
   "Runs on": "実行環境",
-  "DS Bot model": "DS Bot モデル",
+  "Jubala Bot model": "Jubala Bot モデル",
   "Local agent": "ローカルエージェント",
   "CLI default": "CLI デフォルト",
   "Signed in": "サインイン済み",
@@ -396,7 +396,7 @@ var JA = {
   "Sign-in unknown": "サインイン状態不明",
   "Looking for agent CLIs…": "エージェント CLI を検索中…",
   "Reading models…": "モデルを読み込み中…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "DS Bot のモデルとツールを使って応答します。",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "Jubala Bot のモデルとツールを使って応答します。",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "このコンピュータ上の CLI を通じて、自身のツールとサインイン情報で応答します。",
   "Change what {name} runs on?": "{name} の実行環境を変更しますか？",
   "Its own chat starts a new part with a handoff before the next turn.": "次のターンの前に、個別チャットは引き継ぎを行って新しいパートを開始します。",
@@ -432,7 +432,7 @@ var JA = {
   "Current session": "現在のセッション",
   "This page could not be shown.": "このページを表示できませんでした。",
   "Current": "現在",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "このキーは環境変数など DS Bot の外部で設定されているため、ここでは変更できません。",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "このキーは環境変数など Jubala Bot の外部で設定されているため、ここでは変更できません。",
   "and {count} more": "他 {count} 件",
   "Remove {name}? Bots on its models need another model.": "{name} を削除しますか？このモデルを使用している Bot には別のモデルを設定する必要があります。",
   "Remove provider": "プロバイダーを削除",
@@ -503,7 +503,7 @@ var JA = {
   "HTTP status": "HTTP ステータス",
   "Request ID": "リクエスト ID",
   "Provider message": "プロバイダーのメッセージ",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "Jubala Bot",
   "Message {name}": "{name} にメッセージを送信",
   "Message": "メッセージ",
   "Press Enter to steer queued messages": "Enter キーで待機中のメッセージを割り込み送信",
@@ -547,7 +547,7 @@ var JA = {
   "Browser access": "ブラウザの権限",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "Bot は開いているページのタイトル、アドレス、表示テキストを読めます。既定ではクリック、入力、スクロール、ページを開くことはできません。",
   "How to enable interactive browsing": "インタラクティブ閲覧を有効にする方法",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "この DSH プロファイルで browserPlugin を refs、script、task のいずれかに設定し、DS Bot を再起動してください。",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "この DSH プロファイルで browserPlugin を refs、script、task のいずれかに設定し、Jubala Bot を再起動してください。",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "インタラクティブプラグインを有効にすると、Bot は閲覧、クリック、フォーム入力ができます。投稿、アップロード、ダウンロード、削除は、ここで許可しない限り事前に確認を求めます。決済は常にあなた自身が行うため、Bot がページを引き継ぎます。",
   "These grants apply only after an interactive browser plugin is enabled.": "これらの許可は、インタラクティブブラウザープラグインを有効にした場合にのみ適用されます。",
   "Allowed actions": "許可済みの操作",
@@ -602,7 +602,7 @@ var JA = {
   "Rename {name}": "{name} の名前を変更",
   "Rename": "名前を変更",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "定期タスクはまだありません。追加するには、チャットで Bot に内容と日時を伝えてください。",
-  "The browser is in DSH Desktop and the DS Bot app.": "ブラウザは DSH デスクトップ版および DS Bot アプリで利用できます。",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "ブラウザは DSH デスクトップ版および Jubala Bot アプリで利用できます。",
   "New tab": "新しいタブ",
   "Close tab": "タブを閉じる",
   "Open {title}": "{title} を開く",
@@ -820,7 +820,7 @@ var JA = {
   "No group chats yet.": "グループチャットはまだありません。",
   "A group chat lets several Bots work on one thing with you.": "グループチャットでは、複数の Bot と一緒に 1 つのテーマに取り組めます。",
   "Back to group chats": "グループチャット一覧に戻る",
-  "DS Bot settings": "DS Bot 設定",
+  "Jubala Bot settings": "Jubala Bot 設定",
   "Settings pages": "設定ページ",
   "Advanced settings": "詳細設定",
   "Back to models": "モデルに戻る",
@@ -869,7 +869,7 @@ var JA = {
   "Unmute notifications": "通知のミュートを解除",
   "Notifications": "通知",
   "Tell me when a Bot answers while I am looking elsewhere.": "別の場所を見ている間に Bot が返信したら知らせる。",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "DS Bot のシステム通知はオフになっています。未読の印は表示されます。",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "Jubala Bot のシステム通知はオフになっています。未読の印は表示されます。",
   "Rename Bot": "Bot の名前を変更",
   "Group settings": "グループ設定",
   "Shared to-do": "共有 ToDo",
@@ -891,14 +891,14 @@ var JA = {
   "{n} min": "{n} 分",
   "{n} h": "{n} 時間",
   "{n} d": "{n} 日",
-  "DS Bot {version} is available": "DS Bot {version} が利用可能です",
-  "Updating DS Bot…": "DS Bot を更新中…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version} をインストールしました。DSH を再起動すると反映されます。",
-  "DS Bot {version} is installed.": "DS Bot {version} がインストールされています。",
-  "DS Bot update": "DS Bot のアップデート",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "Jubala Bot {version} が利用可能です",
+  "Updating Jubala Bot…": "Jubala Bot を更新中…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "Jubala Bot {version} をインストールしました。DSH を再起動すると反映されます。",
+  "Jubala Bot {version} is installed.": "Jubala Bot {version} がインストールされています。",
+  "Jubala Bot update": "Jubala Bot のアップデート",
+  "Jubala Bot {version}": "Jubala Bot {version}",
   "Update installed": "アップデート完了",
-  "Restart DSH to start using DS Bot {version}.": "DSH を再起動して DS Bot {version} の使用を開始してください。",
+  "Restart DSH to start using Jubala Bot {version}.": "DSH を再起動して Jubala Bot {version} の使用を開始してください。",
   "You have {version}.": "現在のバージョンは {version} です。",
   "The update did not finish: {reason}": "アップデートが完了しませんでした: {reason}",
   "What's new": "新機能・更新内容",
@@ -908,7 +908,7 @@ var JA = {
   "DSH update": "DSH のアップデート",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "DSH を再起動して DSH {version} の使用を開始してください。",
-  "Update DS Bot {version} first.": "先に DS Bot {version} を更新してください。",
+  "Update Jubala Bot {version} first.": "先に Jubala Bot {version} を更新してください。",
   "Open updates": "アップデートを開く",
   "Messages": "メッセージ",
   "Commands": "コマンド",
@@ -945,7 +945,7 @@ var JA = {
   "Yesterday {time}": "昨日 {time}",
   "Ran for {duration}": "実行時間 {duration}",
   "No background work detected": "バックグラウンドの作業を検出できませんでした",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot には、この返信のツール呼び出しや実行中のバックグラウンドタスクの記録がありません。",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "Jubala Bot には、この返信のツール呼び出しや実行中のバックグラウンドタスクの記録がありません。",
   "File not found: {path}": "ファイルが見つかりません：{path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · キャッシュヒット {hit}%",
   "1 turn": "1 ターン",
@@ -1182,7 +1182,7 @@ var JA = {
   "Repeat the passphrase": "パスフレーズをもう一度",
   "The passphrases do not match.": "パスフレーズが一致しません。",
   "Turn on encryption": "暗号化をオンにする",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "キーは暗号化して保存されます。DS Bot の実行中だけメモリ上で復号されます。",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "キーは暗号化して保存されます。Jubala Bot の実行中だけメモリ上で復号されます。",
   "Turn off encryption": "暗号化をオフにする",
   "Secrets are locked": "シークレットはロックされています",
   "Passphrase": "パスフレーズ",
@@ -1404,11 +1404,11 @@ var JA = {
   "Compared with the day before": "前日と比較",
   "Compared with the {count} days before": "その前の {count} 日間と比較",
   "{share}% of all usage from {span}": "{span} の全使用量の {share}%",
-  "About DS Bot": "DS Bot について",
+  "About Jubala Bot": "Jubala Bot について",
   "Version {version}": "バージョン {version}",
-  "Star DS Bot on GitHub": "GitHub で DS Bot に Star を付ける",
+  "Star Jubala Bot on GitHub": "GitHub で Jubala Bot に Star を付ける",
   "{count} stars": "{count} Star",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "DS Bot が役に立ったら、ぜひ GitHub で Star を付けてより多くの人に広めてください。",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "Jubala Bot が役に立ったら、ぜひ GitHub で Star を付けてより多くの人に広めてください。",
   "Updates": "アップデート",
   "Check for updates": "アップデートを確認",
   "Checking…": "確認中…",
@@ -1423,7 +1423,7 @@ var JA = {
   "{version} is available": "{version} が利用可能です",
   "Installed from a local folder; update it there.": "ローカルフォルダからインストールされています。そのフォルダで更新してください。",
   "Updates are not offered for this install.": "このインストール方式ではアップデートは提供されません。",
-  "Updates come with the DS Bot app.": "DS Bot アプリのアップデートに含まれます。",
+  "Updates come with the Jubala Bot app.": "Jubala Bot アプリのアップデートに含まれます。",
   "Links": "リンク",
   "Source code": "ソースコード",
   "Release notes": "リリースノート",
@@ -1438,7 +1438,7 @@ var JA = {
   "Show": "表示",
   "Hide": "隠す",
   "GitHub issue": "GitHub Issue",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "これらの内容が入力された状態で DS Bot リポジトリの新規 Issue 作成ページを開きます。GitHub 上で送信するまで何も送信されません。",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "これらの内容が入力された状態で Jubala Bot リポジトリの新規 Issue 作成ページを開きます。GitHub 上で送信するまで何も送信されません。",
   "Report on GitHub": "GitHub で報告",
   "Copied the diagnostics.": "診断情報をコピーしました。",
   "Could not copy. Select the text below and copy it.": "コピーできませんでした。下のテキストを選択してコピーしてください。",
@@ -1450,7 +1450,7 @@ var JA = {
   "Recent errors": "最近のエラー",
   "Recent errors · {count}": "最近のエラー · {count}",
   "No errors recorded.": "記録されたエラーはありません。",
-  "Failed model calls and DS Bot problems show here, newest first.": "失敗したモデル呼び出しや DS Bot の問題が新しい順に表示されます。",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "失敗したモデル呼び出しや Jubala Bot の問題が新しい順に表示されます。",
   "Model call": "モデル呼び出し",
   "This window": "このウィンドウ",
   "Error log": "エラーログ",
@@ -1759,14 +1759,14 @@ var JA = {
   "This side chat is no longer here.": "このサイドチャットはすでに存在しません。",
   "This side question is no longer here.": "このサイド質問はすでに存在しません。",
   "This Bot has not called a model yet. Send a normal message first.": "この Bot はまだモデルを呼び出していません。先に通常のメッセージを送信してください。",
-  "DS Bot restarted before this answer finished.": "回答が完了する前に DS Bot が再起動しました。",
+  "Jubala Bot restarted before this answer finished.": "回答が完了する前に Jubala Bot が再起動しました。",
   "The model called a tool again after being told not to, so this aside was not answered.": "ツールを呼び出さないよう指示された後もモデルがツールを呼び出したため、このサイド質問には回答できませんでした。",
   "The model wrote nothing.": "モデルからの出力がありませんでした。",
   "Nothing to ask": "質問する内容がありません",
   "Nothing to open": "開く対象がありません",
   "Nothing to cancel": "キャンセルする対象がありません",
   "Nothing to close": "閉じる対象がありません",
-  "DS Bot is still loading this chat.": "DS Bot はまだこのチャットを読み込み中です。",
+  "Jubala Bot is still loading this chat.": "Jubala Bot はまだこのチャットを読み込み中です。",
   "Computer use": "コンピュータ操作",
   "Computer": "コンピュータ",
   "Control": "操作",
@@ -1843,7 +1843,7 @@ var JA = {
 var HOST_ERRORS_JA = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "メールサーバー $1 に接続できませんでした。サーバーアドレスを確認してください。"],
   [/^Model (.+) is not available\. Available: (.*)$/, "モデル $1 は利用できません。利用可能: $2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "$1 の API キーは DS Bot の外部で設定されているため、ここでは変更できません"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "$1 の API キーは Jubala Bot の外部で設定されているため、ここでは変更できません"],
   [/^(.+) takes no API key here$/, "$1 にはここで API キーを設定できません"],
   [/^(.+) is already set up$/, "$1 はすでに設定されています"],
   [/^DSH offers no provider (.+)$/, "DSH にはプロバイダー $1 がありません"],
@@ -2547,14 +2547,14 @@ var KO = {
   "Cannot reach the Server. Trying again…": "서버에 연결할 수 없습니다. 다시 시도하는 중…",
   "No phones yet": "아직 휴대폰이 없습니다",
   "Off. Phones cannot reach this computer.": "꺼짐. 휴대폰에서 이 컴퓨터에 연결할 수 없습니다.",
-  "On. Paired phones can use DS Bot here.": "켜짐. 페어링된 휴대폰에서 여기의 DS Bot을 사용할 수 있습니다.",
+  "On. Paired phones can use Jubala Bot here.": "켜짐. 페어링된 휴대폰에서 여기의 Jubala Bot을 사용할 수 있습니다.",
   "Pair a phone": "휴대폰 페어링",
   "Paired on {date}": "{date}에 페어링됨",
   "Phone": "휴대폰",
   "Phone access": "휴대폰 접근",
   "Phone app": "휴대폰 앱",
   "Phones": "휴대폰",
-  "Scan this code with the DS Bot app on your phone.": "휴대폰의 DS Bot 앱으로 이 코드를 스캔하세요.",
+  "Scan this code with the Jubala Bot app on your phone.": "휴대폰의 Jubala Bot 앱으로 이 코드를 스캔하세요.",
   "Server": "서버",
   "Show a QR code": "QR 코드 표시",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "휴대폰과 이 컴퓨터 사이에서 암호화된 메시지를 전달하는 중계 서버입니다. 내용은 읽을 수 없습니다.",
@@ -2773,7 +2773,7 @@ var KO = {
   "Switch to classic Agent mode": "클래식 Agent 모드로 전환",
   "Bot mode": "Bot 모드",
   "Switch": "전환",
-  "Back to DS Bot": "DS Bot로 돌아가기",
+  "Back to Jubala Bot": "Jubala Bot로 돌아가기",
   "{model} is not available anymore. Pick another model for me.": "{model} 모델을 더 이상 사용할 수 없습니다. 다른 모델을 선택해 주세요.",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "안녕하세요, {name}입니다. 아직 사용할 모델이 없습니다. 어떻게 설정할까요?",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "안녕하세요, {name}입니다. 먼저 사용할 모델을 선택해 주세요. 나중에 상세 정보에서 변경할 수 있습니다.",
@@ -2791,7 +2791,7 @@ var KO = {
   "Add a provider": "제공자 추가",
   "Needs an API key": "API 키 필요",
   "Key set": "키 설정됨",
-  "Key set outside DS Bot": "DS Bot 외부에서 키 설정됨",
+  "Key set outside Jubala Bot": "Jubala Bot 외부에서 키 설정됨",
   "No models": "모델 없음",
   "{count} models": "모델 {count}개",
   "Refresh models": "모델 새로고침",
@@ -2808,7 +2808,7 @@ var KO = {
   "Local agent, not affected: {names}": "로컬 에이전트, 영향 없음: {names}",
   // What a Bot runs on
   "Runs on": "실행 방식",
-  "DS Bot model": "DS Bot 모델",
+  "Jubala Bot model": "Jubala Bot 모델",
   "Local agent": "로컬 Agent",
   "CLI default": "CLI 기본값",
   "Signed in": "로그인됨",
@@ -2816,7 +2816,7 @@ var KO = {
   "Sign-in unknown": "로그인 상태 알 수 없음",
   "Looking for agent CLIs…": "Agent CLI 찾는 중…",
   "Reading models…": "모델 읽는 중…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "DS Bot에서 제공하는 모델과 DS Bot의 도구로 응답합니다.",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "Jubala Bot에서 제공하는 모델과 Jubala Bot의 도구로 응답합니다.",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "컴퓨터의 이 CLI를 통해 자체 도구와 로그인 계정으로 응답합니다.",
   "Change what {name} runs on?": "{name}의 실행 방식을 변경하시겠습니까?",
   "Its own chat starts a new part with a handoff before the next turn.": "다음 차례 전에 개인 대화가 인수인계와 함께 새 구간으로 시작됩니다.",
@@ -2853,7 +2853,7 @@ var KO = {
   "Current session": "현재 세션",
   "This page could not be shown.": "이 페이지를 표시할 수 없습니다.",
   "Current": "현재",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "이 키는 환경 변수 등 DS Bot 외부에서 설정되었으므로 여기서 변경할 수 없습니다.",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "이 키는 환경 변수 등 Jubala Bot 외부에서 설정되었으므로 여기서 변경할 수 없습니다.",
   "and {count} more": "외 {count}개",
   "Remove {name}? Bots on its models need another model.": "{name} 제공자를 삭제하시겠습니까? 해당 모델을 사용하는 Bot은 다른 모델을 선택해야 합니다.",
   "Remove provider": "제공자 삭제",
@@ -2925,7 +2925,7 @@ var KO = {
   "HTTP status": "HTTP 상태 코드",
   "Request ID": "요청 ID",
   "Provider message": "원본 메시지",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "Jubala Bot",
   // Header
   "Message {name}": "{name}에게 메시지 보내기",
   Message: "메시지 보내기",
@@ -2972,7 +2972,7 @@ var KO = {
   "Browser access": "브라우저 권한",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "Bot은 열려 있는 페이지의 제목, 주소, 표시되는 텍스트를 읽을 수 있습니다. 기본적으로 클릭, 입력, 스크롤, 페이지 열기는 할 수 없습니다.",
   "How to enable interactive browsing": "대화형 브라우징을 켜는 방법",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "이 DSH 프로필에서 browserPlugin을 refs, script, task 중 하나로 설정한 뒤 DS Bot을 다시 시작하세요.",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "이 DSH 프로필에서 browserPlugin을 refs, script, task 중 하나로 설정한 뒤 Jubala Bot을 다시 시작하세요.",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "대화형 플러그인을 켜면 Bot이 웹을 탐색하고 클릭하며 양식을 작성할 수 있습니다. 게시, 업로드, 다운로드, 삭제는 여기서 미리 허용하지 않는 한 먼저 확인을 요청합니다. 결제는 항상 사용자가 직접 진행하도록 Bot이 페이지를 넘겨줍니다.",
   "These grants apply only after an interactive browser plugin is enabled.": "이 권한은 대화형 브라우저 플러그인을 켠 뒤에만 적용됩니다.",
   "Allowed actions": "허용된 작업",
@@ -3027,7 +3027,7 @@ var KO = {
   "Rename {name}": "{name} 이름 변경",
   Rename: "이름 변경",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "아직 예약 작업이 없습니다. 대화창에서 Bot에게 할 일과 시간을 말해 추가하세요.",
-  "The browser is in DSH Desktop and the DS Bot app.": "브라우저는 DSH 데스크톱 및 DS Bot 앱에서 사용할 수 있습니다.",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "브라우저는 DSH 데스크톱 및 Jubala Bot 앱에서 사용할 수 있습니다.",
   "New tab": "새 탭",
   "Close tab": "탭 닫기",
   "Open {title}": "{title} 열기",
@@ -3255,7 +3255,7 @@ var KO = {
   "No group chats yet.": "아직 그룹 채팅이 없습니다.",
   "A group chat lets several Bots work on one thing with you.": "그룹 채팅에서는 여러 Bot이 사용자와 함께 하나의 작업을 수행합니다.",
   "Back to group chats": "그룹 채팅 목록으로 돌아가기",
-  "DS Bot settings": "DS Bot 설정",
+  "Jubala Bot settings": "Jubala Bot 설정",
   "Settings pages": "설정 페이지",
   "Advanced settings": "고급 설정",
   "Back to models": "모델로 돌아가기",
@@ -3307,7 +3307,7 @@ var KO = {
   "Unmute notifications": "알림 켜기",
   Notifications: "알림",
   "Tell me when a Bot answers while I am looking elsewhere.": "다른 곳을 보고 있을 때 Bot이 답하면 알려 주세요.",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "DS Bot의 시스템 알림이 꺼져 있습니다. 읽지 않음 표시는 계속 보입니다.",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "Jubala Bot의 시스템 알림이 꺼져 있습니다. 읽지 않음 표시는 계속 보입니다.",
   "Rename Bot": "Bot 이름 변경",
   "Group settings": "그룹 설정",
   "Shared to-do": "공유 할 일",
@@ -3332,14 +3332,14 @@ var KO = {
   "{n} h": "{n}시간",
   "{n} d": "{n}일",
   // Plugin updates
-  "DS Bot {version} is available": "DS Bot {version} 업데이트 가능",
-  "Updating DS Bot…": "DS Bot 업데이트 중…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version}이(가) 설치되었습니다. 적용하려면 DSH를 재시작하세요.",
-  "DS Bot {version} is installed.": "DS Bot {version}이(가) 설치되었습니다.",
-  "DS Bot update": "DS Bot 업데이트",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "Jubala Bot {version} 업데이트 가능",
+  "Updating Jubala Bot…": "Jubala Bot 업데이트 중…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "Jubala Bot {version}이(가) 설치되었습니다. 적용하려면 DSH를 재시작하세요.",
+  "Jubala Bot {version} is installed.": "Jubala Bot {version}이(가) 설치되었습니다.",
+  "Jubala Bot update": "Jubala Bot 업데이트",
+  "Jubala Bot {version}": "Jubala Bot {version}",
   "Update installed": "업데이트 설치됨",
-  "Restart DSH to start using DS Bot {version}.": "DS Bot {version} 사용을 시작하려면 DSH를 재시작하세요.",
+  "Restart DSH to start using Jubala Bot {version}.": "Jubala Bot {version} 사용을 시작하려면 DSH를 재시작하세요.",
   "You have {version}.": "현재 버전: {version}",
   "The update did not finish: {reason}": "업데이트를 완료하지 못했습니다: {reason}",
   "What's new": "새로운 기능",
@@ -3349,7 +3349,7 @@ var KO = {
   "DSH update": "DSH 업데이트",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "DSH {version} 사용을 시작하려면 DSH를 재시작하세요.",
-  "Update DS Bot {version} first.": "먼저 DS Bot {version}을(를) 업데이트하세요.",
+  "Update Jubala Bot {version} first.": "먼저 Jubala Bot {version}을(를) 업데이트하세요.",
   "Open updates": "업데이트 열기",
   // Command palette
   Messages: "메시지",
@@ -3389,7 +3389,7 @@ var KO = {
   "Yesterday {time}": "어제 {time}",
   "Ran for {duration}": "{duration} 동안 실행됨",
   "No background work detected": "백그라운드 작업이 감지되지 않음",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot에 이 답변의 도구 호출이나 실행 중인 백그라운드 작업이 기록되어 있지 않습니다.",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "Jubala Bot에 이 답변의 도구 호출이나 실행 중인 백그라운드 작업이 기록되어 있지 않습니다.",
   "File not found: {path}": "파일을 찾을 수 없음: {path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · 캐시 적중 {hit}%",
   "1 turn": "1턴",
@@ -3631,7 +3631,7 @@ var KO = {
   "Repeat the passphrase": "암호 문구 다시 입력",
   "The passphrases do not match.": "암호 문구가 일치하지 않습니다.",
   "Turn on encryption": "암호화 켜기",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "키는 암호화되어 저장됩니다. DS Bot이 실행되는 동안에만 메모리에서 복호화됩니다.",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "키는 암호화되어 저장됩니다. Jubala Bot이 실행되는 동안에만 메모리에서 복호화됩니다.",
   "Turn off encryption": "암호화 끄기",
   "Secrets are locked": "키가 잠겨 있습니다",
   "Passphrase": "암호 문구",
@@ -3858,11 +3858,11 @@ var KO = {
   "Compared with the {count} days before": "이전 {count}일 대비",
   "{share}% of all usage from {span}": "{span} 전체 사용량의 {share}%",
   // About
-  "About DS Bot": "DS Bot 정보",
+  "About Jubala Bot": "Jubala Bot 정보",
   "Version {version}": "버전 {version}",
-  "Star DS Bot on GitHub": "GitHub에서 DS Bot에 Star 누르기",
+  "Star Jubala Bot on GitHub": "GitHub에서 Jubala Bot에 Star 누르기",
   "{count} stars": "Star {count}개",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "DS Bot이 도움이 되었다면 더 많은 사람이 찾을 수 있도록 GitHub에서 Star를 눌러 주세요.",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "Jubala Bot이 도움이 되었다면 더 많은 사람이 찾을 수 있도록 GitHub에서 Star를 눌러 주세요.",
   Updates: "업데이트",
   "Check for updates": "업데이트 확인",
   "Checking…": "확인 중…",
@@ -3877,7 +3877,7 @@ var KO = {
   "{version} is available": "{version} 출시됨",
   "Installed from a local folder; update it there.": "로컬 폴더에서 설치되었습니다. 해당 폴더에서 업데이트하세요.",
   "Updates are not offered for this install.": "이 설치 방식에서는 자동 업데이트를 제공하지 않습니다.",
-  "Updates come with the DS Bot app.": "DS Bot 앱과 함께 업데이트됩니다.",
+  "Updates come with the Jubala Bot app.": "Jubala Bot 앱과 함께 업데이트됩니다.",
   Links: "링크",
   "Source code": "소스 코드",
   "Release notes": "릴리스 노트",
@@ -3893,7 +3893,7 @@ var KO = {
   Show: "보기",
   Hide: "숨기기",
   "GitHub issue": "GitHub 이슈",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "위 내용이 채워진 상태로 DS Bot 저장소의 새 이슈 페이지를 엽니다. GitHub에서 직접 제출하기 전에는 아무것도 전송되지 않습니다.",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "위 내용이 채워진 상태로 Jubala Bot 저장소의 새 이슈 페이지를 엽니다. GitHub에서 직접 제출하기 전에는 아무것도 전송되지 않습니다.",
   "Report on GitHub": "GitHub에 신고",
   "Copied the diagnostics.": "진단 정보를 복사했습니다.",
   "Could not copy. Select the text below and copy it.": "복사하지 못했습니다. 아래 텍스트를 선택해 직접 복사하세요.",
@@ -3905,7 +3905,7 @@ var KO = {
   "Recent errors": "최근 오류",
   "Recent errors · {count}": "최근 오류 · {count}",
   "No errors recorded.": "기록된 오류가 없습니다.",
-  "Failed model calls and DS Bot problems show here, newest first.": "모델 호출 실패와 DS Bot 문제가 최신순으로 여기에 표시됩니다.",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "모델 호출 실패와 Jubala Bot 문제가 최신순으로 여기에 표시됩니다.",
   "Model call": "모델 호출",
   "This window": "이 창",
   "Error log": "오류 로그",
@@ -4218,14 +4218,14 @@ var KO = {
   "This side chat is no longer here.": "이 사이드 채팅은 더 이상 존재하지 않습니다.",
   "This side question is no longer here.": "이 사이드 질문은 더 이상 존재하지 않습니다.",
   "This Bot has not called a model yet. Send a normal message first.": "이 Bot은 아직 모델을 호출한 적이 없습니다. 먼저 일반 메시지를 보내세요.",
-  "DS Bot restarted before this answer finished.": "답변이 완료되기 전에 DS Bot이 재시작되었습니다.",
+  "Jubala Bot restarted before this answer finished.": "답변이 완료되기 전에 Jubala Bot이 재시작되었습니다.",
   "The model called a tool again after being told not to, so this aside was not answered.": "도구를 호출하지 않도록 요청받은 후에도 모델이 다시 도구를 호출하여 이번 사이드 질문에 답변하지 못했습니다.",
   "The model wrote nothing.": "모델이 아무 내용도 작성하지 않았습니다.",
   "Nothing to ask": "질문할 내용이 없습니다",
   "Nothing to open": "열 내용이 없습니다",
   "Nothing to cancel": "취소할 내용이 없습니다",
   "Nothing to close": "닫을 내용이 없습니다",
-  "DS Bot is still loading this chat.": "DS Bot이 아직 이 대화를 불러오는 중입니다.",
+  "Jubala Bot is still loading this chat.": "Jubala Bot이 아직 이 대화를 불러오는 중입니다.",
   // Computer use
   "Computer use": "컴퓨터 제어",
   "Computer": "컴퓨터",
@@ -4303,7 +4303,7 @@ var KO = {
 var HOST_ERRORS_KO = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "메일 서버 $1에 연결할 수 없습니다. 서버 주소를 확인하세요."],
   [/^Model (.+) is not available\. Available: (.*)$/, "모델 $1을(를) 사용할 수 없습니다. 사용 가능: $2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "$1의 API 키는 DS Bot 외부에서 설정되어 여기서 변경할 수 없습니다"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "$1의 API 키는 Jubala Bot 외부에서 설정되어 여기서 변경할 수 없습니다"],
   [/^(.+) takes no API key here$/, "$1에는 여기서 API 키를 입력할 수 없습니다"],
   [/^(.+) is already set up$/, "$1은(는) 이미 설정되어 있습니다"],
   [/^DSH offers no provider (.+)$/, "DSH에 $1 제공자가 없습니다"],
@@ -5008,14 +5008,14 @@ var ES = {
   "Cannot reach the Server. Trying again…": "No se puede conectar con el servidor. Reintentando…",
   "No phones yet": "Aún no hay teléfonos",
   "Off. Phones cannot reach this computer.": "Desactivado. Los teléfonos no pueden conectarse a este ordenador.",
-  "On. Paired phones can use DS Bot here.": "Activado. Los teléfonos vinculados pueden usar DS Bot aquí.",
+  "On. Paired phones can use Jubala Bot here.": "Activado. Los teléfonos vinculados pueden usar Jubala Bot aquí.",
   "Pair a phone": "Vincular un teléfono",
   "Paired on {date}": "Vinculado el {date}",
   "Phone": "Teléfono",
   "Phone access": "Acceso desde el teléfono",
   "Phone app": "App para el teléfono",
   "Phones": "Teléfonos",
-  "Scan this code with the DS Bot app on your phone.": "Escanea este código con la app DS Bot de tu teléfono.",
+  "Scan this code with the Jubala Bot app on your phone.": "Escanea este código con la app Jubala Bot de tu teléfono.",
   "Server": "Servidor",
   "Show a QR code": "Mostrar un código QR",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "El servidor de retransmisión que pasa los mensajes cifrados entre tu teléfono y este ordenador. No puede leerlos.",
@@ -5234,7 +5234,7 @@ var ES = {
   "Switch to classic Agent mode": "Cambiar al modo Agente clásico",
   "Bot mode": "Modo Bot",
   "Switch": "Cambiar",
-  "Back to DS Bot": "Volver a DS Bot",
+  "Back to Jubala Bot": "Volver a Jubala Bot",
   "{model} is not available anymore. Pick another model for me.": "{model} ya no está disponible. Elige otro modelo para mí.",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "Hola, soy {name}. Aún no tengo un modelo. ¿Cómo quieres configurarlo?",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "Hola, soy {name}. Elige primero un modelo para mí. Podrás cambiarlo después en mis detalles.",
@@ -5252,7 +5252,7 @@ var ES = {
   "Add a provider": "Añadir proveedor",
   "Needs an API key": "Requiere clave API",
   "Key set": "Clave configurada",
-  "Key set outside DS Bot": "Clave configurada fuera de DS Bot",
+  "Key set outside Jubala Bot": "Clave configurada fuera de Jubala Bot",
   "No models": "Sin modelos",
   "{count} models": "{count} modelos",
   "Refresh models": "Actualizar modelos",
@@ -5269,7 +5269,7 @@ var ES = {
   "Local agent, not affected: {names}": "Agente local, sin efecto: {names}",
   // What a Bot runs on
   "Runs on": "Se ejecuta en",
-  "DS Bot model": "Modelo de DS Bot",
+  "Jubala Bot model": "Modelo de Jubala Bot",
   "Local agent": "Agente local",
   "CLI default": "Predeterminado del CLI",
   "Signed in": "Sesión iniciada",
@@ -5277,7 +5277,7 @@ var ES = {
   "Sign-in unknown": "Estado de sesión desconocido",
   "Looking for agent CLIs…": "Buscando CLIs de agentes…",
   "Reading models…": "Leyendo modelos…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "Responde con un modelo servido por DS Bot, usando las herramientas de DS Bot.",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "Responde con un modelo servido por Jubala Bot, usando las herramientas de Jubala Bot.",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "Responde mediante este CLI en tu ordenador, con sus propias herramientas e inicio de sesión.",
   "Change what {name} runs on?": "¿Cambiar en qué se ejecuta {name}?",
   "Its own chat starts a new part with a handoff before the next turn.": "Su propio chat iniciará una nueva sección con traspaso antes del siguiente turno.",
@@ -5314,7 +5314,7 @@ var ES = {
   "Current session": "Sesión actual",
   "This page could not be shown.": "No se pudo mostrar esta página.",
   "Current": "Actual",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "Esta clave proviene de fuera de DS Bot, como una variable de entorno, y no se puede cambiar aquí.",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "Esta clave proviene de fuera de Jubala Bot, como una variable de entorno, y no se puede cambiar aquí.",
   "and {count} more": "y {count} más",
   "Remove {name}? Bots on its models need another model.": "¿Quitar {name}? Los Bots que usen sus modelos necesitarán otro modelo.",
   "Remove provider": "Quitar proveedor",
@@ -5386,7 +5386,7 @@ var ES = {
   "HTTP status": "Estado HTTP",
   "Request ID": "ID de solicitud",
   "Provider message": "Mensaje del proveedor",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "Jubala Bot",
   // Header
   "Message {name}": "Enviar mensaje a {name}",
   Message: "Mensaje",
@@ -5433,7 +5433,7 @@ var ES = {
   "Browser access": "Acceso al navegador",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "El Bot puede leer la página que tienes abierta: su título, dirección y texto visible. Por defecto no puede hacer clic, escribir, desplazarse ni abrir páginas.",
   "How to enable interactive browsing": "Cómo activar la navegación interactiva",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "En este perfil de DSH, pon browserPlugin en refs, script o task y reinicia DS Bot.",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "En este perfil de DSH, pon browserPlugin en refs, script o task y reinicia Jubala Bot.",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "Con un plugin interactivo, los Bots navegan, hacen clic y rellenan formularios. Publicar, subir, descargar y eliminar te pedirán confirmación a menos que lo permitas aquí. Los pagos siempre son cosa tuya: el Bot te cede la página.",
   "These grants apply only after an interactive browser plugin is enabled.": "Estos permisos solo se aplican después de activar un plugin de navegador interactivo.",
   "Allowed actions": "Acciones permitidas",
@@ -5488,7 +5488,7 @@ var ES = {
   "Rename {name}": "Renombrar {name}",
   Rename: "Renombrar",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "Aún no hay tareas programadas. Para añadir una, dile al Bot en su chat qué hacer y cuándo.",
-  "The browser is in DSH Desktop and the DS Bot app.": "El navegador está disponible en DSH Desktop y en la aplicación DS Bot.",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "El navegador está disponible en DSH Desktop y en la aplicación Jubala Bot.",
   "New tab": "Nueva pestaña",
   "Close tab": "Cerrar pestaña",
   "Open {title}": "Abrir {title}",
@@ -5716,7 +5716,7 @@ var ES = {
   "No group chats yet.": "Aún no hay chats grupales.",
   "A group chat lets several Bots work on one thing with you.": "Un chat grupal permite que varios Bots trabajen contigo en un mismo asunto.",
   "Back to group chats": "Volver a chats grupales",
-  "DS Bot settings": "Ajustes de DS Bot",
+  "Jubala Bot settings": "Ajustes de Jubala Bot",
   "Settings pages": "Páginas de ajustes",
   "Advanced settings": "Ajustes avanzados",
   "Back to models": "Volver a modelos",
@@ -5768,7 +5768,7 @@ var ES = {
   "Unmute notifications": "Reactivar notificaciones",
   Notifications: "Notificaciones",
   "Tell me when a Bot answers while I am looking elsewhere.": "Avísame cuando un Bot responda mientras miro otra cosa.",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "Las notificaciones del sistema están desactivadas para DS Bot. Las marcas de no leído siguen apareciendo.",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "Las notificaciones del sistema están desactivadas para Jubala Bot. Las marcas de no leído siguen apareciendo.",
   "Rename Bot": "Renombrar Bot",
   "Group settings": "Ajustes del grupo",
   "Shared to-do": "Tareas compartidas",
@@ -5793,14 +5793,14 @@ var ES = {
   "{n} h": "{n} h",
   "{n} d": "{n} d",
   // Plugin updates
-  "DS Bot {version} is available": "DS Bot {version} está disponible",
-  "Updating DS Bot…": "Actualizando DS Bot…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version} está instalado. Reinicia DSH para usarlo.",
-  "DS Bot {version} is installed.": "DS Bot {version} está instalado.",
-  "DS Bot update": "Actualización de DS Bot",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "Jubala Bot {version} está disponible",
+  "Updating Jubala Bot…": "Actualizando Jubala Bot…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "Jubala Bot {version} está instalado. Reinicia DSH para usarlo.",
+  "Jubala Bot {version} is installed.": "Jubala Bot {version} está instalado.",
+  "Jubala Bot update": "Actualización de Jubala Bot",
+  "Jubala Bot {version}": "Jubala Bot {version}",
   "Update installed": "Actualización instalada",
-  "Restart DSH to start using DS Bot {version}.": "Reinicia DSH para empezar a usar DS Bot {version}.",
+  "Restart DSH to start using Jubala Bot {version}.": "Reinicia DSH para empezar a usar Jubala Bot {version}.",
   "You have {version}.": "Tienes la versión {version}.",
   "The update did not finish: {reason}": "La actualización no terminó: {reason}",
   "What's new": "Novedades",
@@ -5810,7 +5810,7 @@ var ES = {
   "DSH update": "Actualización de DSH",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "Reinicia DSH para empezar a usar DSH {version}.",
-  "Update DS Bot {version} first.": "Actualiza primero DS Bot {version}.",
+  "Update Jubala Bot {version} first.": "Actualiza primero Jubala Bot {version}.",
   "Open updates": "Abrir actualizaciones",
   // Command palette
   Messages: "Mensajes",
@@ -5850,7 +5850,7 @@ var ES = {
   "Yesterday {time}": "Ayer {time}",
   "Ran for {duration}": "Duración: {duration}",
   "No background work detected": "No se detectó trabajo en segundo plano",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot no ha registrado llamadas a herramientas ni tareas activas en segundo plano para esta respuesta.",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "Jubala Bot no ha registrado llamadas a herramientas ni tareas activas en segundo plano para esta respuesta.",
   "File not found: {path}": "No se encuentra el archivo: {path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · Acierto de caché {hit}%",
   "1 turn": "1 turno",
@@ -6092,7 +6092,7 @@ var ES = {
   "Repeat the passphrase": "Repite la frase de contraseña",
   "The passphrases do not match.": "Las frases de contraseña no coinciden.",
   "Turn on encryption": "Activar el cifrado",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "Las claves se guardan cifradas. Solo se descifran en memoria mientras DS Bot se ejecuta.",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "Las claves se guardan cifradas. Solo se descifran en memoria mientras Jubala Bot se ejecuta.",
   "Turn off encryption": "Desactivar el cifrado",
   "Secrets are locked": "Los secretos están bloqueados",
   "Passphrase": "Frase de contraseña",
@@ -6319,11 +6319,11 @@ var ES = {
   "Compared with the {count} days before": "En comparación con los {count} días anteriores",
   "{share}% of all usage from {span}": "{share}% de todo el uso de {span}",
   // About
-  "About DS Bot": "Acerca de DS Bot",
+  "About Jubala Bot": "Acerca de Jubala Bot",
   "Version {version}": "Versión {version}",
-  "Star DS Bot on GitHub": "Dar una estrella a DS Bot en GitHub",
+  "Star Jubala Bot on GitHub": "Dar una estrella a Jubala Bot en GitHub",
   "{count} stars": "{count} estrellas",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "Si DS Bot te resulta útil, una estrella en GitHub ayuda a que más personas lo descubran.",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "Si Jubala Bot te resulta útil, una estrella en GitHub ayuda a que más personas lo descubran.",
   Updates: "Actualizaciones",
   "Check for updates": "Buscar actualizaciones",
   "Checking…": "Comprobando…",
@@ -6338,7 +6338,7 @@ var ES = {
   "{version} is available": "{version} está disponible",
   "Installed from a local folder; update it there.": "Instalado desde una carpeta local; actualízalo allí.",
   "Updates are not offered for this install.": "No se ofrecen actualizaciones para esta instalación.",
-  "Updates come with the DS Bot app.": "Las actualizaciones llegan con la aplicación DS Bot.",
+  "Updates come with the Jubala Bot app.": "Las actualizaciones llegan con la aplicación Jubala Bot.",
   Links: "Enlaces",
   "Source code": "Código fuente",
   "Release notes": "Notas de la versión",
@@ -6354,7 +6354,7 @@ var ES = {
   Show: "Mostrar",
   Hide: "Ocultar",
   "GitHub issue": "Issue de GitHub",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Abre un nuevo issue en el repositorio de DS Bot con todo esto rellenado. No se envía nada hasta que lo publiques allí.",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Abre un nuevo issue en el repositorio de Jubala Bot con todo esto rellenado. No se envía nada hasta que lo publiques allí.",
   "Report on GitHub": "Informar en GitHub",
   "Copied the diagnostics.": "Diagnóstico copiado.",
   "Could not copy. Select the text below and copy it.": "No se pudo copiar. Selecciona el texto de abajo y cópialo.",
@@ -6366,7 +6366,7 @@ var ES = {
   "Recent errors": "Errores recientes",
   "Recent errors · {count}": "Errores recientes · {count}",
   "No errors recorded.": "No hay errores registrados.",
-  "Failed model calls and DS Bot problems show here, newest first.": "Las llamadas a modelos fallidas y los problemas de DS Bot se muestran aquí, los más recientes primero.",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "Las llamadas a modelos fallidas y los problemas de Jubala Bot se muestran aquí, los más recientes primero.",
   "Model call": "Llamada al modelo",
   "This window": "Esta ventana",
   "Error log": "Registro de errores",
@@ -6679,14 +6679,14 @@ var ES = {
   "This side chat is no longer here.": "Este chat lateral ya no está aquí.",
   "This side question is no longer here.": "Esta pregunta lateral ya no está aquí.",
   "This Bot has not called a model yet. Send a normal message first.": "Este Bot aún no ha llamado a ningún modelo. Envía primero un mensaje normal.",
-  "DS Bot restarted before this answer finished.": "DS Bot se reinició antes de que terminara esta respuesta.",
+  "Jubala Bot restarted before this answer finished.": "Jubala Bot se reinició antes de que terminara esta respuesta.",
   "The model called a tool again after being told not to, so this aside was not answered.": "El modelo volvió a llamar a una herramienta después de indicarle que no lo hiciera, por lo que esta consulta lateral no recibió respuesta.",
   "The model wrote nothing.": "El modelo no escribió nada.",
   "Nothing to ask": "Nada que preguntar",
   "Nothing to open": "Nada que abrir",
   "Nothing to cancel": "Nada que cancelar",
   "Nothing to close": "Nada que cerrar",
-  "DS Bot is still loading this chat.": "DS Bot aún está cargando este chat.",
+  "Jubala Bot is still loading this chat.": "Jubala Bot aún está cargando este chat.",
   // Computer use
   "Computer use": "Uso del ordenador",
   "Computer": "Ordenador",
@@ -6764,7 +6764,7 @@ var ES = {
 var HOST_ERRORS_ES = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "No se pudo conectar con el servidor de correo en $1. Comprueba la dirección del servidor."],
   [/^Model (.+) is not available\. Available: (.*)$/, "El modelo $1 no está disponible. Disponibles: $2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "La clave API de $1 está configurada fuera de DS Bot y no se puede cambiar aquí"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "La clave API de $1 está configurada fuera de Jubala Bot y no se puede cambiar aquí"],
   [/^(.+) takes no API key here$/, "$1 no admite clave API aquí"],
   [/^(.+) is already set up$/, "$1 ya está configurado"],
   [/^DSH offers no provider (.+)$/, "DSH no ofrece el proveedor $1"],
@@ -7469,14 +7469,14 @@ var FR = {
   "Cannot reach the Server. Trying again…": "Impossible de joindre le serveur. Nouvel essai…",
   "No phones yet": "Aucun téléphone pour l’instant",
   "Off. Phones cannot reach this computer.": "Désactivé. Les téléphones ne peuvent pas joindre cet ordinateur.",
-  "On. Paired phones can use DS Bot here.": "Activé. Les téléphones associés peuvent utiliser DS Bot ici.",
+  "On. Paired phones can use Jubala Bot here.": "Activé. Les téléphones associés peuvent utiliser Jubala Bot ici.",
   "Pair a phone": "Associer un téléphone",
   "Paired on {date}": "Associé le {date}",
   "Phone": "Téléphone",
   "Phone access": "Accès depuis le téléphone",
   "Phone app": "App mobile",
   "Phones": "Téléphones",
-  "Scan this code with the DS Bot app on your phone.": "Scannez ce code avec l’app DS Bot sur votre téléphone.",
+  "Scan this code with the Jubala Bot app on your phone.": "Scannez ce code avec l’app Jubala Bot sur votre téléphone.",
   "Server": "Serveur",
   "Show a QR code": "Afficher un code QR",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "Le serveur relais qui transmet les messages chiffrés entre votre téléphone et cet ordinateur. Il ne peut pas les lire.",
@@ -7693,7 +7693,7 @@ var FR = {
   "Switch to classic Agent mode": "Passer au mode Agent classique",
   "Bot mode": "Mode Bot",
   "Switch": "Basculer",
-  "Back to DS Bot": "Retour à DS Bot",
+  "Back to Jubala Bot": "Retour à Jubala Bot",
   "{model} is not available anymore. Pick another model for me.": "{model} n’est plus disponible. Choisissez-moi un autre modèle.",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "Bonjour, je suis {name}. Je n’ai pas encore de modèle. Comment souhaitez-vous en configurer un ?",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "Bonjour, je suis {name}. Choisissez-moi d’abord un modèle. Vous pourrez le modifier plus tard dans mes détails.",
@@ -7710,7 +7710,7 @@ var FR = {
   "Add a provider": "Ajouter un fournisseur",
   "Needs an API key": "Clé API requise",
   "Key set": "Clé configurée",
-  "Key set outside DS Bot": "Clé configurée hors de DS Bot",
+  "Key set outside Jubala Bot": "Clé configurée hors de Jubala Bot",
   "No models": "Aucun modèle",
   "{count} models": "{count} modèles",
   "Refresh models": "Actualiser les modèles",
@@ -7726,7 +7726,7 @@ var FR = {
   "{name} has no model to fall back to; its next turn will fail.": "{name} n’a aucun modèle de repli ; son prochain tour échouera.",
   "Local agent, not affected: {names}": "Agent local, non concerné : {names}",
   "Runs on": "Fonctionne sur",
-  "DS Bot model": "Modèle DS Bot",
+  "Jubala Bot model": "Modèle Jubala Bot",
   "Local agent": "Agent local",
   "CLI default": "Valeur par défaut du CLI",
   "Signed in": "Connecté",
@@ -7734,7 +7734,7 @@ var FR = {
   "Sign-in unknown": "État de connexion inconnu",
   "Looking for agent CLIs…": "Recherche de CLI d’agent…",
   "Reading models…": "Lecture des modèles…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "Répond avec un modèle fourni par DS Bot et les outils de DS Bot.",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "Répond avec un modèle fourni par Jubala Bot et les outils de Jubala Bot.",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "Répond via ce CLI sur votre ordinateur, avec ses propres outils et identifiants.",
   "Change what {name} runs on?": "Modifier le mode d’exécution de {name} ?",
   "Its own chat starts a new part with a handoff before the next turn.": "Sa discussion privée ouvrira une nouvelle partie avec passation avant le prochain tour.",
@@ -7770,7 +7770,7 @@ var FR = {
   "Current session": "Session actuelle",
   "This page could not be shown.": "Cette page n’a pas pu être affichée.",
   "Current": "Actuel",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "Cette clé provient de l’extérieur de DS Bot (comme une variable d’environnement) et ne peut pas être modifiée ici.",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "Cette clé provient de l’extérieur de Jubala Bot (comme une variable d’environnement) et ne peut pas être modifiée ici.",
   "and {count} more": "et {count} de plus",
   "Remove {name}? Bots on its models need another model.": "Supprimer {name} ? Les Bots qui utilisent ses modèles devront en choisir un autre.",
   "Remove provider": "Supprimer le fournisseur",
@@ -7841,7 +7841,7 @@ var FR = {
   "HTTP status": "Statut HTTP",
   "Request ID": "ID de requête",
   "Provider message": "Message du fournisseur",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "Jubala Bot",
   "Message {name}": "Message à {name}",
   "Message": "Message",
   "Press Enter to steer queued messages": "Appuyez sur Entrée pour envoyer immédiatement les messages en file d’attente",
@@ -7885,7 +7885,7 @@ var FR = {
   "Browser access": "Accès au navigateur",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "Le Bot peut lire la page que vous avez ouverte : son titre, son adresse et le texte visible. Par défaut, il ne peut ni cliquer, ni saisir, ni faire défiler, ni ouvrir des pages.",
   "How to enable interactive browsing": "Comment activer la navigation interactive",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "Dans ce profil DSH, réglez browserPlugin sur refs, script ou task, puis redémarrez DS Bot.",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "Dans ce profil DSH, réglez browserPlugin sur refs, script ou task, puis redémarrez Jubala Bot.",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "Avec un plugin interactif, les Bots naviguent, cliquent et remplissent les formulaires. La publication, le téléversement, le téléchargement et la suppression vous demandent d’abord confirmation, sauf si vous les autorisez ici. Les paiements restent toujours sous votre contrôle : le Bot vous passe la main sur la page.",
   "These grants apply only after an interactive browser plugin is enabled.": "Ces autorisations ne s’appliquent qu’après l’activation d’un plugin de navigateur interactif.",
   "Allowed actions": "Actions autorisées",
@@ -7940,7 +7940,7 @@ var FR = {
   "Rename {name}": "Renommer {name}",
   "Rename": "Renommer",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "Aucune tâche planifiée. Pour en ajouter une, dites au Bot dans sa discussion quoi faire et quand.",
-  "The browser is in DSH Desktop and the DS Bot app.": "Le navigateur est disponible dans DSH Desktop et l’application DS Bot.",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "Le navigateur est disponible dans DSH Desktop et l’application Jubala Bot.",
   "New tab": "Nouvel onglet",
   "Close tab": "Fermer l’onglet",
   "Open {title}": "Ouvrir {title}",
@@ -8158,7 +8158,7 @@ var FR = {
   "No group chats yet.": "Aucune discussion de groupe pour le moment.",
   "A group chat lets several Bots work on one thing with you.": "Une discussion de groupe permet à plusieurs Bots de travailler ensemble avec vous sur un même sujet.",
   "Back to group chats": "Retour aux discussions de groupe",
-  "DS Bot settings": "Paramètres DS Bot",
+  "Jubala Bot settings": "Paramètres Jubala Bot",
   "Settings pages": "Pages de paramètres",
   "Advanced settings": "Paramètres avancés",
   "Back to models": "Retour aux modèles",
@@ -8207,7 +8207,7 @@ var FR = {
   "Unmute notifications": "Réactiver les notifications",
   "Notifications": "Notifications",
   "Tell me when a Bot answers while I am looking elsewhere.": "Prévenez-moi quand un Bot répond pendant que je regarde ailleurs.",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "Les notifications système sont désactivées pour DS Bot. Les marques de non-lu restent visibles.",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "Les notifications système sont désactivées pour Jubala Bot. Les marques de non-lu restent visibles.",
   "Rename Bot": "Renommer le Bot",
   "Group settings": "Paramètres du groupe",
   "Shared to-do": "Tâches partagées",
@@ -8229,14 +8229,14 @@ var FR = {
   "{n} min": "{n} min",
   "{n} h": "{n} h",
   "{n} d": "{n} j",
-  "DS Bot {version} is available": "DS Bot {version} est disponible",
-  "Updating DS Bot…": "Mise à jour de DS Bot…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version} est installé. Redémarrez DSH pour l’utiliser.",
-  "DS Bot {version} is installed.": "DS Bot {version} est installé.",
-  "DS Bot update": "Mise à jour de DS Bot",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "Jubala Bot {version} est disponible",
+  "Updating Jubala Bot…": "Mise à jour de Jubala Bot…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "Jubala Bot {version} est installé. Redémarrez DSH pour l’utiliser.",
+  "Jubala Bot {version} is installed.": "Jubala Bot {version} est installé.",
+  "Jubala Bot update": "Mise à jour de Jubala Bot",
+  "Jubala Bot {version}": "Jubala Bot {version}",
   "Update installed": "Mise à jour installée",
-  "Restart DSH to start using DS Bot {version}.": "Redémarrez DSH pour commencer à utiliser DS Bot {version}.",
+  "Restart DSH to start using Jubala Bot {version}.": "Redémarrez DSH pour commencer à utiliser Jubala Bot {version}.",
   "You have {version}.": "Version actuelle : {version}.",
   "The update did not finish: {reason}": "La mise à jour n’a pas abouti : {reason}",
   "What's new": "Nouveautés",
@@ -8246,7 +8246,7 @@ var FR = {
   "DSH update": "Mise à jour de DSH",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "Redémarrez DSH pour commencer à utiliser DSH {version}.",
-  "Update DS Bot {version} first.": "Mettez d’abord à jour DS Bot {version}.",
+  "Update Jubala Bot {version} first.": "Mettez d’abord à jour Jubala Bot {version}.",
   "Open updates": "Ouvrir les mises à jour",
   "Messages": "Messages",
   "Commands": "Commandes",
@@ -8283,7 +8283,7 @@ var FR = {
   "Yesterday {time}": "Hier {time}",
   "Ran for {duration}": "Exécuté pendant {duration}",
   "No background work detected": "Aucune tâche en arrière-plan détectée",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot n’a enregistré aucun appel d’outil ni aucune tâche active en arrière-plan pour cette réponse.",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "Jubala Bot n’a enregistré aucun appel d’outil ni aucune tâche active en arrière-plan pour cette réponse.",
   "File not found: {path}": "Fichier introuvable : {path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · Cache {hit} %",
   "1 turn": "1 tour",
@@ -8520,7 +8520,7 @@ var FR = {
   "Repeat the passphrase": "Répétez la phrase secrète",
   "The passphrases do not match.": "Les phrases secrètes ne correspondent pas.",
   "Turn on encryption": "Activer le chiffrement",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "Les clés sont stockées chiffrées. Elles ne sont déchiffrées en mémoire que pendant l’exécution de DS Bot.",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "Les clés sont stockées chiffrées. Elles ne sont déchiffrées en mémoire que pendant l’exécution de Jubala Bot.",
   "Turn off encryption": "Désactiver le chiffrement",
   "Secrets are locked": "Les secrets sont verrouillés",
   "Passphrase": "Phrase secrète",
@@ -8742,11 +8742,11 @@ var FR = {
   "Compared with the day before": "Par rapport à la veille",
   "Compared with the {count} days before": "Par rapport aux {count} jours précédents",
   "{share}% of all usage from {span}": "{share} % de l’utilisation totale sur {span}",
-  "About DS Bot": "À propos de DS Bot",
+  "About Jubala Bot": "À propos de Jubala Bot",
   "Version {version}": "Version {version}",
-  "Star DS Bot on GitHub": "Mettre une étoile à DS Bot sur GitHub",
+  "Star Jubala Bot on GitHub": "Mettre une étoile à Jubala Bot sur GitHub",
   "{count} stars": "{count} étoiles",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "Si DS Bot vous est utile, une étoile sur GitHub aide davantage de personnes à le découvrir.",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "Si Jubala Bot vous est utile, une étoile sur GitHub aide davantage de personnes à le découvrir.",
   "Updates": "Mises à jour",
   "Check for updates": "Vérifier les mises à jour",
   "Checking…": "Vérification…",
@@ -8761,7 +8761,7 @@ var FR = {
   "{version} is available": "{version} est disponible",
   "Installed from a local folder; update it there.": "Installé depuis un dossier local ; mettez-le à jour à cet emplacement.",
   "Updates are not offered for this install.": "Les mises à jour ne sont pas proposées pour cette installation.",
-  "Updates come with the DS Bot app.": "Les mises à jour sont incluses avec l’application DS Bot.",
+  "Updates come with the Jubala Bot app.": "Les mises à jour sont incluses avec l’application Jubala Bot.",
   "Links": "Liens",
   "Source code": "Code source",
   "Release notes": "Notes de version",
@@ -8776,7 +8776,7 @@ var FR = {
   "Show": "Afficher",
   "Hide": "Masquer",
   "GitHub issue": "Ticket GitHub",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Ouvre un nouveau ticket dans le dépôt DS Bot avec ces informations préremplies. Rien n’est envoyé tant que vous ne le soumettez pas sur GitHub.",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Ouvre un nouveau ticket dans le dépôt Jubala Bot avec ces informations préremplies. Rien n’est envoyé tant que vous ne le soumettez pas sur GitHub.",
   "Report on GitHub": "Signaler sur GitHub",
   "Copied the diagnostics.": "Diagnostics copiés.",
   "Could not copy. Select the text below and copy it.": "Impossible de copier. Sélectionnez le texte ci-dessous et copiez-le.",
@@ -8788,7 +8788,7 @@ var FR = {
   "Recent errors": "Erreurs récentes",
   "Recent errors · {count}": "Erreurs récentes · {count}",
   "No errors recorded.": "Aucune erreur enregistrée.",
-  "Failed model calls and DS Bot problems show here, newest first.": "Les appels de modèle échoués et les problèmes de DS Bot s’affichent ici, du plus récent au plus ancien.",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "Les appels de modèle échoués et les problèmes de Jubala Bot s’affichent ici, du plus récent au plus ancien.",
   "Model call": "Appel de modèle",
   "This window": "Cette fenêtre",
   "Error log": "Journal d’erreurs",
@@ -9097,14 +9097,14 @@ var FR = {
   "This side chat is no longer here.": "Cette discussion parallèle n’existe plus.",
   "This side question is no longer here.": "Cette question parallèle n’existe plus.",
   "This Bot has not called a model yet. Send a normal message first.": "Ce Bot n’a pas encore appelé de modèle. Envoyez d’abord un message normal.",
-  "DS Bot restarted before this answer finished.": "DS Bot a redémarré avant la fin de cette réponse.",
+  "Jubala Bot restarted before this answer finished.": "Jubala Bot a redémarré avant la fin de cette réponse.",
   "The model called a tool again after being told not to, so this aside was not answered.": "Le modèle a de nouveau appelé un outil alors qu’il lui était demandé de ne pas le faire ; cette question parallèle n’a donc pas reçu de réponse.",
   "The model wrote nothing.": "Le modèle n’a rien écrit.",
   "Nothing to ask": "Rien à demander",
   "Nothing to open": "Rien à ouvrir",
   "Nothing to cancel": "Rien à annuler",
   "Nothing to close": "Rien à fermer",
-  "DS Bot is still loading this chat.": "DS Bot charge encore cette discussion.",
+  "Jubala Bot is still loading this chat.": "Jubala Bot charge encore cette discussion.",
   "Computer use": "Contrôle de l’ordinateur",
   "Computer": "Ordinateur",
   "Control": "Contrôle",
@@ -9181,7 +9181,7 @@ var FR = {
 var HOST_ERRORS_FR = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "Impossible de joindre le serveur de messagerie à l’adresse $1. Vérifiez l’adresse du serveur."],
   [/^Model (.+) is not available\. Available: (.*)$/, "Le modèle $1 n’est pas disponible. Disponibles : $2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "La clé API de $1 est définie hors de DS Bot et ne peut pas être modifiée ici"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "La clé API de $1 est définie hors de Jubala Bot et ne peut pas être modifiée ici"],
   [/^(.+) takes no API key here$/, "$1 n’utilise pas de clé API ici"],
   [/^(.+) is already set up$/, "$1 est déjà configuré"],
   [/^DSH offers no provider (.+)$/, "DSH ne propose pas le fournisseur $1"],
@@ -9885,14 +9885,14 @@ var DE = {
   "Cannot reach the Server. Trying again…": "Server nicht erreichbar. Neuer Versuch…",
   "No phones yet": "Noch keine Telefone",
   "Off. Phones cannot reach this computer.": "Aus. Telefone können diesen Computer nicht erreichen.",
-  "On. Paired phones can use DS Bot here.": "An. Gekoppelte Telefone können DS Bot hier nutzen.",
+  "On. Paired phones can use Jubala Bot here.": "An. Gekoppelte Telefone können Jubala Bot hier nutzen.",
   "Pair a phone": "Telefon koppeln",
   "Paired on {date}": "Gekoppelt am {date}",
   "Phone": "Telefon",
   "Phone access": "Telefonzugriff",
   "Phone app": "Telefon-App",
   "Phones": "Telefone",
-  "Scan this code with the DS Bot app on your phone.": "Scanne diesen Code mit der DS Bot-App auf deinem Telefon.",
+  "Scan this code with the Jubala Bot app on your phone.": "Scanne diesen Code mit der Jubala Bot-App auf deinem Telefon.",
   "Server": "Server",
   "Show a QR code": "QR-Code anzeigen",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "Der Relay-Server, der verschlüsselte Nachrichten zwischen deinem Telefon und diesem Computer weiterleitet. Er kann sie nicht lesen.",
@@ -10111,7 +10111,7 @@ var DE = {
   "Switch to classic Agent mode": "Zum klassischen Agent-Modus wechseln",
   "Bot mode": "Bot-Modus",
   "Switch": "Wechseln",
-  "Back to DS Bot": "Zurück zu DS Bot",
+  "Back to Jubala Bot": "Zurück zu Jubala Bot",
   "{model} is not available anymore. Pick another model for me.": "{model} ist nicht mehr verfügbar. Wähle bitte ein anderes Modell für mich aus.",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "Hallo, ich bin {name}. Ich habe noch kein Modell. Wie möchtest du eines einrichten?",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "Hallo, ich bin {name}. Wähle zuerst ein Modell für mich aus. Du kannst es später in meinen Details ändern.",
@@ -10129,7 +10129,7 @@ var DE = {
   "Add a provider": "Anbieter hinzufügen",
   "Needs an API key": "API-Schlüssel erforderlich",
   "Key set": "Schlüssel hinterlegt",
-  "Key set outside DS Bot": "Schlüssel außerhalb von DS Bot gesetzt",
+  "Key set outside Jubala Bot": "Schlüssel außerhalb von Jubala Bot gesetzt",
   "No models": "Keine Modelle",
   "{count} models": "{count} Modelle",
   "Refresh models": "Modelle aktualisieren",
@@ -10146,7 +10146,7 @@ var DE = {
   "Local agent, not affected: {names}": "Lokaler Agent, nicht betroffen: {names}",
   // What a Bot runs on
   "Runs on": "Läuft auf",
-  "DS Bot model": "DS Bot-Modell",
+  "Jubala Bot model": "Jubala Bot-Modell",
   "Local agent": "Lokaler Agent",
   "CLI default": "CLI-Standard",
   "Signed in": "Angemeldet",
@@ -10154,7 +10154,7 @@ var DE = {
   "Sign-in unknown": "Anmeldestatus unbekannt",
   "Looking for agent CLIs…": "Suche nach Agent-CLIs…",
   "Reading models…": "Modelle werden geladen…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "Antwortet mit einem Modell über DS Bot und nutzt die Werkzeuge von DS Bot.",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "Antwortet mit einem Modell über Jubala Bot und nutzt die Werkzeuge von Jubala Bot.",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "Antwortet über diese CLI auf deinem Computer mit eigenen Werkzeugen und eigener Anmeldung.",
   "Change what {name} runs on?": "Ausführungsart von {name} ändern?",
   "Its own chat starts a new part with a handoff before the next turn.": "Vor der nächsten Antwort beginnt sein Einzelchat einen neuen Abschnitt mit Übergabe.",
@@ -10191,7 +10191,7 @@ var DE = {
   "Current session": "Aktuelle Sitzung",
   "This page could not be shown.": "Diese Seite konnte nicht angezeigt werden.",
   "Current": "Aktuell",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "Dieser Schlüssel stammt von außerhalb von DS Bot (z. B. aus einer Umgebungsvariable) und kann hier nicht geändert werden.",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "Dieser Schlüssel stammt von außerhalb von Jubala Bot (z. B. aus einer Umgebungsvariable) und kann hier nicht geändert werden.",
   "and {count} more": "und {count} weitere",
   "Remove {name}? Bots on its models need another model.": "{name} entfernen? Bots, die dessen Modelle nutzen, benötigen ein anderes Modell.",
   "Remove provider": "Anbieter entfernen",
@@ -10263,7 +10263,7 @@ var DE = {
   "HTTP status": "HTTP-Status",
   "Request ID": "Anfrage-ID",
   "Provider message": "Anbietermeldung",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "Jubala Bot",
   // Header
   "Message {name}": "Nachricht an {name}",
   Message: "Nachricht senden",
@@ -10310,7 +10310,7 @@ var DE = {
   "Browser access": "Browser-Berechtigungen",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "Ein Bot kann die Seite lesen, die du geöffnet hast: Titel, Adresse und sichtbarer Text. Standardmäßig kann er nicht klicken, tippen, scrollen oder Seiten öffnen.",
   "How to enable interactive browsing": "Interaktives Browsen aktivieren",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "Setze in diesem DSH-Profil browserPlugin auf refs, script oder task und starte DS Bot neu.",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "Setze in diesem DSH-Profil browserPlugin auf refs, script oder task und starte Jubala Bot neu.",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "Mit einem interaktiven Plugin können Bots surfen, klicken und Formulare ausfüllen. Vor dem Veröffentlichen, Hochladen, Herunterladen und Löschen wirst du gefragt, sofern du es hier nicht vorab erlaubst. Zahlungen tätigst immer du selbst: Der Bot übergibt dir dafür die Seite.",
   "These grants apply only after an interactive browser plugin is enabled.": "Diese Berechtigungen gelten erst, nachdem ein interaktives Browser-Plugin aktiviert wurde.",
   "Allowed actions": "Erlaubte Aktionen",
@@ -10365,7 +10365,7 @@ var DE = {
   "Rename {name}": "{name} umbenennen",
   Rename: "Umbenennen",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "Noch keine geplanten Aufgaben. Sage dem Bot einfach im Chat, was er wann erledigen soll.",
-  "The browser is in DSH Desktop and the DS Bot app.": "Der Browser ist in DSH Desktop und in der DS Bot-App verfügbar.",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "Der Browser ist in DSH Desktop und in der Jubala Bot-App verfügbar.",
   "New tab": "Neuer Tab",
   "Close tab": "Tab schließen",
   "Open {title}": "{title} öffnen",
@@ -10593,7 +10593,7 @@ var DE = {
   "No group chats yet.": "Noch keine Gruppenchats.",
   "A group chat lets several Bots work on one thing with you.": "In einem Gruppenchat arbeiten mehrere Bots gemeinsam mit dir an einer Aufgabe.",
   "Back to group chats": "Zurück zu den Gruppenchats",
-  "DS Bot settings": "DS Bot-Einstellungen",
+  "Jubala Bot settings": "Jubala Bot-Einstellungen",
   "Settings pages": "Einstellungsseiten",
   "Advanced settings": "Erweiterte Einstellungen",
   "Back to models": "Zurück zu den Modellen",
@@ -10645,7 +10645,7 @@ var DE = {
   "Unmute notifications": "Benachrichtigungen wieder einschalten",
   Notifications: "Benachrichtigungen",
   "Tell me when a Bot answers while I am looking elsewhere.": "Sag mir Bescheid, wenn ein Bot antwortet, während ich woanders hinsehe.",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "Systembenachrichtigungen sind für DS Bot ausgeschaltet. Ungelesen-Markierungen bleiben sichtbar.",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "Systembenachrichtigungen sind für Jubala Bot ausgeschaltet. Ungelesen-Markierungen bleiben sichtbar.",
   "Rename Bot": "Bot umbenennen",
   "Group settings": "Gruppeneinstellungen",
   "Shared to-do": "Gemeinsame To-dos",
@@ -10670,14 +10670,14 @@ var DE = {
   "{n} h": "{n} Std.",
   "{n} d": "{n} T.",
   // Plugin updates
-  "DS Bot {version} is available": "DS Bot {version} ist verfügbar",
-  "Updating DS Bot…": "DS Bot wird aktualisiert…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version} wurde installiert. Starte DSH neu, um es zu nutzen.",
-  "DS Bot {version} is installed.": "DS Bot {version} ist installiert.",
-  "DS Bot update": "DS Bot-Update",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "Jubala Bot {version} ist verfügbar",
+  "Updating Jubala Bot…": "Jubala Bot wird aktualisiert…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "Jubala Bot {version} wurde installiert. Starte DSH neu, um es zu nutzen.",
+  "Jubala Bot {version} is installed.": "Jubala Bot {version} ist installiert.",
+  "Jubala Bot update": "Jubala Bot-Update",
+  "Jubala Bot {version}": "Jubala Bot {version}",
   "Update installed": "Update installiert",
-  "Restart DSH to start using DS Bot {version}.": "Starte DSH neu, um DS Bot {version} zu verwenden.",
+  "Restart DSH to start using Jubala Bot {version}.": "Starte DSH neu, um Jubala Bot {version} zu verwenden.",
   "You have {version}.": "Installierte Version: {version}.",
   "The update did not finish: {reason}": "Das Update wurde nicht abgeschlossen: {reason}",
   "What's new": "Neuerungen",
@@ -10687,7 +10687,7 @@ var DE = {
   "DSH update": "DSH-Update",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "Starte DSH neu, um DSH {version} zu verwenden.",
-  "Update DS Bot {version} first.": "Aktualisiere zuerst DS Bot {version}.",
+  "Update Jubala Bot {version} first.": "Aktualisiere zuerst Jubala Bot {version}.",
   "Open updates": "Updates öffnen",
   // Command palette
   Messages: "Nachrichten",
@@ -10727,7 +10727,7 @@ var DE = {
   "Yesterday {time}": "Gestern {time}",
   "Ran for {duration}": "Laufzeit {duration}",
   "No background work detected": "Keine Hintergrundarbeit erkannt",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot hat für diese Antwort keinen Werkzeugaufruf und keine aktive Hintergrundaufgabe aufgezeichnet.",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "Jubala Bot hat für diese Antwort keinen Werkzeugaufruf und keine aktive Hintergrundaufgabe aufgezeichnet.",
   "File not found: {path}": "Datei nicht gefunden: {path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · Cache-Treffer {hit}%",
   "1 turn": "1 Durchgang",
@@ -10969,7 +10969,7 @@ var DE = {
   "Repeat the passphrase": "Passphrase wiederholen",
   "The passphrases do not match.": "Die Passphrasen stimmen nicht überein.",
   "Turn on encryption": "Verschlüsselung einschalten",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "Die Schlüssel liegen verschlüsselt. Sie werden nur im Speicher entschlüsselt, solange DS Bot läuft.",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "Die Schlüssel liegen verschlüsselt. Sie werden nur im Speicher entschlüsselt, solange Jubala Bot läuft.",
   "Turn off encryption": "Verschlüsselung ausschalten",
   "Secrets are locked": "Geheimnisse sind gesperrt",
   "Passphrase": "Passphrase",
@@ -11196,11 +11196,11 @@ var DE = {
   "Compared with the {count} days before": "Im Vergleich zu den {count} Tagen davor",
   "{share}% of all usage from {span}": "{share}% der Gesamtnutzung vom {span}",
   // About
-  "About DS Bot": "Über DS Bot",
+  "About Jubala Bot": "Über Jubala Bot",
   "Version {version}": "Version {version}",
-  "Star DS Bot on GitHub": "DS Bot auf GitHub mit einem Stern markieren",
+  "Star Jubala Bot on GitHub": "Jubala Bot auf GitHub mit einem Stern markieren",
   "{count} stars": "{count} Sterne",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "Wenn dir DS Bot weiterhilft, hilft ein Stern auf GitHub dabei, dass noch mehr Menschen es entdecken.",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "Wenn dir Jubala Bot weiterhilft, hilft ein Stern auf GitHub dabei, dass noch mehr Menschen es entdecken.",
   Updates: "Updates",
   "Check for updates": "Nach Updates suchen",
   "Checking…": "Wird geprüft…",
@@ -11215,7 +11215,7 @@ var DE = {
   "{version} is available": "{version} ist verfügbar",
   "Installed from a local folder; update it there.": "Aus einem lokalen Ordner installiert; bitte dort aktualisieren.",
   "Updates are not offered for this install.": "Für diese Installation werden keine Updates angeboten.",
-  "Updates come with the DS Bot app.": "Updates erfolgen über die DS Bot-App.",
+  "Updates come with the Jubala Bot app.": "Updates erfolgen über die Jubala Bot-App.",
   Links: "Links",
   "Source code": "Quellcode",
   "Release notes": "Versionshinweise",
@@ -11231,7 +11231,7 @@ var DE = {
   Show: "Anzeigen",
   Hide: "Ausblenden",
   "GitHub issue": "GitHub-Issue",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Öffnet ein neues Issue im DS Bot-Repository mit diesen vorausgefüllten Angaben. Es wird nichts gesendet, bis du es dort absendest.",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "Öffnet ein neues Issue im Jubala Bot-Repository mit diesen vorausgefüllten Angaben. Es wird nichts gesendet, bis du es dort absendest.",
   "Report on GitHub": "Auf GitHub melden",
   "Copied the diagnostics.": "Diagnosedaten kopiert.",
   "Could not copy. Select the text below and copy it.": "Kopieren fehlgeschlagen. Markiere den Text unten und kopiere ihn manuell.",
@@ -11243,7 +11243,7 @@ var DE = {
   "Recent errors": "Letzte Fehler",
   "Recent errors · {count}": "Letzte Fehler · {count}",
   "No errors recorded.": "Keine Fehler protokolliert.",
-  "Failed model calls and DS Bot problems show here, newest first.": "Fehlgeschlagene Modellaufrufe und Probleme mit DS Bot werden hier angezeigt, die neuesten zuerst.",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "Fehlgeschlagene Modellaufrufe und Probleme mit Jubala Bot werden hier angezeigt, die neuesten zuerst.",
   "Model call": "Modellaufruf",
   "This window": "Dieses Fenster",
   "Error log": "Fehlerprotokoll",
@@ -11556,14 +11556,14 @@ var DE = {
   "This side chat is no longer here.": "Dieser Nebenchat existiert nicht mehr.",
   "This side question is no longer here.": "Diese Nebenfrage existiert nicht mehr.",
   "This Bot has not called a model yet. Send a normal message first.": "Dieser Bot hat noch kein Modell aufgerufen. Sende zuerst eine normale Nachricht.",
-  "DS Bot restarted before this answer finished.": "DS Bot wurde neu gestartet, bevor diese Antwort abgeschlossen war.",
+  "Jubala Bot restarted before this answer finished.": "Jubala Bot wurde neu gestartet, bevor diese Antwort abgeschlossen war.",
   "The model called a tool again after being told not to, so this aside was not answered.": "Das Modell hat trotz Aufforderung erneut ein Werkzeug aufgerufen; daher wurde diese Nebenfrage nicht beantwortet.",
   "The model wrote nothing.": "Das Modell hat nichts geschrieben.",
   "Nothing to ask": "Nichts zu fragen",
   "Nothing to open": "Nichts zu öffnen",
   "Nothing to cancel": "Nichts abzubrechen",
   "Nothing to close": "Nichts zu schließen",
-  "DS Bot is still loading this chat.": "DS Bot lädt diesen Chat noch.",
+  "Jubala Bot is still loading this chat.": "Jubala Bot lädt diesen Chat noch.",
   // Computer use
   "Computer use": "Computersteuerung",
   "Computer": "Computer",
@@ -11641,7 +11641,7 @@ var DE = {
 var HOST_ERRORS_DE = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "Mailserver unter $1 nicht erreichbar. Bitte prüfe die Serveradresse."],
   [/^Model (.+) is not available\. Available: (.*)$/, "Modell $1 ist nicht verfügbar. Verfügbar: $2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "Der API-Schlüssel für $1 wurde außerhalb von DS Bot gesetzt und kann hier nicht geändert werden"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "Der API-Schlüssel für $1 wurde außerhalb von Jubala Bot gesetzt und kann hier nicht geändert werden"],
   [/^(.+) takes no API key here$/, "Für $1 kann hier kein API-Schlüssel hinterlegt werden"],
   [/^(.+) is already set up$/, "$1 ist bereits eingerichtet"],
   [/^DSH offers no provider (.+)$/, "DSH bietet keinen Anbieter $1 an"],
@@ -12546,7 +12546,7 @@ var ZH = {
   "Switch to classic Agent mode": "切换到经典 Agent 模式",
   "Bot mode": "Bot 模式",
   "Switch": "切换",
-  "Back to DS Bot": "返回 DS Bot",
+  "Back to Jubala Bot": "返回 橘巴拉Bot",
   "{model} is not available anymore. Pick another model for me.": "{model} 已经不可用了。给我换一个模型吧。",
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": "你好，我是 {name}。我还没有可用的模型。你想怎么配置？",
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": "你好，我是 {name}。先给我选一个模型吧，以后可以在我的详情里换。",
@@ -12564,7 +12564,7 @@ var ZH = {
   "Add a provider": "添加服务商",
   "Needs an API key": "需要 API key",
   "Key set": "已设置 key",
-  "Key set outside DS Bot": "key 在 DS Bot 之外设置",
+  "Key set outside Jubala Bot": "key 在 橘巴拉Bot 之外设置",
   "No models": "没有模型",
   "{count} models": "{count} 个模型",
   "Refresh models": "刷新模型列表",
@@ -12581,7 +12581,7 @@ var ZH = {
   "Local agent, not affected: {names}": "本地 Agent，不受影响：{names}",
   // What a Bot runs on
   "Runs on": "运行方式",
-  "DS Bot model": "DS Bot 模型",
+  "Jubala Bot model": "橘巴拉Bot 模型",
   "Local agent": "本地 Agent",
   "CLI default": "CLI 默认",
   "Signed in": "已登录",
@@ -12589,7 +12589,7 @@ var ZH = {
   "Sign-in unknown": "登录状态未知",
   "Looking for agent CLIs…": "正在查找 Agent CLI…",
   "Reading models…": "正在读取模型…",
-  "Answers with a model served by DS Bot, with DS Bot's tools.": "用 DS Bot 里的模型回答，用 DS Bot 的工具。",
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": "用 橘巴拉Bot 里的模型回答，用 橘巴拉Bot 的工具。",
   "Answers through this CLI on your computer, with its own tools and sign-in.": "通过这台电脑上的 CLI 回答，用它自己的工具和登录。",
   "Change what {name} runs on?": "更换 {name} 的运行方式？",
   "Its own chat starts a new part with a handoff before the next turn.": "下一轮开始前，它的私聊会开新的一段并做好交接。",
@@ -12626,7 +12626,7 @@ var ZH = {
   "Current session": "当前会话",
   "This page could not be shown.": "这个页面无法显示。",
   "Current": "当前",
-  "This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.": "这个 key 来自 DS Bot 之外（例如环境变量），这里改不了。",
+  "This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.": "这个 key 来自 橘巴拉Bot 之外（例如环境变量），这里改不了。",
   "and {count} more": "还有 {count} 个",
   "Remove {name}? Bots on its models need another model.": "删除 {name}？用它的模型的 Bot 要换一个模型。",
   "Remove provider": "删除服务商",
@@ -12698,7 +12698,7 @@ var ZH = {
   "HTTP status": "HTTP 状态码",
   "Request ID": "请求 ID",
   "Provider message": "原文",
-  "DS Bot": "DS Bot",
+  "Jubala Bot": "橘巴拉Bot",
   // Header
   "Message {name}": "给 {name} 发消息",
   Message: "发消息",
@@ -12745,7 +12745,7 @@ var ZH = {
   "Browser access": "浏览器权限",
   "A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.": "Bot 可以读取你打开的页面：标题、地址和可见文字。默认不能点击、输入、滚动或打开页面。",
   "How to enable interactive browsing": "如何开启交互式浏览",
-  "In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.": "在这个 DSH profile 里把 browserPlugin 设为 refs、script 或 task，然后重启 DS Bot。",
+  "In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.": "在这个 DSH profile 里把 browserPlugin 设为 refs、script 或 task，然后重启 橘巴拉Bot。",
   "With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.": "启用交互插件后，Bot 可以浏览、点击和填写表单。发布、上传、下载和删除会先征求你的同意，除非你在这里预先允许。付款始终由你自己完成：Bot 会把页面交给你。",
   "These grants apply only after an interactive browser plugin is enabled.": "这些授权只在启用交互式浏览器插件后生效。",
   "Allowed actions": "已允许的操作",
@@ -12800,7 +12800,7 @@ var ZH = {
   "Rename {name}": "重命名 {name}",
   Rename: "重命名",
   "No scheduled tasks yet. To add one, tell the Bot in its chat what to do and when.": "还没有定时任务。要添加，在对话里告诉 Bot 做什么、什么时候做。",
-  "The browser is in DSH Desktop and the DS Bot app.": "浏览器在 DSH 桌面版和 DS Bot 应用里。",
+  "The browser is in DSH Desktop and the Jubala Bot app.": "浏览器在 DSH 桌面版和 橘巴拉Bot 应用里。",
   "New tab": "新标签页",
   "Close tab": "关闭标签页",
   "Open {title}": "打开 {title}",
@@ -13028,7 +13028,7 @@ var ZH = {
   "No group chats yet.": "还没有群聊。",
   "A group chat lets several Bots work on one thing with you.": "在群聊里，几个 Bot 和你一起做一件事。",
   "Back to group chats": "返回群聊列表",
-  "DS Bot settings": "DS Bot 设置",
+  "Jubala Bot settings": "橘巴拉Bot 设置",
   "Settings pages": "设置页面",
   "Advanced settings": "高级设置",
   "Back to models": "返回模型",
@@ -13074,7 +13074,7 @@ var ZH = {
   // Phone
   Phone: "手机",
   "Off. Phones cannot reach this computer.": "已关闭。手机连不上这台电脑。",
-  "On. Paired phones can use DS Bot here.": "已开启。配对过的手机可以用这台电脑上的 DS Bot。",
+  "On. Paired phones can use Jubala Bot here.": "已开启。配对过的手机可以用这台电脑上的 橘巴拉Bot。",
   "Cannot reach the Server. Trying again…": "连不上服务器，正在重试…",
   "Phone access": "手机访问",
   "Beta": "测试版",
@@ -13083,7 +13083,7 @@ var ZH = {
   Server: "服务器",
   "The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.": "在手机和这台电脑之间转发加密消息的中转服务器。它读不到消息内容。",
   "Pair a phone": "配对手机",
-  "Scan this code with the DS Bot app on your phone.": "用手机上的 DS Bot App 扫这个码。",
+  "Scan this code with the Jubala Bot app on your phone.": "用手机上的 橘巴拉Bot App 扫这个码。",
   "The code works once. It stops working in {count} min.": "这个码只能用一次，{count} 分钟后失效。",
   "Show a QR code": "显示二维码",
   "Your phone scans it once. After that it connects by itself.": "手机扫一次就行，以后会自动连接。",
@@ -13100,7 +13100,7 @@ var ZH = {
   "Unmute notifications": "取消静音",
   Notifications: "通知",
   "Tell me when a Bot answers while I am looking elsewhere.": "Bot 在你没看着时回复，提醒我。",
-  "System notifications are turned off for DS Bot. Unread marks still show them.": "DS Bot 的系统通知已被关闭，仍会用未读标记提示。",
+  "System notifications are turned off for Jubala Bot. Unread marks still show them.": "橘巴拉Bot 的系统通知已被关闭，仍会用未读标记提示。",
   "Rename Bot": "重命名 Bot",
   "Group settings": "群设置",
   "Shared to-do": "共享待办",
@@ -13125,14 +13125,14 @@ var ZH = {
   "{n} h": "{n} 小时",
   "{n} d": "{n} 天",
   // Plugin updates
-  "DS Bot {version} is available": "DS Bot {version} 可以更新",
-  "Updating DS Bot…": "正在更新 DS Bot…",
-  "DS Bot {version} is installed. Restart DSH to use it.": "DS Bot {version} 已安装，重启 DSH 后生效",
-  "DS Bot {version} is installed.": "DS Bot {version} 已安装。",
-  "DS Bot update": "DS Bot 更新",
-  "DS Bot {version}": "DS Bot {version}",
+  "Jubala Bot {version} is available": "橘巴拉Bot {version} 可以更新",
+  "Updating Jubala Bot…": "正在更新 橘巴拉Bot…",
+  "Jubala Bot {version} is installed. Restart DSH to use it.": "橘巴拉Bot {version} 已安装，重启 DSH 后生效",
+  "Jubala Bot {version} is installed.": "橘巴拉Bot {version} 已安装。",
+  "Jubala Bot update": "橘巴拉Bot 更新",
+  "Jubala Bot {version}": "橘巴拉Bot {version}",
   "Update installed": "更新已安装",
-  "Restart DSH to start using DS Bot {version}.": "重启 DSH 后开始使用 DS Bot {version}。",
+  "Restart DSH to start using Jubala Bot {version}.": "重启 DSH 后开始使用 橘巴拉Bot {version}。",
   "You have {version}.": "当前版本 {version}。",
   "The update did not finish: {reason}": "更新没有完成：{reason}",
   "What's new": "更新说明",
@@ -13142,7 +13142,7 @@ var ZH = {
   "DSH update": "DSH 更新",
   "DSH {version}": "DSH {version}",
   "Restart DSH to start using DSH {version}.": "重启 DSH 后开始使用 DSH {version}。",
-  "Update DS Bot {version} first.": "先更新 DS Bot {version}。",
+  "Update Jubala Bot {version} first.": "先更新 橘巴拉Bot {version}。",
   "Open updates": "打开更新",
   // Command palette
   Messages: "消息",
@@ -13183,7 +13183,7 @@ var ZH = {
   "Yesterday {time}": "昨天 {time}",
   "Ran for {duration}": "本次用时 {duration}",
   "No background work detected": "未检测到后台任务",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot 未记录到这条回复的工具调用或正在运行的后台任务。",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "橘巴拉Bot 未记录到这条回复的工具调用或正在运行的后台任务。",
   "File not found: {path}": "文件不存在：{path}",
   "{tokens} tok · Cache hit {hit}%": "{tokens} tok · 缓存命中 {hit}%",
   "1 turn": "1 轮",
@@ -13425,7 +13425,7 @@ var ZH = {
   "Repeat the passphrase": "再输一次口令",
   "The passphrases do not match.": "两次输入的口令不一致。",
   "Turn on encryption": "开启加密",
-  "Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.": "密钥加密存放；DS Bot 运行期间解密后的值只在内存里。",
+  "Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.": "密钥加密存放；橘巴拉Bot 运行期间解密后的值只在内存里。",
   "Turn off encryption": "关闭加密",
   "Secrets are locked": "密钥已锁定",
   "Passphrase": "口令",
@@ -13653,11 +13653,11 @@ var ZH = {
   "Compared with the {count} days before": "与再往前 {count} 天相比",
   "{share}% of all usage from {span}": "占 {span} 全部用量的 {share}%",
   // About
-  "About DS Bot": "关于 DS Bot",
+  "About Jubala Bot": "关于 橘巴拉Bot",
   "Version {version}": "版本 {version}",
-  "Star DS Bot on GitHub": "在 GitHub 上给 DS Bot 点 Star",
+  "Star Jubala Bot on GitHub": "在 GitHub 上给 橘巴拉Bot 点 Star",
   "{count} stars": "{count} 个 Star",
-  "If DS Bot helps you, a star on GitHub helps more people find it.": "如果 DS Bot 对你有用，欢迎在 GitHub 上点个 Star，让更多人看到它。",
+  "If Jubala Bot helps you, a star on GitHub helps more people find it.": "如果 橘巴拉Bot 对你有用，欢迎在 GitHub 上点个 Star，让更多人看到它。",
   Updates: "更新",
   "Check for updates": "检查更新",
   "Checking…": "正在检查…",
@@ -13672,7 +13672,7 @@ var ZH = {
   "{version} is available": "{version} 已发布",
   "Installed from a local folder; update it there.": "从本地文件夹安装，请在那里更新。",
   "Updates are not offered for this install.": "这种安装方式不提供更新。",
-  "Updates come with the DS Bot app.": "随 DS Bot 应用一起更新。",
+  "Updates come with the Jubala Bot app.": "随 橘巴拉Bot 应用一起更新。",
   Links: "链接",
   "Source code": "源代码",
   "Release notes": "发布说明",
@@ -13688,7 +13688,7 @@ var ZH = {
   Show: "查看",
   Hide: "收起",
   "GitHub issue": "GitHub issue",
-  "Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.": "在 DS Bot 仓库新建一个 issue，并填好以上内容。你在 GitHub 上提交之前，什么都不会发出。",
+  "Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.": "在 橘巴拉Bot 仓库新建一个 issue，并填好以上内容。你在 GitHub 上提交之前，什么都不会发出。",
   "Report on GitHub": "在 GitHub 上报告",
   "Copied the diagnostics.": "已复制诊断信息。",
   "Could not copy. Select the text below and copy it.": "无法复制。请选中下面的文字手动复制。",
@@ -13700,7 +13700,7 @@ var ZH = {
   "Recent errors": "最近的错误",
   "Recent errors · {count}": "最近的错误 · {count}",
   "No errors recorded.": "没有错误记录。",
-  "Failed model calls and DS Bot problems show here, newest first.": "模型调用失败和 DS Bot 的问题会显示在这里，最新的在前。",
+  "Failed model calls and Jubala Bot problems show here, newest first.": "模型调用失败和 橘巴拉Bot 的问题会显示在这里，最新的在前。",
   "Model call": "模型调用",
   "This window": "这个窗口",
   "Error log": "错误日志",
@@ -14005,7 +14005,7 @@ var ZH = {
 var HOST_ERRORS = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, "连不上邮件服务器 $1，请检查服务器地址。"],
   [/^Model (.+) is not available\. Available: (.*)$/, "模型 $1 不可用。可用的：$2"],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, "$1 的 API key 是在 DS Bot 之外设置的，这里改不了"],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, "$1 的 API key 是在 橘巴拉Bot 之外设置的，这里改不了"],
   [/^(.+) takes no API key here$/, "$1 不能在这里填 API key"],
   [/^(.+) is already set up$/, "$1 已经设置过了"],
   [/^DSH offers no provider (.+)$/, "DSH 没有服务商 $1"],
@@ -14108,14 +14108,14 @@ var HOST_ZH = {
   "This side chat is no longer here.": "这个侧边对话已经不在了。",
   "This side question is no longer here.": "这个侧边提问已经不在了。",
   "This Bot has not called a model yet. Send a normal message first.": "这个 Bot 还没有调用过模型，请先正常发一条消息。",
-  "DS Bot restarted before this answer finished.": "DS Bot 在回答完成前重启了。",
+  "Jubala Bot restarted before this answer finished.": "橘巴拉Bot 在回答完成前重启了。",
   "The model called a tool again after being told not to, so this aside was not answered.": "模型在被要求不要调用工具之后又调用了工具，所以这次没有回答。",
   "The model wrote nothing.": "模型没有写任何内容。",
   "Nothing to ask": "没有要问的内容",
   "Nothing to open": "没有要打开的内容",
   "Nothing to cancel": "没有要取消的内容",
   "Nothing to close": "没有要关闭的内容",
-  "DS Bot is still loading this chat.": "DS Bot 还在加载这个对话。",
+  "Jubala Bot is still loading this chat.": "橘巴拉Bot 还在加载这个对话。",
   // Computer use
   "Computer use": "电脑操控",
   "Computer": "电脑",
@@ -14390,8 +14390,8 @@ function failureLabel(code, message) {
 }
 var URL_LIMIT = 7e3;
 var WHAT_MAX = 2e3;
-var PASTE_NOTE = "DS Bot copied the diagnostics to the clipboard. Paste them here.";
-var REST_NOTE = "The recent errors do not fit in the link. DS Bot copied the diagnostics to the clipboard: paste them below this line.";
+var PASTE_NOTE = "Jubala Bot copied the diagnostics to the clipboard. Paste them here.";
+var REST_NOTE = "The recent errors do not fit in the link. Jubala Bot copied the diagnostics to the clipboard: paste them below this line.";
 function issueUrl(base, { what = "", diagnostics }) {
   const text = what.trim().slice(0, WHAT_MAX);
   const title = text.split("\n")[0].slice(0, 80);
@@ -14707,7 +14707,7 @@ function teamActions({ call: call2, after, partFor, roster, ui: ui2, live, cards
       ui2.set((state) => ({ ...state, details: id, view: "details", renaming: true, tab: null, panelYield: yieldTo(state, "details") }));
     },
     openSettings,
-    // DS Bot's own Models page: the providers DSH serves, their keys and models.
+    // Jubala Bot's own Models page: the providers DSH serves, their keys and models.
     openModels: () => openSettings("models"),
     closeSettings: () => {
       ui2.set((state) => state.settings ? { ...state, settings: null } : state);
@@ -16307,7 +16307,7 @@ html[data-windows-titlebar]:not([data-fullscreen]) :is(.bt-pane,.bt-panel)::befo
 .bt-fold{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin-top:4px;white-space:normal}
 .bt-fold-code{position:relative}
 .bt-fold-code>.bt-tool{position:absolute;right:6px;bottom:6px}
-/* The part of a cut code block the preview keeps, drawn by DS Bot so the host's
+/* The part of a cut code block the preview keeps, drawn by Jubala Bot so the host's
    Markdown draws no copy control of its own for it. */
 .bt-fold-code>.bt-fold-pre{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,currentColor 6%,transparent);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:20px;overflow-x:auto}
 .bt-fold-code>*+.bt-fold-pre{margin-top:6px}
@@ -16460,7 +16460,7 @@ body[data-ds-dark-theme] .bt-scrim{background:rgba(0,0,0,.5)}
 /* A DSH page opens on its own title, which the dialog head already shows. */
 .bt-dsh-section>[data-slot]>*>h2:first-child,.bt-dsh-section>[data-slot]>*>:first-child>h2:first-child{display:none}
 .bt-dsh-item{min-width:0}
-/* DSH's General rows draw their own row inside DS Bot's card: the card's inset and
+/* DSH's General rows draw their own row inside Jubala Bot's card: the card's inset and
    rules apply, an empty row takes no line, and Appearance is already the section title. */
 .bt-dsh-item>[data-slot]>*{padding-left:16px;padding-right:16px;border-bottom-width:0}
 .bt-dsh-item>[data-slot]>.bt-set-row{padding:12px 16px}
@@ -17083,7 +17083,7 @@ body[data-bt-layout=flat] .bt-think{max-width:calc(var(--bt-flat-w) * 100%)}
 /* A turn's process seat is a flow child of its own, not a flowItem: a seat whose
    member cells all emptied themselves (a hidden exchange turn, a turn whose
    calls draw nothing) still kept its margin, stacking a blank band per hidden
-   call. Only the slot a DS Bot cell marked counts, so a seat another renderer
+   call. Only the slot a Jubala Bot cell marked counts, so a seat another renderer
    fills — even with plain text and no element child — is never taken for empty. */
 [data-step-process]:has(> [data-step-process-body] [data-slot="conversation.chat.node"][data-bt-emptied]):not(:has(> [data-step-process-body] [data-slot="conversation.chat.node"]:not([data-bt-emptied]))){display:none!important}
 [class*="_header"]:has(.bt-head){border-bottom-color:transparent!important;box-shadow:none!important}
@@ -17266,7 +17266,7 @@ div:has(> nav [class*="_marks"]){display:none!important}
 /* Phones: the conversation flow gets the whole screen instead of the desktop
    shares. A Bot message may take the width beside its avatar, a card the width of
    the flow, and long text or a wide block wraps inside it instead of running off
-   the edge. This covers the group's chat flow, not only DS Bot's own panels. */
+   the edge. This covers the group's chat flow, not only Jubala Bot's own panels. */
 @media (max-width:640px){
 .bt-msg,.bt-astack[data-lead]>.bt-msg{max-width:100%}
 .bt-bubble,[data-chat-flow] [class*="_bubble"]{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
@@ -22891,7 +22891,7 @@ function SecretStoreCard({ store, actions, run: run2, Section: Section2 }) {
     return (0, import_react19.createElement)(
       Section2,
       { title: t("Encryption at rest") },
-      hint("Keys are stored encrypted. They stay decrypted in memory while DS Bot runs."),
+      hint("Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs."),
       form === "decrypt" ? (0, import_react19.createElement)(
         "div",
         { className: "bt-set-row bt-bs-stack" },
@@ -23961,7 +23961,7 @@ function CliList({ agents, known, scanning, refresh, selected, onPick, actions }
 var RunModeSwitch = ({ mode, setMode }) => (0, import_react21.createElement)(
   Segmented,
   { label: t("Runs on"), value: mode },
-  (0, import_react21.createElement)("button", { type: "button", "aria-pressed": mode === "model", onClick: () => setMode("model") }, t("DS Bot model")),
+  (0, import_react21.createElement)("button", { type: "button", "aria-pressed": mode === "model", onClick: () => setMode("model") }, t("Jubala Bot model")),
   (0, import_react21.createElement)("button", { type: "button", "aria-pressed": mode === "local", onClick: () => setMode("local") }, t("Local agent"))
 );
 var ReadingModels = () => (0, import_react21.createElement)(
@@ -24001,8 +24001,8 @@ function RunModeCard({ bot, roster, actions, run: run2, Card: Card3 }) {
       (0, import_react21.createElement)(
         "span",
         { className: "bt-set-copy" },
-        (0, import_react21.createElement)("span", { className: "bt-bs-label" }, bot.engine === void 0 ? t("DS Bot model") : engineName, bot.engine === void 0 ? null : (0, import_react21.createElement)(AgentBadge, { engine: bot.engine })),
-        (0, import_react21.createElement)("span", { className: "bt-set-hint" }, bot.engine === void 0 ? t("Answers with a model served by DS Bot, with DS Bot's tools.") : t("Answers through this CLI on your computer, with its own tools and sign-in."))
+        (0, import_react21.createElement)("span", { className: "bt-bs-label" }, bot.engine === void 0 ? t("Jubala Bot model") : engineName, bot.engine === void 0 ? null : (0, import_react21.createElement)(AgentBadge, { engine: bot.engine })),
+        (0, import_react21.createElement)("span", { className: "bt-set-hint" }, bot.engine === void 0 ? t("Answers with a model served by Jubala Bot, with Jubala Bot's tools.") : t("Answers through this CLI on your computer, with its own tools and sign-in."))
       ),
       (0, import_react21.createElement)("button", { type: "button", className: "bt-soft bt-soft-sm", "aria-expanded": open, onClick: () => open ? setOpen(false) : start() }, open ? t("Cancel") : t("Change"))
     ),
@@ -27997,7 +27997,7 @@ var USER_MESSAGE_CSS = `
 .bt-ustack{min-width:0;max-width:calc(var(--bt-msg-w) * 100%);display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .bt-ubody{max-width:100%;box-sizing:border-box;background:var(--bt-user);color:var(--bt-user-ink);border-radius:18px;padding:7px 12px;font-size:var(--dsh-content-font-size,14px);line-height:calc(var(--dsh-content-font-size,14px) + 10px);white-space:pre-wrap;word-break:break-word;text-wrap:pretty;text-autospace:normal}
 .bt-ubody a{color:inherit}
-/* The host's content stack sits in DS Bot's: the width follows --bt-msg-w (the user's
+/* The host's content stack sits in Jubala Bot's: the width follows --bt-msg-w (the user's
    message width) through .bt-ustack, not the host's own cap. The fold control goes
    under the stack, at its right edge. */
 .bt-uhost{max-width:100%;min-width:0;display:flex;flex-direction:column;align-items:flex-end}
@@ -28412,7 +28412,7 @@ function claimLines(claims) {
     lines.push({
       kind: "inProgress",
       text: t("No background work detected"),
-      detail: t("DS Bot has no recorded tool call or active background task for this reply.")
+      detail: t("Jubala Bot has no recorded tool call or active background task for this reply.")
     });
   }
   for (const path2 of claims.missingFiles ?? []) lines.push({ kind: "file", text: t("File not found: {path}", { path: path2 }) });
@@ -30543,10 +30543,10 @@ function UpdateButton({ useUpdate, actions }) {
     setDshError("");
     void actions.installDshUpdate().catch((failure) => setDshError(hostText(failure?.message ?? String(failure))));
   };
-  const label = phase === "installing" ? t("Updating DS Bot…") : dshPhase === "installing" ? t("Updating DSH…") : phase === "installed" ? t("DS Bot {version} is installed. Restart DSH to use it.", { version: update.installed ?? update.latest }) : phase === "updated" ? t("DS Bot {version} is installed.", { version: update.installed ?? update.latest }) : dshPhase === "installed" ? t("Restart DSH to start using DSH {version}.", { version: dsh.installed ?? dsh.verified }) : update?.available ? t("DS Bot {version} is available", { version: update.latest }) : t("DSH {version} is available", { version: dsh?.verified });
+  const label = phase === "installing" ? t("Updating Jubala Bot…") : dshPhase === "installing" ? t("Updating DSH…") : phase === "installed" ? t("Jubala Bot {version} is installed. Restart DSH to use it.", { version: update.installed ?? update.latest }) : phase === "updated" ? t("Jubala Bot {version} is installed.", { version: update.installed ?? update.latest }) : dshPhase === "installed" ? t("Restart DSH to start using DSH {version}.", { version: dsh.installed ?? dsh.verified }) : update?.available ? t("Jubala Bot {version} is available", { version: update.latest }) : t("DSH {version} is available", { version: dsh?.verified });
   const message = error || (phase === "failed" ? update.error : "");
   const dshMessage = dshError || (dshPhase === "failed" ? dsh?.error : "");
-  const dshText = dshPhase === "installed" ? t("Restart DSH to start using DSH {version}.", { version: dsh.installed ?? dsh.verified }) : dsh?.available === false && dsh?.blockedBy ? t("Update DS Bot {version} first.", { version: dsh.blockedBy }) : t("You have {version}.", { version: dsh?.current });
+  const dshText = dshPhase === "installed" ? t("Restart DSH to start using DSH {version}.", { version: dsh.installed ?? dsh.verified }) : dsh?.available === false && dsh?.blockedBy ? t("Update Jubala Bot {version} first.", { version: dsh.blockedBy }) : t("You have {version}.", { version: dsh?.current });
   return (0, import_react36.createElement)(
     import_react36.Fragment,
     null,
@@ -30563,12 +30563,12 @@ function UpdateButton({ useUpdate, actions }) {
     }, (0, import_react36.createElement)(CloudDownloadIcon, { done: phase === "installed" || phase === "updated" }), phase === "failed" || dshPhase === "failed" ? (0, import_react36.createElement)("span", { className: "bt-update-dot", "aria-hidden": true }) : null),
     shown && box ? (0, import_react_dom6.createPortal)((0, import_react36.createElement)(
       "div",
-      { className: "bt-update-pop", role: "dialog", "aria-label": update?.available || phase !== "idle" ? t("DS Bot update") : t("DSH update"), style: box, "data-leaving": leaving || void 0 },
+      { className: "bt-update-pop", role: "dialog", "aria-label": update?.available || phase !== "idle" ? t("Jubala Bot update") : t("DSH update"), style: box, "data-leaving": leaving || void 0 },
       update?.available || phase !== "idle" ? (0, import_react36.createElement)(
         import_react36.Fragment,
         null,
-        (0, import_react36.createElement)("div", { className: "bt-update-title" }, phase === "installed" || phase === "updated" ? t("Update installed") : t("DS Bot {version}", { version: update.latest })),
-        (0, import_react36.createElement)("div", { className: "bt-update-text" }, phase === "installed" ? t("Restart DSH to start using DS Bot {version}.", { version: update.installed ?? update.latest }) : phase === "updated" ? t("DS Bot {version} is installed.", { version: update.installed ?? update.latest }) : t("You have {version}.", { version: update.current })),
+        (0, import_react36.createElement)("div", { className: "bt-update-title" }, phase === "installed" || phase === "updated" ? t("Update installed") : t("Jubala Bot {version}", { version: update.latest })),
+        (0, import_react36.createElement)("div", { className: "bt-update-text" }, phase === "installed" ? t("Restart DSH to start using Jubala Bot {version}.", { version: update.installed ?? update.latest }) : phase === "updated" ? t("Jubala Bot {version} is installed.", { version: update.installed ?? update.latest }) : t("You have {version}.", { version: update.current })),
         message ? (0, import_react36.createElement)("div", { className: "bt-update-error", role: "alert" }, t("The update did not finish: {reason}", { reason: message })) : null,
         (0, import_react36.createElement)(
           "div",
@@ -30902,7 +30902,7 @@ function BotReturn({ wide, useSurface, useRoster, actions }) {
   const ready = useRoster((value) => value.ready);
   useReportReady(mode === "agent" && ready);
   if (mode !== "agent") return null;
-  const label = t("Back to DS Bot");
+  const label = t("Back to Jubala Bot");
   return (0, import_react36.createElement)(
     "button",
     { type: "button", className: "bt-return", "aria-label": label, title: label, onClick: () => actions.setSurface("bot") },
@@ -30927,7 +30927,7 @@ function BrandMark({ size = 24 }) {
   return (0, import_react36.createElement)("span", { className: "bt-brand-whale" }, (0, import_react36.createElement)(BotMark, { look: MAIN_LOOK, size }));
 }
 function BrandName() {
-  return (0, import_react36.createElement)("span", { style: { fontWeight: 600, fontSize: 14 } }, "DS Bot");
+  return (0, import_react36.createElement)("span", { style: { fontWeight: 600, fontSize: 14 } }, t("Jubala Bot"));
 }
 var SIDEBAR_CSS = `
 .bt-confirm{width:260px;max-width:72vw;padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
@@ -30950,7 +30950,7 @@ var SIDEBAR_CSS = `
 [class*="_footArea"]:has(.bt-foot-account)>[class*="_settingsArea"]{grid-column:3}
 [class*="_footArea"]:has(.bt-foot-account)>[class*="_settingsArea"] button[class*="_trigger"] [class*="_label"]{display:none!important}
 
-/* The update cloud springs in when a newer DS Bot shows up; its arrow drops in a
+/* The update cloud springs in when a newer Jubala Bot shows up; its arrow drops in a
    loop while the install runs. */
 .bt-round.bt-update{position:relative;color:var(--bt-accent,#4D6BFE);animation:bt-update-in ${SPRING_SHAPE.duration}ms ${SPRING_SHAPE.easing}}
 .bt-round.bt-update svg{width:17px;height:17px}
@@ -34605,7 +34605,7 @@ var QUIET = 4;
 function statusText3(phone) {
   if (phone.error) return phone.error;
   if (!phone.on) return t("Off. Phones cannot reach this computer.");
-  if (phone.status === "online") return t("On. Paired phones can use DS Bot here.");
+  if (phone.status === "online") return t("On. Paired phones can use Jubala Bot here.");
   if (phone.status === "offline") return t("Cannot reach the Server. Trying again…");
   return t("Connecting…");
 }
@@ -34629,7 +34629,7 @@ function QrCode({ text }) {
 function minutesLeft(until) {
   return Math.max(0, Math.ceil((until - Date.now()) / 6e4));
 }
-var APP_DOWNLOAD = "https://github.com/Fei2411/DS-Bot/releases/latest";
+var APP_DOWNLOAD = "https://github.com/jayai999888-spec/DS-Bot/releases/latest";
 function PhonePage({ roster, actions, Section: Section2, Row: Row4 }) {
   const phone = roster.phone ?? OFF;
   const [server, setServer] = (0, import_react43.useState)(phone.server);
@@ -34692,7 +34692,7 @@ function PhonePage({ roster, actions, Section: Section2, Row: Row4 }) {
       (0, import_react43.createElement)(
         "div",
         { className: "bt-phone-pair-copy" },
-        (0, import_react43.createElement)("span", null, t("Scan this code with the DS Bot app on your phone.")),
+        (0, import_react43.createElement)("span", null, t("Scan this code with the Jubala Bot app on your phone.")),
         (0, import_react43.createElement)("span", { className: "bt-set-hint" }, t("The code works once. It stops working in {count} min.", { count: minutesLeft(phone.pairing.expiresAt) })),
         (0, import_react43.createElement)("div", null, (0, import_react43.createElement)("button", { type: "button", className: "bt-soft bt-soft-sm", disabled: busy, onClick: () => void run2(actions.phonePairCancel()) }, t("Cancel")))
       )
@@ -35325,7 +35325,7 @@ function BrowserPage({ roster, actions, run: run2, Section: Section2, Row: Row4 
       (0, import_react45.createElement)("p", { className: "bt-browser-note" }, t("A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.")),
       (0, import_react45.createElement)(Row4, {
         label: t("How to enable interactive browsing"),
-        hint: t("In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.")
+        hint: t("In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.")
       }),
       (0, import_react45.createElement)("p", { className: "bt-browser-note" }, t("With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you."))
     ),
@@ -35460,7 +35460,7 @@ function entrySummary(entry) {
   if (entry.source === "turn") return failureLabel(entry.code, entry.text);
   return entry.text;
 }
-var SOURCES = { turn: "Model call", host: "DS Bot", api: "DS Bot", browser: "This window" };
+var SOURCES = { turn: "Model call", host: "Jubala Bot", api: "Jubala Bot", browser: "This window" };
 var issueWindow = reserveWindow;
 function FeedbackPage({ actions, run: run2, Section: Section2, Row: Row4 }) {
   const [what, setWhat] = (0, import_react46.useState)("");
@@ -35529,7 +35529,7 @@ function FeedbackPage({ actions, run: run2, Section: Section2, Row: Row4 }) {
       preview ? (0, import_react46.createElement)("div", { className: "bt-set-row bt-fb-preview" }, (0, import_react46.createElement)("pre", { tabIndex: 0, "aria-label": t("Diagnostics") }, report?.markdown || t("Loading…"))) : null,
       (0, import_react46.createElement)(
         Row4,
-        { label: t("GitHub issue"), hint: t("Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.") },
+        { label: t("GitHub issue"), hint: t("Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.") },
         (0, import_react46.createElement)("button", { type: "button", className: "bt-fb-primary", onClick: openIssue }, t("Report on GitHub"))
       )
     ),
@@ -35542,7 +35542,7 @@ function FeedbackPage({ actions, run: run2, Section: Section2, Row: Row4 }) {
     (0, import_react46.createElement)(
       Section2,
       { key: "errors", title: report ? t("Recent errors · {count}", { count: total }) : t("Recent errors") },
-      shown.length === 0 ? (0, import_react46.createElement)(Row4, { label: t("No errors recorded."), hint: t("Failed model calls and DS Bot problems show here, newest first.") }) : shown.map((entry, index) => (0, import_react46.createElement)(
+      shown.length === 0 ? (0, import_react46.createElement)(Row4, { label: t("No errors recorded."), hint: t("Failed model calls and Jubala Bot problems show here, newest first.") }) : shown.map((entry, index) => (0, import_react46.createElement)(
         "div",
         { key: `${entry.time}-${index}`, className: "bt-set-row bt-fb-entry", title: entry.text },
         (0, import_react46.createElement)("span", { className: "bt-fb-dot", "data-level": entry.level, "aria-hidden": true }),
@@ -35550,7 +35550,7 @@ function FeedbackPage({ actions, run: run2, Section: Section2, Row: Row4 }) {
           "div",
           { className: "bt-set-copy" },
           (0, import_react46.createElement)("span", { className: "bt-fb-text" }, entrySummary(entry)),
-          (0, import_react46.createElement)("span", { className: "bt-set-hint" }, [whenText(entry.time), entry.bot, entry.where, t(SOURCES[entry.source] ?? "DS Bot")].filter(Boolean).join(" · "))
+          (0, import_react46.createElement)("span", { className: "bt-set-hint" }, [whenText(entry.time), entry.bot, entry.where, t(SOURCES[entry.source] ?? "Jubala Bot")].filter(Boolean).join(" · "))
         ),
         entry.code ? (0, import_react46.createElement)("span", { className: "bt-tag bt-fb-code" }, entry.status ? `${entry.code} ${entry.status}` : entry.code) : null
       )),
@@ -35622,12 +35622,12 @@ var import_react47 = require("react");
 var CHEER_MS = 1800;
 var starCount = (count) => new Intl.NumberFormat(dateLocale(), { notation: "compact", maximumFractionDigits: 1 }).format(count);
 function botHint(update) {
-  if (update.phase === "installing") return t("Updating DS Bot…");
-  if (update.phase === "installed") return t("Restart DSH to start using DS Bot {version}.", { version: update.installed ?? update.latest });
-  if (update.phase === "updated") return t("DS Bot {version} is installed.", { version: update.installed ?? update.latest });
+  if (update.phase === "installing") return t("Updating Jubala Bot…");
+  if (update.phase === "installed") return t("Restart DSH to start using Jubala Bot {version}.", { version: update.installed ?? update.latest });
+  if (update.phase === "updated") return t("Jubala Bot {version} is installed.", { version: update.installed ?? update.latest });
   if (update.phase === "failed") return t("The update did not finish: {reason}", { reason: hostText(update.error ?? "") });
-  if (update.available) return t("DS Bot {version} is available", { version: update.latest });
-  if (update.source === "app") return t("Updates come with the DS Bot app.");
+  if (update.available) return t("Jubala Bot {version} is available", { version: update.latest });
+  if (update.source === "app") return t("Updates come with the Jubala Bot app.");
   if (update.enabled === false) return t("Update checks are off.");
   if (update.source === "path") return t("Installed from a local folder; update it there.");
   if (!update.checkedAt) return null;
@@ -35659,7 +35659,7 @@ function dshHint(dsh, shown) {
   if (dsh.phase === "installing") return t("Updating DSH…");
   if (dsh.phase === "installed") return t("Restart DSH to start using DSH {version}.", { version: dsh.installed ?? dsh.verified });
   if (dsh.phase === "failed") return t("The update did not finish: {reason}", { reason: hostText(dsh.error ?? "") });
-  if (dsh.available === false && dsh.blockedBy) return t("Update DS Bot {version} first.", { version: dsh.blockedBy });
+  if (dsh.available === false && dsh.blockedBy) return t("Update Jubala Bot {version} first.", { version: dsh.blockedBy });
   if (shown) return t("DSH {version} is available", { version: dsh.verified });
   return t("Version {version}", { version: dsh.current });
 }
@@ -35721,7 +35721,7 @@ function AboutPage({ useUpdate, actions, run: run2, Section: Section2, Row: Row4
       (0, import_react47.createElement)(
         "div",
         { className: "bt-about-copy" },
-        (0, import_react47.createElement)("span", { className: "bt-about-name" }, "DS Bot"),
+        (0, import_react47.createElement)("span", { className: "bt-about-name" }, t("Jubala Bot")),
         update.current ? (0, import_react47.createElement)("span", { className: "bt-about-version" }, t("Version {version}", { version: update.current })) : null
       ),
       repo ? (0, import_react47.createElement)(
@@ -35731,18 +35731,18 @@ function AboutPage({ useUpdate, actions, run: run2, Section: Section2, Row: Row4
           href: repo,
           target: "_blank",
           rel: "noopener noreferrer",
-          title: t("Star DS Bot on GitHub"),
-          "aria-label": stars === null ? t("Star DS Bot on GitHub") : `${t("Star DS Bot on GitHub")} · ${t("{count} stars", { count: stars })}`
+          title: t("Star Jubala Bot on GitHub"),
+          "aria-label": stars === null ? t("Star Jubala Bot on GitHub") : `${t("Star Jubala Bot on GitHub")} · ${t("{count} stars", { count: stars })}`
         },
         (0, import_react47.createElement)("span", { className: "bt-star-main" }, (0, import_react47.createElement)("span", { className: "bt-star-icon" }, (0, import_react47.createElement)(StarLineIcon)), "Star"),
         stars === null ? null : (0, import_react47.createElement)("span", { className: "bt-star-count" }, starCount(stars))
       ) : null
     ),
-    repo ? (0, import_react47.createElement)("p", { key: "ask", className: "bt-about-ask" }, t("If DS Bot helps you, a star on GitHub helps more people find it.")) : null,
+    repo ? (0, import_react47.createElement)("p", { key: "ask", className: "bt-about-ask" }, t("If Jubala Bot helps you, a star on GitHub helps more people find it.")) : null,
     (0, import_react47.createElement)(
       Section2,
       { key: "updates", title: t("Updates") },
-      (0, import_react47.createElement)(Row4, { label: "DS Bot", hint: ownRow?.hint ?? botHint(update) }, botControl, update.available && update.notesUrl ? (0, import_react47.createElement)("a", linkProps(update.notesUrl), t("What's new")) : null),
+      (0, import_react47.createElement)(Row4, { label: t("Jubala Bot"), hint: ownRow?.hint ?? botHint(update) }, botControl, update.available && update.notesUrl ? (0, import_react47.createElement)("a", linkProps(update.notesUrl), t("What's new")) : null),
       dsh?.current ? (0, import_react47.createElement)(Row4, { label: "DeepSeek Harness", hint: dshHint(dsh, dshShown) }, dshControl) : null
     ),
     (0, import_react47.createElement)(
@@ -35935,7 +35935,7 @@ function ProvidersPage({ actions, run: run2, roster, Section: Section2, advanced
 function keyState(key) {
   if (key === null) return null;
   if (!key.configured) return ["missing", t("Needs an API key")];
-  return key.writable ? ["set", t("Key set")] : ["outside", t("Key set outside DS Bot")];
+  return key.writable ? ["set", t("Key set")] : ["outside", t("Key set outside Jubala Bot")];
 }
 function ProviderRow({ provider, apply: apply2, actions, roster, revision, open, onToggle }) {
   const [confirm, setConfirm] = (0, import_react48.useState)(false);
@@ -36039,7 +36039,7 @@ function ProviderRow({ provider, apply: apply2, actions, roster, revision, open,
       "div",
       { className: "bt-secret-edit" },
       provider.key?.writable ? (0, import_react48.createElement)(KeyEditor, { provider, apply: apply2, actions }) : null,
-      provider.key && !provider.key.writable ? (0, import_react48.createElement)("div", { className: "bt-set-hint" }, t("This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.")) : null,
+      provider.key && !provider.key.writable ? (0, import_react48.createElement)("div", { className: "bt-set-hint" }, t("This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.")) : null,
       modelsBlock,
       provider.removable ? (0, import_react48.createElement)(
         "div",
@@ -36648,7 +36648,7 @@ var BOT_MODELS_CSS = `
 var import_react51 = require("react");
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 var capitalize2 = (word) => word[0].toUpperCase() + word.slice(1);
-var SETTINGS_PAGES = [["general", "General"], ["models", "Models"], ["local-agents", "Local agents"], ["bots", "Bots"], ["bot-models", "Bot models"], ["groups", "Group chats"], ["connectors", "Connectors"], ["im", "IM"], ["phone", "Phone"], ["capabilities", "Capabilities"], ["browser", "Browser"], ["computer", "Computer use"], ["schedules", "Scheduled tasks"], ["usage", "Usage"], ["secrets", "Secrets"], ["feedback", "Feedback"], ["about", "About DS Bot"]];
+var SETTINGS_PAGES = [["general", "General"], ["models", "Models"], ["local-agents", "Local agents"], ["bots", "Bots"], ["bot-models", "Bot models"], ["groups", "Group chats"], ["connectors", "Connectors"], ["im", "IM"], ["phone", "Phone"], ["capabilities", "Capabilities"], ["browser", "Browser"], ["computer", "Computer use"], ["schedules", "Scheduled tasks"], ["usage", "Usage"], ["secrets", "Secrets"], ["feedback", "Feedback"], ["about", "About Jubala Bot"]];
 var LAST_PAGES = /* @__PURE__ */ new Set(["feedback", "about"]);
 var MERGED_SECTIONS = /* @__PURE__ */ new Set(["general", "models"]);
 var LOOK_ITEMS = ["appearance", "font-size"];
@@ -37147,7 +37147,7 @@ function notifyKind({ before, after, viewing, focused, enabled, muted, group }) 
 function noticeText({ title, kind }) {
   const name = String(title ?? "").trim().slice(0, 60);
   const body = t(kind === "question" ? "Waiting for your answer" : "A new reply is waiting");
-  return { title: name === "" ? "DS Bot" : name, body };
+  return { title: name === "" ? t("Jubala Bot") : name, body };
 }
 function readNotifyPrefs(raw) {
   try {
@@ -37294,7 +37294,7 @@ function NotificationsRow() {
       { className: "bt-set-copy" },
       (0, import_react52.createElement)("span", null, t("Notifications")),
       (0, import_react52.createElement)("span", { className: "bt-set-hint" }, t("Tell me when a Bot answers while I am looking elsewhere.")),
-      denied ? (0, import_react52.createElement)("span", { className: "bt-set-hint bt-danger", role: "alert" }, t("System notifications are turned off for DS Bot. Unread marks still show them.")) : null
+      denied ? (0, import_react52.createElement)("span", { className: "bt-set-hint bt-danger", role: "alert" }, t("System notifications are turned off for Jubala Bot. Unread marks still show them.")) : null
     ),
     (0, import_react52.createElement)("div", { className: "bt-set-control" }, (0, import_react52.createElement)(Switch, {
       label: t("Notifications"),
@@ -37820,14 +37820,14 @@ function installSettingsShell(ctx, { face, actions, ui: ui2, held }) {
   const disposers = [
     () => update.dispose(),
     // A profile that turned DSH's shell back on keeps it: the seat's child slots are then
-    // declared already, and DS Bot's dialog stays on its own pages.
+    // declared already, and Jubala Bot's dialog stays on its own pages.
     // SettingsShell holds the seat itself while it is mounted (`holdSeat`).
     slots.inject("sidebar.settings", () => {
       let off;
       try {
         off = slots.register({ name: "sidebar.settings", inject: shellFace, children: SETTINGS_CHILDREN }, SettingsShell);
       } catch (error) {
-        console.warn("[ds-bot] DSH settings shell is on; DS Bot settings show its own pages only", error);
+        console.warn("[ds-bot] DSH settings shell is on; Jubala Bot settings show its own pages only", error);
         return () => {
         };
       }
@@ -38576,7 +38576,7 @@ var SIDE_TOKEN = "/side ";
 var GROUP_REFUSAL = "Side chat is only available in a Bot's private chat.";
 var ATTACHMENT_REFUSAL = "/side does not take attachments.";
 var EMPTY_REFUSAL = "Write a question after /side.";
-var LOADING_REFUSAL = "DS Bot is still loading this chat.";
+var LOADING_REFUSAL = "Jubala Bot is still loading this chat.";
 function sideSurface(roster, sessionId) {
   if (!roster?.ready) return "unknown";
   if (roster.roomsById?.[sessionId]) return "group";
@@ -41669,7 +41669,7 @@ function BrowserCards({ bot, sessionId, roster, actions, useBrowserTabs, useBrow
     actions.browserEnsure?.(bot.id);
   }, [bot.id]);
   if (roster.browser !== true || !actions.browserShow) {
-    return (0, import_react68.createElement)("div", { className: "bt-muted" }, t("The browser is in DSH Desktop and the DS Bot app."));
+    return (0, import_react68.createElement)("div", { className: "bt-muted" }, t("The browser is in DSH Desktop and the Jubala Bot app."));
   }
   if (state.ids.length === 0) {
     return (0, import_react68.createElement)(

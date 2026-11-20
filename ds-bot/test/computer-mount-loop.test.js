@@ -282,7 +282,7 @@ test('refreshComputer prefers live registry agent when an undisposed old agent s
   assert.deepEqual(turn.tools, [])
 })
 
-test('plain DSH session keeps external computer provider tools when DS Bot switch is off', async (t) => {
+test('plain DSH session keeps external computer provider tools when Jubala Bot switch is off', async (t) => {
   const { root, rt, runTurn } = await bootHarness({ enabled: false, externalProvider: true })
   t.after(async () => root.fiber.dispose())
 

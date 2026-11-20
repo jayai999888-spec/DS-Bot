@@ -4,7 +4,7 @@ import { contrastRatio, MIN_SKIN_ALPHA, over, parseColor, readSkinSurfaceVars, s
 import { themeVars } from '../src/client/themes.js'
 import { THEMES } from './skin-themes.js'
 
-// public#1507: a third-party skin's glass sliders write DSH's background tokens; DS Bot's
+// public#1507: a third-party skin's glass sliders write DSH's background tokens; Jubala Bot's
 // own surfaces use the theme colors. These tests keep the bridge honest: nothing changes
 // while the tokens are opaque, a translucent token reaches exactly the surfaces named, the
 // alpha floor holds, and the theme's text keeps its contrast over the wallpaper behind.
@@ -22,7 +22,7 @@ test('theme colors parse as hex, short hex and rgba, and anything else is unread
 
 test('an opaque token changes nothing, and each translucent token moves its own surfaces', () => {
   const colors = { main: '#fcfcfc', sidebar: '#f7f7f7', card: '#ffffff' }
-  // DS Bot writes these tokens itself when it applies a theme: solid, so the theme stays.
+  // Jubala Bot writes these tokens itself when it applies a theme: solid, so the theme stays.
   assert.deepEqual(skinSurfaceVars({ main: '#fcfcfc', sidebar: '#f7f7f7', colors }), {})
   assert.deepEqual(skinSurfaceVars({ main: 'rgb(20,20,20)', sidebar: 'rgb(27,27,27)', colors }), {})
   // The canvas token reaches the pane, the cards and the composer glass.

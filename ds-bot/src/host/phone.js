@@ -1,4 +1,4 @@
-// Phone link: the computer's end of the DS Bot phone app. A paired phone calls the same
+// Phone link: the computer's end of the Jubala Bot phone app. A paired phone calls the same
 // api/bot endpoints as this window, end to end encrypted through a Relay Server that only
 // forwards (link/). The computer only connects out, so it needs no open port.
 //
@@ -39,7 +39,7 @@ export function install(rt) {
     writeFileSync(temp, `${JSON.stringify(data, null, 2)}\n`, { mode: 0o600 })
     renameSync(temp, path)
   }
-  // An empty address means the DS Bot relay; a user's own Server replaces it.
+  // An empty address means the Jubala Bot relay; a user's own Server replaces it.
   const serverUrl = () => data.server || DEFAULT_SERVER
   const identity = () => {
     const keys = data.identity

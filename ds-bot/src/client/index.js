@@ -101,7 +101,7 @@ export function apply(ctx) {
   // style so the shell's own interface returns. `plain` stays false until a Bot-mode
   // view hosts a plain session, which drops only the conversation replacements.
   const surface = createSource({ mode: readMode(), plain: false })
-  // Whether DS Bot holds the settings seat; Overlays draws the Settings dialog while it does not.
+  // Whether Jubala Bot holds the settings seat; Overlays draws the Settings dialog while it does not.
   const settingsShellHeld = createSource(false)
   let settingsShell = null
   // DSH Agent Session ids from the last pull, so a reload already knows the main
@@ -329,7 +329,7 @@ export function apply(ctx) {
     }, 'ds-bot: app update status')
   }
 
-  // The DS Bot app's own updater; its state goes beside the host's answer as ownApp,
+  // The Jubala Bot app's own updater; its state goes beside the host's answer as ownApp,
   // which the About row turns into the app's update state and buttons.
   const ownAppUpdates = globalThis.dsBotApp?.updates ?? null
   if (ownAppUpdates?.state && ownAppUpdates.subscribe) {
@@ -372,7 +372,7 @@ export function apply(ctx) {
 
   // Mentions wear each Bot's color and character silhouette (or its photo). User text
   // DSH draws (a message waiting to be sent or to join a running turn, and since DSH
-  // 0.2.1-alpha.3 the contents of DS Bot's own user bubble, .bt-uhost) shows "@Name" as
+  // 0.2.1-alpha.3 the contents of Jubala Bot's own user bubble, .bt-uhost) shows "@Name" as
   // a file reference; one whose label is a whole Bot name wears the Bot's mark there too
   // (a name with a space is cut by DSH, so it stays as DSH draws it).
   const installMentions = () => {
@@ -852,7 +852,7 @@ export function apply(ctx) {
     update.set(previous => ({ ...previous, ...value }))
     wakeUpdate()
   }
-  // The DSH the newest released DS Bot verified installs the same way.
+  // The DSH the newest released Jubala Bot verified installs the same way.
   actions.installDshUpdate = async () => {
     const dsh = await call('dsh-update-install')
     update.set(previous => ({ ...previous, dsh }))
@@ -961,11 +961,11 @@ export function apply(ctx) {
   // Since DSH 0.2.1-alpha.3 user text is drawn by rules and a content factory, not the
   // primitives' text projection; the user's bubble draws with either (user-message.js).
   const hostDrawsUserText = typeof ctx.uiConversation.userText?.register === 'function'
-  // DS Bot's own rows in the `/` menu of a Bot chat and a group chat (the DSH rows stay;
+  // Jubala Bot's own rows in the `/` menu of a Bot chat and a group chat (the DSH rows stay;
   // the host module stops their execution there).
   ctx.effect(() => installCommandActions(ctx, { roster, actions }), 'ds-bot: bot command actions')
-  // DS Bot holds the settings seat in every mode, Agent mode included: the bundle patch
-  // turns DSH's own shell off, and this one draws DSH's settings pages in DS Bot's dialog.
+  // Jubala Bot holds the settings seat in every mode, Agent mode included: the bundle patch
+  // turns DSH's own shell off, and this one draws DSH's settings pages in Jubala Bot's dialog.
   ctx.effect(() => {
     const offStyles = installCompiledStyles(SETTINGS_SHELL_CSS, 'settings-shell')
     settingsShell = installSettingsShell(ctx, { face, actions, ui, held: settingsShellHeld })
@@ -1193,7 +1193,7 @@ export function apply(ctx) {
     [SIDE_CSS, 'side'],
     [BROWSER_CSS, 'browser'],
   ]
-  // Settings outside Bot mode (Agent mode) brings DS Bot's own rules and colors while it
+  // Settings outside Bot mode (Agent mode) brings Jubala Bot's own rules and colors while it
   // shows; the shell overrides and DSH's tokens stay as Agent mode has them.
   let shellSheets = 0
   actions.holdSettingsLook = () => {

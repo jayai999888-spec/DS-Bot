@@ -2,8 +2,8 @@
 import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-export const PRODUCT_NAME = 'DS Bot'
-export const APP_ID = 'io.github.fei2411.dsbot'
+export const PRODUCT_NAME = 'Jubala Bot'
+export const APP_ID = 'io.github.jayai999888.jubalabot'
 export const LEGACY_PRODUCT_NAME = 'DeepSeek Bot'
 export const LEGACY_ENGINE = 'deepseek-bot-engine'
 export const LEGACY_ARTIFACT_PREFIX = 'DeepSeek-Bot'

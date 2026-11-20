@@ -23,11 +23,11 @@ v0.3.5 已经有 Android 手机 App（Settings → Phone 扫码配对），iOS �
 2. **接受协议**：App Store Connect →「协议、税务和银行业务」（Agreements, Tax, and Banking）→ 接受 Program License Agreement。免费 App 不需要填付费 App 的税务和银行信息。
 3. **拿 Team ID**：developer.apple.com → Account → Membership details，找到 **Team ID**（10 位，字母数字）。它与 App Store Connect API 的 Issuer ID 不同。
 4. **注册 App ID**：developer.apple.com →「Certificates, Identifiers & Profiles」→ Identifiers → 点 `+` → App IDs → App：
-   - Description 填 `DS Bot`
+   - Description 填 `橘巴拉Bot`
    - Bundle ID 选 **Explicit**，填 `io.github.fei2411.dsbot`（必须完全一致，不能用 wildcard）
    - Capabilities 保持默认。App 用 `expo-secure-store` 的默认钥匙串组，不需要额外能力；不要勾 Associated Domains 等用不到的项。
 5. **建 App Store Connect 记录**：appstoreconnect.apple.com →「我的 App」→ `+` → 新建 App：
-   - 平台 iOS；名称 `DS Bot`（App Store 上要唯一，冲突时换一个，比如 `DS Bot Team`）
+   - 平台 iOS；名称 `橘巴拉Bot`（App Store 上要唯一，冲突时换一个，比如 `橘巴拉Bot Team`）
    - 主要语言按需要；Bundle ID 选第 4 步那个；SKU 填一个没人用过的串（例如 `dsbot-ios`）
    - 用户访问权限保持默认即可
 6. **生成 App Store Connect API Key**：App Store Connect →「用户和访问」→「集成」（Integrations）→ App Store Connect API →「团队密钥」（Team Keys）→ `+`：

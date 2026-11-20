@@ -10,15 +10,15 @@ import { clockLabel, messageClock } from './text.js'
 import { useFold } from './fold.js'
 
 // -------------------------------------------------------------------------
-// The user's own messages. DS Bot owns the row (fold, time, IM tag, copy, steering
+// The user's own messages. Jubala Bot owns the row (fold, time, IM tag, copy, steering
 // mark); how the contents are drawn depends on the DSH release:
 // - Before DSH 0.2.1-alpha.3 the primitives projected user text (`projectUserText`),
-//   and DS Bot drew the rest itself. DSH draws every "@word" there as a file reference
+//   and Jubala Bot drew the rest itself. DSH draws every "@word" there as a file reference
 //   cut at the first space, so "@新 Bot" showed as a file "新": Bot mentions are cut out
 //   first, by the rule the group host calls them with.
 // - Since then DSH draws user contents by its `conversation.chat.user.content` factory,
 //   for a caller that owns the row, and user text by rules (a Bot mention is one of
-//   them). DS Bot hands it the part of the text the fold shows.
+//   them). Jubala Bot hands it the part of the text the fold shows.
 // The bubble used to mount only with the projection, so from 0.2.1-alpha.3 on it did
 // not mount at all and long user messages stopped folding (#1616).
 
@@ -29,10 +29,10 @@ export const canDrawUserMessages = (drawsUserContent = false) => projects || dra
 
 // Other plugins mark where a message came from (Liveshare: "From <name> in a shared
 // Session") in `conversation.chat.user.before`. DSH's own user row declares that slot,
-// and only the entry that declares a slot may render it, so a row DS Bot draws cannot
-// show those marks. While any plugin has a mark there, DS Bot leaves the user rows to
+// and only the entry that declares a slot may render it, so a row Jubala Bot draws cannot
+// show those marks. While any plugin has a mark there, Jubala Bot leaves the user rows to
 // DSH (the marks show, long messages do not fold); otherwise it draws them. Marks can
-// register after DS Bot, so the choice follows the slot.
+// register after Jubala Bot, so the choice follows the slot.
 export const USER_SOURCE_SLOT = 'conversation.chat.user.before'
 
 export function installUserBubble(slots, drawRows) {
@@ -153,7 +153,7 @@ const clock = time => (typeof time === 'number' ? new Date(time).toLocaleTimeStr
 export const viaOf = source => (typeof source?.rpcId === 'string' && source.rpcId.startsWith('im:') ? source.rpcId.split(':')[1] : undefined)
 export const ViaTag = ({ via }) => h('span', { className: 'bt-uvia' }, t('via {platform}', { platform: t(imPlatform(via)?.name ?? via) }))
 
-// Before DSH 0.2.1-alpha.3: DS Bot draws the attachments, the text and the other blocks.
+// Before DSH 0.2.1-alpha.3: Jubala Bot draws the attachments, the text and the other blocks.
 function ProjectedContent({ data, text, shown, folded, control, roster, sessionId, actions, renderMessageImages, openFile, openSkill, onClick }) {
   const { attachments, rest } = contentParts(data.content)
   const referenceLabels = data.referenceLabels ?? []
@@ -171,7 +171,7 @@ function ProjectedContent({ data, text, shown, folded, control, roster, sessionI
 // Since DSH 0.2.1-alpha.3: the host's content factory draws the attachments, the part of
 // the text the fold shows (with every text rule: files, skills, conversations, Bot
 // mentions) and the other blocks, in its own bubble. The fold control sits under it.
-// The reference line is DS Bot's, so the fold's fade lands on the text, the last thing
+// The reference line is Jubala Bot's, so the fold's fade lands on the text, the last thing
 // the factory draws.
 function HostContent({ data, prepared, shown, folded, control, loadImage, renderFactorySlot, onClick }) {
   const referenceLabels = data.referenceLabels ?? []
@@ -227,7 +227,7 @@ export const USER_MESSAGE_CSS = `
 .bt-ustack{min-width:0;max-width:calc(var(--bt-msg-w) * 100%);display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .bt-ubody{max-width:100%;box-sizing:border-box;background:var(--bt-user);color:var(--bt-user-ink);border-radius:18px;padding:7px 12px;font-size:var(--dsh-content-font-size,14px);line-height:calc(var(--dsh-content-font-size,14px) + 10px);white-space:pre-wrap;word-break:break-word;text-wrap:pretty;text-autospace:normal}
 .bt-ubody a{color:inherit}
-/* The host's content stack sits in DS Bot's: the width follows --bt-msg-w (the user's
+/* The host's content stack sits in Jubala Bot's: the width follows --bt-msg-w (the user's
    message width) through .bt-ustack, not the host's own cap. The fold control goes
    under the stack, at its right edge. */
 .bt-uhost{max-width:100%;min-width:0;display:flex;flex-direction:column;align-items:flex-end}

@@ -151,7 +151,7 @@ test('a bare Server host means the link path; a dead Server shows why', async (t
   const state = await until(() => desk.call('state', {}), next => next.value.phone.status === 'offline')
   assert.equal(typeof state.value.phone.error, 'string')
 
-  // Turned off and cleared, the address falls back to the DS Bot relay (off, so nothing dials it).
+  // Turned off and cleared, the address falls back to the Jubala Bot relay (off, so nothing dials it).
   await desk.call('phone-set', { on: false })
   await desk.call('phone-set', { server: '' })
   assert.equal((await desk.call('state', {})).value.phone.server, DEFAULT_SERVER)
