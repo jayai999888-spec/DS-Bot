@@ -36382,6 +36382,9 @@ function fallbacksFor(provider, draft, roster) {
   }
   return { switching, failed, local };
 }
+function shownProviders(providers) {
+  return providers.filter((provider) => !(provider.id === "deepseek-official" && provider.key?.configured !== true && provider.models.length === 0 && provider.error === void 0));
+}
 function ProvidersPage({ actions, run: run2, roster, Section: Section2, advanced = null }) {
   const [view, setView] = (0, import_react48.useState)(null);
   const [open, setOpen] = (0, import_react48.useState)(null);
@@ -36394,12 +36397,13 @@ function ProvidersPage({ actions, run: run2, roster, Section: Section2, advanced
   }, []);
   if (view === null) return null;
   if (!view.available) return (0, import_react48.createElement)("p", { className: "bt-set-hint" }, t("This DSH cannot set up model providers."));
+  const shown = shownProviders(view.providers);
   const addBtn = adding ? null : (0, import_react48.createElement)("button", { type: "button", className: "bt-soft bt-soft-sm bt-with-icon", onClick: () => setAdding(true) }, (0, import_react48.createElement)(PlusIcon), t("Add a provider"));
   return [
     (0, import_react48.createElement)(
       Section2,
-      { key: "list", title: t("Model providers · {count}", { count: view.providers.length }), action: addBtn },
-      view.providers.map((provider) => (0, import_react48.createElement)(ProviderRow, {
+      { key: "list", title: t("Model providers · {count}", { count: shown.length }), action: addBtn },
+      shown.map((provider) => (0, import_react48.createElement)(ProviderRow, {
         key: provider.id,
         provider,
         apply: apply2,
