@@ -365,7 +365,7 @@ test('a generated language pack leaves with the namespace owner', async (t) => {
   }
 })
 
-test('unloading DS Bot removes only its own dictionaries', async (t) => {
+test('unloading Jubala Bot removes only its own dictionaries', async (t) => {
   const locale = await realLocale()
   if (!locale) return t.skip('this DSH has no locale runtime to load')
   const removeOwner = locale.register('locale-owner', { en: { label: 'Settings' }, zh: { label: '设置' } })

@@ -63,7 +63,7 @@ async function launchBrowser() {
   }
 }
 
-test('DS Bot preference rows keep one divider each and empty items vanish (#1815)', async (t) => {
+test('Jubala Bot preference rows keep one divider each and empty items vanish (#1815)', async (t) => {
   let browser
   try {
     browser = await launchBrowser()

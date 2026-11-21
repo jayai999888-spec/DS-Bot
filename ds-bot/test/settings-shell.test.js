@@ -305,7 +305,7 @@ test('DSH\'s General rows join General: the look under Appearance, the rest unde
   assert.deepEqual(only(sections.find(node => node.props.key === 'more')), ['permission', 'language', 'developer-tools'])
 })
 
-test('DS Bot draws known General selectors, while unrelated DSH rows keep their public slots', () => {
+test('Jubala Bot draws known General selectors, while unrelated DSH rows keep their public slots', () => {
   const ids = ['language', 'transcript-view', 'link-opening', 'composer-enter', 'performance-usage', 'permission']
   const { tree, drawn } = dialog({ items: [...ids, 'another-plugin'].map(id => ({ id })), preferences: {} })
   const [general] = walk(tree, node => typeof node.type === 'function' && node.type.name === 'GeneralPage')

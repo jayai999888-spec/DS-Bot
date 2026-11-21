@@ -442,7 +442,7 @@ test('background task approval bubbles directly as answerable with taskId/taskTi
     signal: AbortSignal.timeout(5000),
   }, () => { nextCalled = true; return 'rejected' })
 
-  assert.equal(nextCalled, false, 'background task approval must be owned by DS Bot, not raced against unseen DSH card')
+  assert.equal(nextCalled, false, 'background task approval must be owned by Jubala Bot, not raced against unseen DSH card')
   const view = env.rt.approvalsView()
   assert.equal(view.length, 1)
   assert.equal(view[0].taskId, task.id)

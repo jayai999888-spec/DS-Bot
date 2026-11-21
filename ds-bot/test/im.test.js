@@ -498,7 +498,7 @@ test('a runtime file written before sent existed still loads and behaves unchang
     im_legacy: { id: 'im_legacy', platform: 'telegram', botId: 'a', account: { id: 'bot1', name: '@fakebot' }, settings: { token: 'tok' }, secrets: {}, enabled: false, paired: [], requests: [], chats: { 'dm-u1': { kind: 'direct', title: 'u1', at: 1 } }, createdAt: 1 },
   } }
   writeFileSync(join(home, 'state.json'), JSON.stringify(seed))
-  // An older DS Bot wrote { runtime, cards } with no `sent` field. A fresh host
+  // An older Jubala Bot wrote { runtime, cards } with no `sent` field. A fresh host
   // reading it must default `sent` to {} and behave exactly as before.
   mkdirSync(join(home, 'im'), { recursive: true })
   writeFileSync(join(home, 'im', 'im_legacy.json'), JSON.stringify({ runtime: {}, cards: {} }))

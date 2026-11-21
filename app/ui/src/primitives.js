@@ -65,7 +65,7 @@ export function MarkdownText({ text, labels, variant }) {
     h(Markdown, { remarkPlugins: plugins, components }, text ?? ''))
 }
 
-// Settings icons, drawn by DS Bot (ds-bot/src/client/icons.js). DSH's take a `size`.
+// Settings icons, drawn by Jubala Bot (ds-bot/src/client/icons.js). DSH's take a `size`.
 const sized = Icon => function SizedIcon({ size, className }) {
   return h('span', { className, style: size ? { display: 'inline-flex', width: size, height: size } : undefined }, h(Icon))
 }
