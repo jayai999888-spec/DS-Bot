@@ -100,6 +100,12 @@ export function install(rt) {
       store().sessions[sessionId] = record
       void rt.save().catch(() => {})
     },
+    savedWindow: (route, model) => store().windows?.[route]?.[model],
+    saveWindow: (route, model, size) => {
+      const windows = store().windows ??= {}
+      ;(windows[route] ??= {})[model] = size
+      void rt.save().catch(() => {})
+    },
     recordUsage: entry => rt.recordUsage?.(entry),
     // A change that rides along with the next save: the CLI reports its context on
     // every model call.

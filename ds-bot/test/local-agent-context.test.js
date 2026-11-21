@@ -58,7 +58,7 @@ test('Codex 0.166, as recorded: the last request is the context, its usage count
 const user = (id, text) => ({ id, role: 'user', content: [{ type: 'text', text }], source: { kind: 'user' } })
 const system = (id, text) => ({ id, role: 'system', content: [{ type: 'text', text }], source: { kind: 'system-prompt' } })
 
-function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engines = [] } = {}) {
+function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engines = [], windows = {} } = {}) {
   const file = FIXTURE(kind === 'acp' ? 'fake-acp.mjs' : 'fake-codex.mjs')
   return new LocalAgentAdapter({
     rt: { warn: () => {} },
@@ -75,6 +75,8 @@ function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engine
     saveRecord: (sessionId, record) => { records[sessionId] = record },
     patchRecord: (sessionId, patch) => { if (records[sessionId]) Object.assign(records[sessionId], patch) },
     recordUsage: entry => usage.push(entry),
+    savedWindow: (route, model) => windows[`${route}/${model}`],
+    saveWindow: (route, model, size) => { windows[`${route}/${model}`] = size },
     presetFor: () => 'workspace-write',
     cwdFor: async () => mkdtempSync(join(tmpdir(), 'dsb-cwd-')),
     probeCwd: () => mkdtempSync(join(tmpdir(), 'dsb-probe-')),
@@ -703,4 +705,18 @@ test('a usage-only report does not hand the previous model\'s window to the new 
   // A report that does carry a size is still the model's window.
   adapter.observe(live, { type: 'context', used: 5_100, size: 475_000 })
   assert.equal((await adapter.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 475_000)
+})
+
+// The window lived only in memory, so after a restart every local model card read 200K
+// again until the CLI answered once more (#1896).
+test('the window a CLI reported is still its model card\'s after a restart', async (t) => {
+  const windows = {}
+  const first = makeAdapter({ windows })
+  await turn(first, 's1', [user('m1', 'hello grow:100000')])
+  first.dispose()
+  assert.deepEqual(windows, { 'local-acp-fake/default': 262_000 })
+  const second = makeAdapter({ windows })
+  t.after(() => second.dispose())
+  assert.equal((await second.resolveModel('local-acp-fake', 'default')).context.contextWindow, 262_000)
+  assert.equal((await second.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 200_000)
 })

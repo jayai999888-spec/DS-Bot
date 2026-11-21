@@ -62,7 +62,7 @@ const RESUME_RETRIED = Symbol('resume retried')
 export class LocalAgentAdapter extends LlmAdapter {
   // deps: {rt, findExecutable, spawnEngine(kind,route,engine), record(sessionId),
   //        saveRecord, dropRecord, presetFor(sessionId), toolsFor(options), signInHint(route),
-  //        usedModels(route)}
+  //        usedModels(route), savedWindow(route,model), saveWindow(route,model,size)}
   constructor(deps) {
     super()
     this.deps = deps
@@ -144,7 +144,7 @@ export class LocalAgentAdapter extends LlmAdapter {
       id: model,
       name: listed?.name ?? model,
       inputModalities: supportsImage ? ['text', 'image'] : ['text'],
-      context: { contextWindow: spec?.contextWindow ?? this.windows.get(windowKey(route, model)) ?? DEFAULT_CONTEXT_WINDOW },
+      context: { contextWindow: spec?.contextWindow ?? this.windowOf(route, model) ?? DEFAULT_CONTEXT_WINDOW },
       // The thinking levels the engine advertises for this model, if any.
       ...(listed?.reasoning ? { reasoning: listed.reasoning } : {}),
     }
@@ -224,6 +224,17 @@ export class LocalAgentAdapter extends LlmAdapter {
     return live
   }
 
+  // The window a CLI last reported for this model, kept across restarts: before the
+  // first report of a run, the model card would otherwise fall back to the default.
+  windowOf(route, model) {
+    const key = windowKey(route, model)
+    if (!this.windows.has(key)) {
+      const saved = this.deps.savedWindow?.(route, model)
+      if (Number.isFinite(saved) && saved > 0) this.windows.set(key, saved)
+    }
+    return this.windows.get(key)
+  }
+
   // A Session's record: its CLI session, what was handed to it, and what the CLI said
   // about its context.
   recordOf(live, extra = {}) {
@@ -266,7 +277,10 @@ export class LocalAgentAdapter extends LlmAdapter {
       // no size, and the Session may still hold the size of the model it ran before:
       // publishing that one under this model's key would give the new model a window
       // nothing has reported for it.
-      if (reported !== undefined) this.windows.set(windowKey(live.route, live.model), reported)
+      if (reported !== undefined && this.windows.get(windowKey(live.route, live.model)) !== reported) {
+        this.windows.set(windowKey(live.route, live.model), reported)
+        this.deps.saveWindow?.(live.route, live.model, reported)
+      }
       this.deps.patchRecord?.(live.sessionId, { context: live.context })
       return
     }
