@@ -411,6 +411,29 @@ test('a team from before the 橘巴拉 brand trades only the old defaults it sti
   assert.equal(JSON.parse(readFileSync(join(home, 'state.json'), 'utf8')).orangeStored, true)
 })
 
+test('the first Main Bot\'s chat takes the Bot\'s name once, for teams renamed before the chat followed', async (t) => {
+  const team = {
+    version: 1,
+    mainBotIds: ['m1'],
+    whaleStored: true,
+    orangeStored: true,
+    revision: 4,
+    bots: { m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', instructions: '', createdAt: 1 } },
+    rooms: {},
+    exchanges: [],
+    exchangeTurns: {},
+    questions: {},
+  }
+  const { call, stop, home, ctx } = start(team)
+  t.after(stop)
+  const renames = []
+  ctx.sessionTitle.rename = async (session, title) => { renames.push(title) }
+  await call('state', {})
+  await new Promise(resolve => setTimeout(resolve, 20))
+  assert.deepEqual(renames, ['小橘'])
+  assert.equal(JSON.parse(readFileSync(join(home, 'state.json'), 'utf8')).chatTitleStored, true)
+})
+
 test('a renamed first Main Bot keeps its own name, role and look', async (t) => {
   const { call, stop } = start({
     version: 1,

@@ -604,6 +604,15 @@ export function install(rt) {
     return next
   }
 
+  async function retitleChat(bot) {
+    try {
+      const agent = await rt.resolveAgent(rt.chatOf(bot.id))
+      if (agent?.session !== undefined) await ctx.sessionTitle.rename(agent.session, bot.name)
+    } catch (error) {
+      rt.warn('ds-bot: renaming the chat of %s failed: %s', bot.name, error)
+    }
+  }
+
   async function retitleRoom(room) {
     try {
       const agent = await rt.resolveAgent(rt.sessionOfRoom(room))
@@ -1037,7 +1046,7 @@ export function install(rt) {
     onBotDelete: hook => { botDeleteHooks.unshift(hook) },
     ensureWorkspace, keepTeamFolder, createSession, createBot, duplicateBot, updateBot, setFlags,
     saveSection, reorderSections, deleteSection,
-    roomBusy, autoRoomName, retitleRoom, createRoom, updateRoom, deleteRoom,
+    roomBusy, autoRoomName, retitleChat, retitleRoom, createRoom, updateRoom, deleteRoom,
     addRoomTodo, setRoomTodoDone, removeRoomTodo, clearDoneRoomTodos,
     setMain, deleteBot, bootstrap, releaseKickoff, greetingOut, holdKickoffAgain, userWrote, userAnswered,
   })

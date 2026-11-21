@@ -222,6 +222,17 @@ export function install(rt) {
       state.orangeStored = true
       if (first !== undefined) migrated = true
     }
+    // The step above renamed the Bot but not its chat's Session, which kept the title Chief.
+    // The little orange's chat takes its name once.
+    const retitled = []
+    if (state.chatTitleStored !== true) {
+      const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)
+      if (first?.name === '小橘' && state.mainBotIds.includes(first.id)) {
+        retitled.push(first)
+        state.chatTitleStored = true
+        migrated = true
+      }
+    }
     if (Object.hasOwn(LEGACY_THEMES, state.prefs.theme ?? '')) {
       state.prefs.theme = LEGACY_THEMES[state.prefs.theme]
       migrated = true
@@ -303,7 +314,7 @@ export function install(rt) {
     const stale = Object.values(state.rooms).filter(room => !room.named && room.name !== rt.autoRoomName(room.members))
     for (const room of stale) room.name = rt.autoRoomName(room.members)
     indexSessions()
-    return { migrated: migrated || stale.length > 0, stale }
+    return { migrated: migrated || stale.length > 0, stale, retitled }
   }
 
   const hasLoaded = () => storeReady
@@ -321,7 +332,7 @@ export function install(rt) {
   const load = () => loaded ??= (async () => {
     claimLock()
     if (holder !== undefined) warn('ds-bot: %s', readOnly())
-    const { migrated, stale } = adopt(readFileState())
+    const { migrated, stale, retitled } = adopt(readFileState())
     storeReady = true
     notifyStoreSync()
     if (holder !== undefined) return
@@ -336,6 +347,7 @@ export function install(rt) {
     }
     // Not awaited: renaming a session must not hold up the first roster read.
     for (const room of stale) void rt.retitleRoom(room)
+    for (const bot of retitled) void rt.retitleChat?.(bot)
   })()
 
   // An outside edit of state.json while this host held the lock, found at a
