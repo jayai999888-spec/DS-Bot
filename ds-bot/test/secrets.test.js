@@ -73,6 +73,7 @@ test('a short key (4 to 7 characters) is replaced only where it stands alone', (
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', lab: 'deepseek', instructions: '', createdAt: 1 },
@@ -428,6 +429,7 @@ test('real Cordis ShellEnvRegistry resolves secrets after restart and reload acr
   writeFileSync(join(team, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: {
       main: { id: 'main', name: 'Chief', main: true },
       'empty-sid': { id: 'empty-sid', name: 'Empty', sessionId: '' },
@@ -500,6 +502,7 @@ test('read-only host with secrets loaded before store.load does not touch files 
   writeFileSync(join(team, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: { main: { id: 'main', name: 'Chief', main: true } },
     rooms: {},
   }))

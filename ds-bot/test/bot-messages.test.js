@@ -21,6 +21,7 @@ function team({ group = false } = {}) {
   return {
     version: 1,
     mainBotIds: ['a'],
+    orangeStored: true,
     bots: {
       a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },
       b: { id: 'b', name: 'Writer', role: 'Write', sessionId: 'b', createdAt: 2 },
@@ -1156,6 +1157,7 @@ test('one turn keeps its identity across two earlier pages', async (t) => {
   writeFileSync(join(home, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['b'],
+    orangeStored: true,
     revision: 1,
     bots: { b: { id: 'b', name: 'Writer', sessionId: 'cur', createdAt: 1, segments: [{ sessionId: 'old', endedAt: 50 }] } },
     rooms: {},

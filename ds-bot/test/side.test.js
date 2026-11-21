@@ -21,6 +21,7 @@ const promptOf = request => request.messages.at(-1).content.find(block => block.
 const team = (extra = {}) => ({
   version: 1,
   mainBotIds: ['b1'],
+  orangeStored: true,
   whaleStored: true,
   revision: 3,
   bots: {

@@ -657,7 +657,7 @@ export const DE = {
   Graphite: 'Graphit', Rose: 'Rosé', Sky: 'Himmelblau', Tangerine: 'Mandarine', Cobalt: 'Kobaltblau',
 
   // Themes
-  DeepSeek: 'DeepSeek', Mono: 'Monochrom', Paper: 'Papier', Moonlight: 'Mondlicht',
+  DeepSeek: 'DeepSeek', Jubala: 'Jubala', Mono: 'Monochrom', Paper: 'Papier', Moonlight: 'Mondlicht',
 
   // Settings dialog
   General: 'Allgemein',

@@ -16,6 +16,7 @@ let rt
 const TEAM = {
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   workspaceId: 'w1',
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },

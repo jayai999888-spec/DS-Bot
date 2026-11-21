@@ -207,6 +207,20 @@ export function install(rt) {
       state.whaleStored = true
       if (first !== undefined) migrated = true
     }
+    // Teams from before the 橘巴拉 brand: their first Bot, while still a Main Bot, trades
+    // each old default it still has (Chief, Chief of Staff, the whale, the DeepSeek ink)
+    // for the new one, once. Anything the user changed stays as it is.
+    if (state.orangeStored !== true) {
+      const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)
+      if (first !== undefined && state.mainBotIds.includes(first.id)) {
+        if (first.name === 'Chief') first.name = '小橘'
+        if (first.role === 'Chief of Staff') first.role = '团队总管'
+        if (first.avatar?.shape === 'whale' && !first.avatar.image) first.avatar = { ...first.avatar, shape: 'orange' }
+        if (first.color === 'deepseek') first.color = 'mandarin'
+      }
+      state.orangeStored = true
+      if (first !== undefined) migrated = true
+    }
     if (Object.hasOwn(LEGACY_THEMES, state.prefs.theme ?? '')) {
       state.prefs.theme = LEGACY_THEMES[state.prefs.theme]
       migrated = true

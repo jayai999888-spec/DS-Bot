@@ -31,6 +31,7 @@ const CLI2 = 'local-acp-other/default'
 const team = (bots = {}) => ({
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   workspaceId: 'w1',
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1, model: DS, appliedModel: DS },

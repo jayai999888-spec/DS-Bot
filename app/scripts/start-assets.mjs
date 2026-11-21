@@ -1,7 +1,7 @@
 // Writes the generated blocks of the start page in src/start from the plugin's client modules
 // in ../ds-bot (read only, as scripts/icon.mjs does). The orange in start.html is drawn by hand
 // there, not generated.
-// - start.css, between /* tokens */ markers: the DeepSeek theme's light and dark colors.
+// - start.css, between /* tokens */ markers: the Jubala theme's light and dark colors.
 // - start.css, between /* springs */ markers: motion.js's springs as linear() curves.
 // - ../page-card.css, between the same two markers: the same colors and springs, scoped to the
 //   card that the team window shows in place of a message box, so that the page's own are kept.
@@ -36,14 +36,14 @@ function pick(vars, names, from) {
 }
 
 function tokens(scope = ':root') {
-  const [light, dark] = rules(themeCss(allThemes().deepseek))
+  const [light, dark] = rules(themeCss(allThemes().jubala))
   const base = readFileSync(new URL('styles.js', client), 'utf8').match(/^body\{(--bt-[^}]*)\}$/mu)
   if (!base) throw new Error('styles.js: the base body rule was not found')
-  const [ink, inkDark] = INKS.deepseek
+  const [ink, inkDark] = INKS.mandarin
   return [
-    '/* Generated from the DeepSeek theme in ds-bot/src/client/themes.js, inks.js and styles.js by scripts/start-assets.mjs; do not edit. */',
-    `${scope}{color-scheme:light dark;${pick(light, THEME_TOKENS, 'themeCss')};--bt-ink-deepseek:${ink};${pick(rules(`{${base[1]}}`)[0], BASE_TOKENS, 'styles.js')}}`,
-    `@media (prefers-color-scheme:dark){${scope}{${pick(dark, THEME_TOKENS, 'themeCss')};--bt-ink-deepseek:${inkDark}}}`,
+    '/* Generated from the Jubala theme in ds-bot/src/client/themes.js, inks.js and styles.js by scripts/start-assets.mjs; do not edit. */',
+    `${scope}{color-scheme:light dark;${pick(light, THEME_TOKENS, 'themeCss')};--bt-ink-mandarin:${ink};${pick(rules(`{${base[1]}}`)[0], BASE_TOKENS, 'styles.js')}}`,
+    `@media (prefers-color-scheme:dark){${scope}{${pick(dark, THEME_TOKENS, 'themeCss')};--bt-ink-mandarin:${inkDark}}}`,
   ]
 }
 

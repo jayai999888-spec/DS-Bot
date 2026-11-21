@@ -120,8 +120,8 @@ function GeneralPage({ roster, actions, run, dsh }) {
   const more = items.filter(id => !LOOK_ITEMS.includes(id))
   const prefs = roster.prefs ?? {}
   const themes = allThemes()
-  const current = themes[prefs.theme] ? prefs.theme : 'deepseek'
-  const [custom, setCustom] = useState(prefs.accent ?? '#4d6bfe')
+  const current = themes[prefs.theme] ? prefs.theme : 'jubala'
+  const [custom, setCustom] = useState(prefs.accent ?? themes[current].light.accent)
   const timer = useRef(0)
   useEffect(() => () => clearTimeout(timer.current), [])
   const pickCustom = (value) => {

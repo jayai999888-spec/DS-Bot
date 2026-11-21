@@ -156,12 +156,13 @@ test('the client channel answers from the saved state', async (t) => {
     questions: {},
   })
   t.after(stop)
-  // A team saved before the whale was stored gets it on its first Main Bot when loaded.
+  // A team saved before the whale was stored gets it on its first Main Bot when loaded, and a team
+  // from before the 橘巴拉 brand trades the old defaults (Chief, the whale, DeepSeek ink) for the new ones.
   // A team saved with labs keeps the model each Bot last ran on and loses the lab.
   const loaded = (await call('state')).value
   const [chief, writer] = ['m1', 'b2'].map(id => loaded.bots.find(bot => bot.id === id))
   assert.deepEqual(loaded.mainBotIds, ['m1'])
-  assert.deepEqual([chief.model, chief.color, chief.avatar?.shape], ['ollama/deepseek-v4.1-flash', 'deepseek', 'whale'])
+  assert.deepEqual([chief.name, chief.role, chief.model, chief.color, chief.avatar?.shape], ['小橘', '团队总管', 'ollama/deepseek-v4.1-flash', 'mandarin', 'orange'])
   assert.deepEqual([writer.role, writer.model, writer.color, writer.avatar, writer.instructions], ['写作', undefined, undefined, undefined, 'Kimi-style long reads'])
   const saved = (await call('state')).value.bots
   assert.equal(saved.some(bot => 'lab' in bot), false)

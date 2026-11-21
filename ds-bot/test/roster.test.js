@@ -388,9 +388,50 @@ test('a new team starts with the little orange as its Main Bot, 小橘', async (
   assert.equal(after.avatar, undefined)
 })
 
+test('a team from before the 橘巴拉 brand trades only the old defaults it still has, once', async (t) => {
+  const { call, stop, home } = start({
+    version: 1,
+    mainBotIds: ['m1', 'm2'],
+    whaleStored: true,
+    revision: 4,
+    bots: {
+      m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', instructions: '', createdAt: 1, color: 'deepseek', avatar: { shape: 'whale' } },
+      m2: { id: 'm2', sessionId: 'm2', name: 'Chief', role: 'Chief of Staff', instructions: '', createdAt: 2, color: 'deepseek', avatar: { shape: 'whale' } },
+    },
+    rooms: {},
+    exchanges: [],
+    exchangeTurns: {},
+    questions: {},
+  })
+  t.after(stop)
+  const team = Object.fromEntries((await call('state', {})).value.bots.map(bot => [bot.id, bot]))
+  assert.deepEqual([team.m1.name, team.m1.role, team.m1.color, team.m1.avatar], ['小橘', '团队总管', 'mandarin', { shape: 'orange' }])
+  // Only the first Main Bot changes.
+  assert.deepEqual([team.m2.name, team.m2.color, team.m2.avatar], ['Chief', 'deepseek', { shape: 'whale' }])
+  assert.equal(JSON.parse(readFileSync(join(home, 'state.json'), 'utf8')).orangeStored, true)
+})
+
+test('a renamed first Main Bot keeps its own name, role and look', async (t) => {
+  const { call, stop } = start({
+    version: 1,
+    mainBotIds: ['m1'],
+    whaleStored: true,
+    revision: 4,
+    bots: { m1: { id: 'm1', sessionId: 'm1', name: 'Boss', role: '老板', instructions: '', createdAt: 1, color: 'red', avatar: { shape: 'star' } } },
+    rooms: {},
+    exchanges: [],
+    exchangeTurns: {},
+    questions: {},
+  })
+  t.after(stop)
+  const [bot] = (await call('state', {})).value.bots
+  assert.deepEqual([bot.name, bot.role, bot.color, bot.avatar], ['Boss', '老板', 'red', { shape: 'star' }])
+})
+
 const OLD_TEAM = {
   version: 1,
   mainBotIds: ['m1', 'w2'],
+  orangeStored: true,
   revision: 4,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', lab: 'deepseek', instructions: '', createdAt: 1, color: 'red' },
@@ -486,6 +527,7 @@ test('deleting a Bot or group chat stops its Session, so its tasks are removed',
 const TEAM_WITH_PART = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 2,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', instructions: '', createdAt: 1 },
@@ -941,6 +983,7 @@ test('a Bot cannot be named or renamed like the user; one named so before keeps 
   const team = {
     version: 1,
     mainBotIds: ['a'],
+    orangeStored: true,
     bots: {
       a: { id: 'a', name: '小橘', role: '', instructions: '', sessionId: 'a', createdAt: 1 },
       u: { id: 'u', name: 'User', role: '', instructions: '', sessionId: 'u', createdAt: 2 },
@@ -1284,6 +1327,7 @@ test('old late-round and relay-limit fields of a group load away; calls it parke
   const { call, stop, home } = start({
     version: 1,
     mainBotIds: ['chief'],
+    orangeStored: true,
     bots: { chief: { id: 'chief', name: '小橘' }, writer: { id: 'writer', name: 'Writer' } },
     rooms: {
       r1: {
@@ -1311,6 +1355,7 @@ test('old late-round and relay-limit fields of a group load away; calls it parke
 const TEAM_MODEL = {
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: { chief: { id: 'chief', sessionId: 'chief', name: '小橘', instructions: '', createdAt: 1, model: 'deepseek/deepseek-v4-pro' } },
   rooms: {},
   exchanges: [],

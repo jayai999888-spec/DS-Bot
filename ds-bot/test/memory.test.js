@@ -98,6 +98,7 @@ test('the panel shows a summary as headings over paragraphs', () => {
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   whaleStored: true,
   bots: {

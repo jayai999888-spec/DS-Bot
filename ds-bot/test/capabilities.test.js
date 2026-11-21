@@ -17,6 +17,7 @@ const makeHome = state => {
 const team = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', capabilities: [], createdAt: 1 },
     worker: { id: 'worker', sessionId: 'worker', name: 'Worker', capabilities: [], createdAt: 2 },

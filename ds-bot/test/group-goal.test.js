@@ -12,6 +12,7 @@ import { ROOM_WORK_GRACE_MS } from '../src/host/constants.js'
 const seed = (room = {}, extraRooms = {}) => ({
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },
     b: { id: 'b', name: 'Writer', role: 'Write', sessionId: 'b', createdAt: 2 },

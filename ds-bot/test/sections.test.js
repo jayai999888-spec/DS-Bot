@@ -83,6 +83,7 @@ function start(saved) {
 const baseTeam = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', role: 'Lead', instructions: '', createdAt: 1 },
     writer: { id: 'writer', sessionId: 'writer', name: 'Writer', role: 'Copy', instructions: '', createdAt: 2 },
@@ -248,6 +249,7 @@ test('section-add menu offers both creating a new Bot/group in the section and a
   const roster = {
     mainBotId: 'chief',
     mainBotIds: ['chief'],
+    orangeStored: true,
     bots: [chief, writer, editor],
     rooms: [room],
     sections: [{ id: 'sec-1', name: '短视频矩阵', collapsed: true, color: 'orange' }],

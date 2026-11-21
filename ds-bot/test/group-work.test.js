@@ -16,6 +16,7 @@ let rt
 const seed = (room = {}, extraRooms = {}, bots = {}, top = {}) => ({
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1, ...bots.a },
     b: { id: 'b', name: 'Writer', role: 'Write', sessionId: 'b', createdAt: 2, ...bots.b },

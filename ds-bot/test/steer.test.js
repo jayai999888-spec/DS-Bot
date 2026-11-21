@@ -13,6 +13,7 @@ import { SOURCE_KIND, STEER_CUT } from '../src/host/constants.js'
 const TEAM = {
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   workspaceId: 'w1',
   bots: { a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'dm-a', createdAt: 1 } },
   rooms: {},

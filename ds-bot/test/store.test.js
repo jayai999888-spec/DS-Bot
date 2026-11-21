@@ -562,6 +562,7 @@ test('findBot unquotes a Bot ref before matching the name', async (t) => {
   const { rt } = runtime(t, {
     version: 1,
     mainBotIds: [],
+    orangeStored: true,
     bots: {
       a1: { id: 'a1', name: 'Ada' },
       s2: { id: 's2', name: 'Sun Tzu' },
@@ -583,6 +584,7 @@ test('indexSessions normalizes missing ids, empty sessionId, switched segments, 
   const { rt } = runtime(t, {
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: {
       main: { id: 'main', name: 'Chief', main: true },
       'empty-sid': { id: 'empty-sid', name: 'Empty', sessionId: '' },

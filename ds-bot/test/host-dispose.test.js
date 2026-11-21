@@ -19,6 +19,7 @@ function stateWithModel() {
   return {
     version: 1,
     mainBotIds: ['b1'],
+    orangeStored: true,
     revision: 1,
     bots: {
       b1: { id: 'b1', sessionId: 'b1', name: 'Writer', role: 'Writer', instructions: '', createdAt: 1, model: 'deepseek/deepseek-v4-flash' },

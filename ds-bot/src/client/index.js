@@ -421,7 +421,7 @@ export function apply(ctx) {
       const snapshot = roster.getSnapshot()
       const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs
       const themes = allThemes()
-      const id = themes[prefs.theme] ? prefs.theme : 'deepseek'
+      const id = themes[prefs.theme] ? prefs.theme : 'jubala'
       const accent = isHex(prefs.accent) ? prefs.accent : undefined
       const motion = prefs.motion === 'quiet' || prefs.motion === 'lively' ? prefs.motion : 'normal'
       const layout = layoutOf(prefs)
@@ -1206,7 +1206,7 @@ export function apply(ctx) {
     const snapshot = roster.getSnapshot()
     const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs
     const themes = allThemes()
-    const theme = themes[prefs.theme] ?? themes.deepseek
+    const theme = themes[prefs.theme] ?? themes.jubala
     const offs = [
       roster.subscribe(syncEffects),
       ...SHELL_SHEETS.map(([text, tag]) => installCompiledStyles(botOwnCss(text), `settings-${tag}`)),

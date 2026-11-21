@@ -11,7 +11,7 @@ export const INKS = {
 // Gradient colors paint a character from its top left to its bottom right; their ink
 // above is the text color. Aurora is the first star mascot's gradient.
 export const GRADIENTS = { aurora: [[0, '#A4FFB0'], [0.42, '#00F0E4'], [1, '#2E9EF7']] }
-export const ACCENT_INKS = ['deepseek', 'charcoal', 'graphite', 'rose', 'sky', 'tangerine', 'cobalt']
+export const ACCENT_INKS = ['mandarin', 'deepseek', 'charcoal', 'graphite', 'rose', 'sky', 'tangerine', 'cobalt']
 // Renamed ink ids still found in saved Bots and Bot-to-Bot replies (LEGACY: old id → new id).
 const LEGACY_INKS = { kimi: 'charcoal', zai: 'graphite', minimax: 'rose', stepfun: 'sky', mimo: 'tangerine', qwen: 'cobalt' }
 export const isHex = color => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)

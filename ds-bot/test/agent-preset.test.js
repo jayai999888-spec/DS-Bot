@@ -19,6 +19,7 @@ import { fakeContext } from './fake-ctx.js'
 const TEAM = {
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   revision: 1,
   whaleStored: true,
   bots: { chief: { id: 'chief', sessionId: 'chief', name: 'Chief', role: 'Lead', instructions: '', createdAt: 1 } },

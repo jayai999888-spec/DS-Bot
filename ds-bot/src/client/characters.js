@@ -75,6 +75,10 @@ export function lookOf(bot) {
   }
 }
 
+// Characters whose eyes are painted in this ink, with catchlights, instead of cut out:
+// a hole shows the background, which leaves the little orange's eyes blank.
+const EYE_INKS = { orange: '#3A2414' }
+
 // Registered shapes join the characters: `body(paint)` returns SVG markup in a
 // `size` box and `eyes` lists the two capsules.
 export const SHAPES = {}
@@ -83,7 +87,7 @@ for (const [id, character] of Object.entries(CHARACTERS)) {
     ...(character.paints ?? []).map(([d, fill, opacity]) => `<path d="${d}" fill="${fill}" fill-opacity="${opacity}"/>`),
     `<path d="${character.shade}" fill="#000" fill-opacity=".07"/>`,
   ].join('')
-  SHAPES[id] = { label: character.label ?? id[0].toUpperCase() + id.slice(1), size: 100, path: character.body, layers, eyes: character.eyes }
+  SHAPES[id] = { label: character.label ?? id[0].toUpperCase() + id.slice(1), size: 100, path: character.body, layers, eyes: character.eyes, ...(EYE_INKS[id] ? { eyeInk: EYE_INKS[id] } : {}) }
 }
 export const hasShape = id => typeof id === 'string' && Object.hasOwn(SHAPES, id)
 export const shapeId = id => (hasShape(id) ? id : FALLBACK_SHAPE)
@@ -95,7 +99,10 @@ export function bodyOf(def, paint, flat = false) {
 }
 const eyeMarkup = ([cx, cy, w, h, tilt]) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><rect class="bt-eye" x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="${w / 2}"/></g>`
 // A closed, happy eye (an upturned arc) in the same spot, shown while the mark is petted.
-const happyEyeMarkup = ([cx, cy, w, h, tilt]) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><path class="bt-eye-happy" opacity="0" d="M${-w * 0.62} ${h * 0.14}Q0 ${-h * 0.42} ${w * 0.62} ${h * 0.14}" fill="none" stroke="#000" stroke-width="${w * 0.5}" stroke-linecap="round"/></g>`
+const happyEyeMarkup = ([cx, cy, w, h, tilt], ink = '#000') => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><path class="bt-eye-happy" opacity="0" d="M${-w * 0.62} ${h * 0.14}Q0 ${-h * 0.42} ${w * 0.62} ${h * 0.14}" fill="none" stroke="${ink}" stroke-width="${w * 0.5}" stroke-linecap="round"/></g>`
+// A painted eye: the ink with a large catchlight up toward the light and a small one below,
+// in one .bt-eye group so a blink closes all three together.
+const paintedEyeMarkup = ([cx, cy, w, h, tilt], ink) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><g class="bt-eye"><rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="${w / 2}" fill="${ink}"/><circle cx="${+(w * 0.14).toFixed(2)}" cy="${+(-h * 0.2).toFixed(2)}" r="${+(w * 0.24).toFixed(2)}" fill="#fff"/><circle cx="${+(-w * 0.17).toFixed(2)}" cy="${+(h * 0.22).toFixed(2)}" r="${+(w * 0.1).toFixed(2)}" fill="#fff" fill-opacity=".8"/></g></g>`
 // A mask covering three boxes, so a bob or squash never clips the body at the edge.
 export const maskBox = size => `maskUnits="userSpaceOnUse" x="${-size}" y="${-size}" width="${size * 3}" height="${size * 3}"`
 export const holes = (def, eyes) => `<rect x="${-def.size}" y="${-def.size}" width="${def.size * 3}" height="${def.size * 3}" fill="#fff"/>${eyes}`
@@ -113,11 +120,14 @@ export function characterMarkup(shape, color) {
     const def = shapeOf(shape)
     // The eyes sit in the mask, untransformed by their placement, so CSS blinks and
     // glances never replace where they sit.
-    const eyes = `<g class="bt-gaze"><g class="bt-eyes" fill="#000">${def.eyes.map(eyeMarkup).join('')}${def.eyes.map(happyEyeMarkup).join('')}</g></g>`
+    const ink = def.eyeInk
+    const eyes = ink
+      ? `<g class="bt-gaze"><g class="bt-eyes">${def.eyes.map(eye => paintedEyeMarkup(eye, ink)).join('')}${def.eyes.map(eye => happyEyeMarkup(eye, ink)).join('')}</g></g>`
+      : `<g class="bt-gaze"><g class="bt-eyes" fill="#000">${def.eyes.map(eye => eyeMarkup(eye)).join('')}${def.eyes.map(eye => happyEyeMarkup(eye)).join('')}</g></g>`
     const stops = GRADIENTS[color]
     const gradient = stops ? `<linearGradient id="${MASK_ID}g" gradientUnits="userSpaceOnUse" x1="18" y1="10" x2="78" y2="92">${stops.map(([offset, value]) => `<stop offset="${offset}" stop-color="${value}"/>`).join('')}</linearGradient>` : ''
-    const body = `<g mask="url(#${MASK_ID})">${bodyOf(def, stops ? `url(#${MASK_ID}g)` : inkFill(color))}</g>`
-    markup = `<defs>${gradient}<mask id="${MASK_ID}" ${maskBox(def.size)}>${holes(def, eyes)}</mask></defs><g class="bt-b">${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}</g>`
+    const body = `<g mask="url(#${MASK_ID})">${bodyOf(def, stops ? `url(#${MASK_ID}g)` : inkFill(color))}</g>${ink ? eyes : ''}`
+    markup = `<defs>${gradient}<mask id="${MASK_ID}" ${maskBox(def.size)}>${holes(def, ink ? '' : eyes)}</mask></defs><g class="bt-b">${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}</g>`
     markupCache.set(key, markup)
   }
   return markup
@@ -129,7 +139,8 @@ export function maskOf(shape) {
   if (mask === undefined) {
     const def = shapeOf(shape)
     const body = `<g mask="url(#e)">${bodyOf(def, '#000', true)}</g>`
-    mask = svgUrl(`<mask id="e" ${maskBox(def.size)}>${holes(def, def.eyes.map(eyeMarkup).join('').replaceAll('class="bt-eye"', 'fill="#000"'))}</mask>${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}`, def.size)
+    const cut = def.eyeInk ? '' : def.eyes.map(eye => eyeMarkup(eye)).join('').replaceAll('class="bt-eye"', 'fill="#000"')
+    mask = svgUrl(`<mask id="e" ${maskBox(def.size)}>${holes(def, cut)}</mask>${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}`, def.size)
     maskCache.set(shape, mask)
   }
   return mask

@@ -665,6 +665,7 @@ export const JA = {
   "Mono": "モノクロ",
   "Paper": "ペーパー",
   "Moonlight": "ムーンライト",
+  "Jubala": "Jubala",
   "General": "一般",
   "Bots": "Bot",
   "Group chats": "グループチャット",

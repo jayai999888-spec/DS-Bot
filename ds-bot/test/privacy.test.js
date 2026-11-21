@@ -16,6 +16,7 @@ function seed({ diary, privateBot, archives = [], picked, openPart = false }) {
   return {
     version: 1,
     mainBotIds: ['a'],
+    orangeStored: true,
     privateArchives: archives,
     workspaceId: 'w1',
     bots: {

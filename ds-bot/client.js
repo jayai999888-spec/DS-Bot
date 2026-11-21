@@ -788,6 +788,7 @@ var JA = {
   "Mono": "モノクロ",
   "Paper": "ペーパー",
   "Moonlight": "ムーンライト",
+  "Jubala": "Jubala",
   "General": "一般",
   "Bots": "Bot",
   "Group chats": "グループチャット",
@@ -3220,6 +3221,7 @@ var KO = {
   Cobalt: "코발트",
   // Themes
   DeepSeek: "DeepSeek",
+  Jubala: "Jubala",
   Mono: "모노",
   Paper: "페이퍼",
   Moonlight: "문라이트",
@@ -5682,6 +5684,7 @@ var ES = {
   Cobalt: "Cobalto",
   // Themes
   DeepSeek: "DeepSeek",
+  Jubala: "Jubala",
   Mono: "Mono",
   Paper: "Papel",
   Moonlight: "Luz de luna",
@@ -8129,6 +8132,7 @@ var FR = {
   "Mono": "Mono",
   "Paper": "Papier",
   "Moonlight": "Clair de lune",
+  "Jubala": "Jubala",
   "General": "Général",
   "Bots": "Bots",
   "Group chats": "Discussions de groupe",
@@ -10561,6 +10565,7 @@ var DE = {
   Cobalt: "Kobaltblau",
   // Themes
   DeepSeek: "DeepSeek",
+  Jubala: "Jubala",
   Mono: "Monochrom",
   Paper: "Papier",
   Moonlight: "Mondlicht",
@@ -12997,6 +13002,7 @@ var ZH = {
   Cobalt: "钴蓝",
   // Themes
   DeepSeek: "DeepSeek",
+  Jubala: "橘巴拉",
   Mono: "黑白",
   Paper: "纸张",
   Moonlight: "月光",
@@ -14471,7 +14477,7 @@ var INKS = {
   aurora: ["#00B8D4", "#2EE6E0"]
 };
 var GRADIENTS = { aurora: [[0, "#A4FFB0"], [0.42, "#00F0E4"], [1, "#2E9EF7"]] };
-var ACCENT_INKS = ["deepseek", "charcoal", "graphite", "rose", "sky", "tangerine", "cobalt"];
+var ACCENT_INKS = ["mandarin", "deepseek", "charcoal", "graphite", "rose", "sky", "tangerine", "cobalt"];
 var LEGACY_INKS = { kimi: "charcoal", zai: "graphite", minimax: "rose", stepfun: "sky", mimo: "tangerine", qwen: "cobalt" };
 var isHex = (color) => typeof color === "string" && /^#[0-9a-f]{6}$/i.test(color);
 var luminance = (hex) => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16) / 255).map((channel2) => channel2 <= 0.04045 ? channel2 / 12.92 : ((channel2 + 0.055) / 1.055) ** 2.4).reduce((sum, channel2, index) => sum + channel2 * [0.2126, 0.7152, 0.0722][index], 0);
@@ -14538,13 +14544,14 @@ function lookOf(bot) {
     color: colorOf(bot)
   };
 }
+var EYE_INKS = { orange: "#3A2414" };
 var SHAPES = {};
 for (const [id, character] of Object.entries(CHARACTERS)) {
   const layers = [
     ...(character.paints ?? []).map(([d, fill2, opacity]) => `<path d="${d}" fill="${fill2}" fill-opacity="${opacity}"/>`),
     `<path d="${character.shade}" fill="#000" fill-opacity=".07"/>`
   ].join("");
-  SHAPES[id] = { label: character.label ?? id[0].toUpperCase() + id.slice(1), size: 100, path: character.body, layers, eyes: character.eyes };
+  SHAPES[id] = { label: character.label ?? id[0].toUpperCase() + id.slice(1), size: 100, path: character.body, layers, eyes: character.eyes, ...EYE_INKS[id] ? { eyeInk: EYE_INKS[id] } : {} };
 }
 var hasShape = (id) => typeof id === "string" && Object.hasOwn(SHAPES, id);
 var shapeId = (id) => hasShape(id) ? id : FALLBACK_SHAPE;
@@ -14558,7 +14565,8 @@ function bodyOf(def, paint, flat = false) {
   }
 }
 var eyeMarkup = ([cx, cy, w, h73, tilt]) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><rect class="bt-eye" x="${-w / 2}" y="${-h73 / 2}" width="${w}" height="${h73}" rx="${w / 2}"/></g>`;
-var happyEyeMarkup = ([cx, cy, w, h73, tilt]) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><path class="bt-eye-happy" opacity="0" d="M${-w * 0.62} ${h73 * 0.14}Q0 ${-h73 * 0.42} ${w * 0.62} ${h73 * 0.14}" fill="none" stroke="#000" stroke-width="${w * 0.5}" stroke-linecap="round"/></g>`;
+var happyEyeMarkup = ([cx, cy, w, h73, tilt], ink = "#000") => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><path class="bt-eye-happy" opacity="0" d="M${-w * 0.62} ${h73 * 0.14}Q0 ${-h73 * 0.42} ${w * 0.62} ${h73 * 0.14}" fill="none" stroke="${ink}" stroke-width="${w * 0.5}" stroke-linecap="round"/></g>`;
+var paintedEyeMarkup = ([cx, cy, w, h73, tilt], ink) => `<g transform="translate(${cx} ${cy}) rotate(${tilt})"><g class="bt-eye"><rect x="${-w / 2}" y="${-h73 / 2}" width="${w}" height="${h73}" rx="${w / 2}" fill="${ink}"/><circle cx="${+(w * 0.14).toFixed(2)}" cy="${+(-h73 * 0.2).toFixed(2)}" r="${+(w * 0.24).toFixed(2)}" fill="#fff"/><circle cx="${+(-w * 0.17).toFixed(2)}" cy="${+(h73 * 0.22).toFixed(2)}" r="${+(w * 0.1).toFixed(2)}" fill="#fff" fill-opacity=".8"/></g></g>`;
 var maskBox = (size) => `maskUnits="userSpaceOnUse" x="${-size}" y="${-size}" width="${size * 3}" height="${size * 3}"`;
 var holes = (def, eyes) => `<rect x="${-def.size}" y="${-def.size}" width="${def.size * 3}" height="${def.size * 3}" fill="#fff"/>${eyes}`;
 var MASK_ID = "%MASK%";
@@ -14570,11 +14578,12 @@ function characterMarkup(shape, color) {
   let markup = markupCache.get(key);
   if (markup === void 0) {
     const def = shapeOf(shape);
-    const eyes = `<g class="bt-gaze"><g class="bt-eyes" fill="#000">${def.eyes.map(eyeMarkup).join("")}${def.eyes.map(happyEyeMarkup).join("")}</g></g>`;
+    const ink = def.eyeInk;
+    const eyes = ink ? `<g class="bt-gaze"><g class="bt-eyes">${def.eyes.map((eye) => paintedEyeMarkup(eye, ink)).join("")}${def.eyes.map((eye) => happyEyeMarkup(eye, ink)).join("")}</g></g>` : `<g class="bt-gaze"><g class="bt-eyes" fill="#000">${def.eyes.map((eye) => eyeMarkup(eye)).join("")}${def.eyes.map((eye) => happyEyeMarkup(eye)).join("")}</g></g>`;
     const stops = GRADIENTS[color];
     const gradient = stops ? `<linearGradient id="${MASK_ID}g" gradientUnits="userSpaceOnUse" x1="18" y1="10" x2="78" y2="92">${stops.map(([offset, value]) => `<stop offset="${offset}" stop-color="${value}"/>`).join("")}</linearGradient>` : "";
-    const body = `<g mask="url(#${MASK_ID})">${bodyOf(def, stops ? `url(#${MASK_ID}g)` : inkFill(color))}</g>`;
-    markup = `<defs>${gradient}<mask id="${MASK_ID}" ${maskBox(def.size)}>${holes(def, eyes)}</mask></defs><g class="bt-b">${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}</g>`;
+    const body = `<g mask="url(#${MASK_ID})">${bodyOf(def, stops ? `url(#${MASK_ID}g)` : inkFill(color))}</g>${ink ? eyes : ""}`;
+    markup = `<defs>${gradient}<mask id="${MASK_ID}" ${maskBox(def.size)}>${holes(def, ink ? "" : eyes)}</mask></defs><g class="bt-b">${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}</g>`;
     markupCache.set(key, markup);
   }
   return markup;
@@ -14586,7 +14595,8 @@ function maskOf(shape) {
   if (mask === void 0) {
     const def = shapeOf(shape);
     const body = `<g mask="url(#e)">${bodyOf(def, "#000", true)}</g>`;
-    mask = svgUrl(`<mask id="e" ${maskBox(def.size)}>${holes(def, def.eyes.map(eyeMarkup).join("").replaceAll('class="bt-eye"', 'fill="#000"'))}</mask>${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}`, def.size);
+    const cut = def.eyeInk ? "" : def.eyes.map((eye) => eyeMarkup(eye)).join("").replaceAll('class="bt-eye"', 'fill="#000"');
+    mask = svgUrl(`<mask id="e" ${maskBox(def.size)}>${holes(def, cut)}</mask>${def.wrap ? `<g transform="${def.wrap}">${body}</g>` : body}`, def.size);
     maskCache.set(shape, mask);
   }
   return mask;
@@ -15009,10 +15019,10 @@ function teamActions({ call: call2, after, partFor, roster, ui: ui2, live, cards
 // src/client/themes.js
 var THEME_KEYS = ["bg", "sidebar", "bubble", "card", "text", "user", "userText", "accent"];
 var THEMES = {
-  deepseek: {
-    label: "DeepSeek",
-    light: { bg: "#fcfcfc", sidebar: "#f7f7f7", bubble: "#eeeeee", card: "#ffffff", text: "#141414", user: "#070707", userText: "#fcfcfc", accent: "#4d6bfe" },
-    dark: { bg: "#141414", sidebar: "#1b1b1b", bubble: "#262626", card: "#1f1f1f", text: "#f2f2f2", user: "#f2f2f2", userText: "#141414", accent: "#5b7bff" }
+  jubala: {
+    label: "Jubala",
+    light: { bg: "#fcfcfc", sidebar: "#f7f7f7", bubble: "#eeeeee", card: "#ffffff", text: "#141414", user: "#070707", userText: "#fcfcfc", accent: "#ee8414" },
+    dark: { bg: "#141414", sidebar: "#1b1b1b", bubble: "#262626", card: "#1f1f1f", text: "#f2f2f2", user: "#f2f2f2", userText: "#141414", accent: "#f5a623" }
   },
   mono: {
     label: "Mono",
@@ -15781,7 +15791,7 @@ var STORAGE = {
 };
 var LEGACY_PREFIXES = ["dsh-bot:", "dsh-bot-team:"];
 var LEGACY_BROWSER_KEYS = ["ds-bot.browser.v1", "dsh-bot.browser.v1"];
-var LEGACY_THEMES = { grok: "mono" };
+var LEGACY_THEMES = { grok: "mono", deepseek: "jubala" };
 function legacyKeys(key) {
   if (key === STORAGE.browsers) return LEGACY_BROWSER_KEYS;
   const name = key.slice(key.indexOf(":") + 1);
@@ -15897,7 +15907,7 @@ function writeSidebar(value, storage = globalThis.localStorage) {
 
 // src/client/styles.js
 var SHELL_CSS = `
-body{--bt-im-telegram:#229ed9;--bt-im-weixin:#07c160;--bt-im-feishu:#3370ff;--bt-im-dingtalk:#1e88e5;--bt-im-wecom:#0082ef;--bt-im-qq:#e03e3e;--bt-im-discord:#5865f2;--bt-im-slack:#4a154b;--bt-im-mark-ink:#ffffff;--bt-qr-paper:#ffffff;--bt-qr-ink:#141414;--bt-ink:#141414;--bt-danger:#e02135;--bt-warn:#8a5a00;--bt-ink-2:rgba(20,20,20,.6);--bt-ink-3:rgba(20,20,20,.36);--bt-bubble:#eeeeee;--bt-sidebar:#f7f7f7;--bt-main:#fcfcfc;--bt-line:rgba(20,20,20,.08);--bt-line-2:rgba(20,20,20,.15);--bt-line-weak:rgba(20,20,20,.1);--bt-hover:rgba(119,119,119,.09);--bt-active:rgba(119,119,119,.17);--bt-card:#ffffff;--bt-accent:#4d6bfe;--bt-green:#00c972;--bt-star:#ff9800;--bt-user:#070707;--bt-user-ink:#fcfcfc;--bt-tag-bg:rgba(20,20,20,.06);--bt-tag-ink:rgba(20,20,20,.56);--bt-knob:#ffffff;--bt-glass-bg:color-mix(in srgb,var(--bt-main) 78%,transparent);--bt-glass-border:rgba(255,255,255,.72);--bt-glass-rim:rgba(20,20,20,.09);--bt-glass-shadow:0 8px 28px -6px rgba(0,0,0,.08),0 2px 6px -1px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.82);--bt-dialog-shadow:0 28px 90px -12px rgba(0,0,0,.22),0 8px 24px -4px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.78);--bt-card-shadow:0 1px 2px rgba(20,20,20,.03),inset 0 1px 0 rgba(255,255,255,.65);--bt-nav-thumb-bg:color-mix(in srgb,var(--bt-card) 82%,var(--bt-active));--bt-nav-thumb-shadow:0 1px 2px rgba(20,20,20,.06),inset 0 .5px 0 rgba(255,255,255,.8);--bt-select-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 4.5 3 3 3-3'/%3E%3C/svg%3E");--bt-accent-soft:color-mix(in srgb,var(--bt-accent) 14%,transparent);--bt-danger-soft:color-mix(in srgb,var(--bt-danger) 14%,transparent);--bt-danger-glow:color-mix(in srgb,var(--bt-danger) 24%,transparent);-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;--bt-font:var(--dsw-font-family,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif)}
+body{--bt-im-telegram:#229ed9;--bt-im-weixin:#07c160;--bt-im-feishu:#3370ff;--bt-im-dingtalk:#1e88e5;--bt-im-wecom:#0082ef;--bt-im-qq:#e03e3e;--bt-im-discord:#5865f2;--bt-im-slack:#4a154b;--bt-im-mark-ink:#ffffff;--bt-qr-paper:#ffffff;--bt-qr-ink:#141414;--bt-ink:#141414;--bt-danger:#e02135;--bt-warn:#8a5a00;--bt-ink-2:rgba(20,20,20,.6);--bt-ink-3:rgba(20,20,20,.36);--bt-bubble:#eeeeee;--bt-sidebar:#f7f7f7;--bt-main:#fcfcfc;--bt-line:rgba(20,20,20,.08);--bt-line-2:rgba(20,20,20,.15);--bt-line-weak:rgba(20,20,20,.1);--bt-hover:rgba(119,119,119,.09);--bt-active:rgba(119,119,119,.17);--bt-card:#ffffff;--bt-accent:#ee8414;--bt-green:#00c972;--bt-star:#ff9800;--bt-user:#070707;--bt-user-ink:#fcfcfc;--bt-tag-bg:rgba(20,20,20,.06);--bt-tag-ink:rgba(20,20,20,.56);--bt-knob:#ffffff;--bt-glass-bg:color-mix(in srgb,var(--bt-main) 78%,transparent);--bt-glass-border:rgba(255,255,255,.72);--bt-glass-rim:rgba(20,20,20,.09);--bt-glass-shadow:0 8px 28px -6px rgba(0,0,0,.08),0 2px 6px -1px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.82);--bt-dialog-shadow:0 28px 90px -12px rgba(0,0,0,.22),0 8px 24px -4px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.78);--bt-card-shadow:0 1px 2px rgba(20,20,20,.03),inset 0 1px 0 rgba(255,255,255,.65);--bt-nav-thumb-bg:color-mix(in srgb,var(--bt-card) 82%,var(--bt-active));--bt-nav-thumb-shadow:0 1px 2px rgba(20,20,20,.06),inset 0 .5px 0 rgba(255,255,255,.8);--bt-select-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 4.5 3 3 3-3'/%3E%3C/svg%3E");--bt-accent-soft:color-mix(in srgb,var(--bt-accent) 14%,transparent);--bt-danger-soft:color-mix(in srgb,var(--bt-danger) 14%,transparent);--bt-danger-glow:color-mix(in srgb,var(--bt-danger) 24%,transparent);-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;--bt-font:var(--dsw-font-family,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif)}
 /* iOS waits out a double-tap zoom on buttons; the plugin's own controls never zoom. */
 :is(.bt-tool,.bt-uaction,.bt-menu button,.bt-menu-item,.bt-icon-btn,.bt-round,.bt-pill,.bt-account,.bt-set-row,.bt-settings-item,.bt-react-strip button,.bt-palette-row,.bt-palette-clear,.bt-tab,.bt-ptab,.bt-ptab-x,.bt-bcard-x,.bt-plus,.bt-q-btn,.bt-q-fold,.bt-q-x,.bt-x,.bt-nc-send,.bt-send,.bt-soft,.bt-mini,.bt-side-send,.bt-shape,.bt-swatch,.bt-color,.bt-newchat,.bt-task-day,.bt-task-remove,.bt-fb-btn){touch-action:manipulation}
 :is(.bt-round,.bt-you,.bt-account,.bt-color,.bt-color span,.bt-swatch,.bt-icon-btn,.bt-avatar-trigger,.bt-avatar-pencil,.bt-plus,.bt-mic,.bt-voice,.bt-task-day,.bt-task-off-mark){corner-shape:round}
@@ -36749,8 +36759,8 @@ function GeneralPage({ roster, actions, run: run2, dsh }) {
   const more = items.filter((id) => !LOOK_ITEMS.includes(id));
   const prefs = roster.prefs ?? {};
   const themes = allThemes();
-  const current2 = themes[prefs.theme] ? prefs.theme : "deepseek";
-  const [custom, setCustom] = (0, import_react51.useState)(prefs.accent ?? "#4d6bfe");
+  const current2 = themes[prefs.theme] ? prefs.theme : "jubala";
+  const [custom, setCustom] = (0, import_react51.useState)(prefs.accent ?? themes[current2].light.accent);
   const timer = (0, import_react51.useRef)(0);
   (0, import_react51.useEffect)(() => () => clearTimeout(timer.current), []);
   const pickCustom = (value) => {
@@ -45735,7 +45745,7 @@ function apply(ctx) {
       const snapshot = roster.getSnapshot();
       const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs;
       const themes = allThemes();
-      const id = themes[prefs.theme] ? prefs.theme : "deepseek";
+      const id = themes[prefs.theme] ? prefs.theme : "jubala";
       const accent = isHex(prefs.accent) ? prefs.accent : void 0;
       const motion = prefs.motion === "quiet" || prefs.motion === "lively" ? prefs.motion : "normal";
       const layout = layoutOf(prefs);
@@ -46488,7 +46498,7 @@ function apply(ctx) {
     const snapshot = roster.getSnapshot();
     const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs;
     const themes = allThemes();
-    const theme = themes[prefs.theme] ?? themes.deepseek;
+    const theme = themes[prefs.theme] ?? themes.jubala;
     const offs = [
       roster.subscribe(syncEffects),
       ...SHELL_SHEETS.map(([text, tag]) => installCompiledStyles(botOwnCss(text), `settings-${tag}`)),

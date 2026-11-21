@@ -23,6 +23,7 @@ const HIDDEN = ['ask_user_question', 'subagent', 'list_subagent_models', 'send_m
 const TEAM = {
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   workspaceId: 'w1',
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },

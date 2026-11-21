@@ -115,6 +115,7 @@ test('a holder that finds another token in the file knows it lost the lock', (t)
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 7,
   bots: { m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', lab: 'deepseek', instructions: '', createdAt: 1 } },
   rooms: {},

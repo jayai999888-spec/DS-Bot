@@ -41,7 +41,7 @@
 
 | 主题 | 浅色 bg / text / accent | 深色 bg / text / accent |
 |---|---|---|
-| DeepSeek（默认） | `#fcfcfc` / `#141414` / `#4d6bfe` | `#141414` / `#f2f2f2` / `#5b7bff` |
+| Jubala（默认，原 DeepSeek 主题；存着 `deepseek` 的设置自动迁过来） | `#fcfcfc` / `#141414` / `#ee8414` | `#141414` / `#f2f2f2` / `#f5a623` |
 | Mono | `#ffffff` / `#0d0d0d` / `#0d0d0d` | `#0f0f0f` / `#f4f4f4` / `#f4f4f4` |
 | Paper | `#faf9f5` / `#1f1e1b` / `#d97757` | `#1f1e1b` / `#f3f0e8` / `#e08a6d` |
 | Moonlight | `#f7f9fc` / `#121826` / `#1e86ff` | `#0b1020` / `#e8edf7` / `#4f9dff` |

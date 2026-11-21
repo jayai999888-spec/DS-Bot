@@ -15,6 +15,7 @@ const result = (id, text = 'ok') => ({ role: 'tool', toolCallId: id, content: [{
 const team = (extra = {}) => ({
   version: 1,
   mainBotIds: ['b1'],
+  orangeStored: true,
   whaleStored: true,
   revision: 3,
   bots: {
