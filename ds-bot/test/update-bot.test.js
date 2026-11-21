@@ -9,6 +9,7 @@ import { fakeContext } from './fake-ctx.js'
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   whaleStored: true,
   bots: {

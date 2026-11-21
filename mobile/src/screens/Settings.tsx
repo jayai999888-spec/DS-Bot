@@ -109,7 +109,7 @@ export function Settings({ navigation }: { navigation?: any }) {
         <Row label={t('Secrets')} onPress={() => navigation?.navigate('Secrets')} />
         <Row label={t('Location')} onPress={() => navigation?.navigate('Location')} />
         <Row label={t('Updates & diagnostics')} onPress={() => navigation?.navigate('Updates')} />
-        <Row label={t('About DS Bot')} onPress={() => navigation?.navigate('About')} />
+        <Row label={t('About Jubala Bot')} onPress={() => navigation?.navigate('About')} />
       </Section>
     </ScrollView>
   )

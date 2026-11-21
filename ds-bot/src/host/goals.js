@@ -419,7 +419,7 @@ const DUTY_DRAFT = [
   '2. List the decisions only the user can make. Ask them in one message, numbered, each with your recommended answer, so the user can reply "as recommended". Skip this when nothing is open.',
   '3. Then call group_goal start: the objective, how to check it is done (commands, tests, files, evidence), the rules to keep, and the stages in order, each with its own check and its tasks for named members.',
 ].join('\n')
-const NUDGE_LINE = 'Goal check from DS Bot: nothing is running in this group and the goal is not finished. Take the next step now: hand out the current stage\'s tasks that are not done, check a stage whose members have reported, or complete the goal if every stage passed. If you are waiting for the user, reply [PASS].'
+const NUDGE_LINE = 'Goal check from Jubala Bot: nothing is running in this group and the goal is not finished. Take the next step now: hand out the current stage\'s tasks that are not done, check a stage whose members have reported, or complete the goal if every stage passed. If you are waiting for the user, reply [PASS].'
 const RESUME_LINE = 'The user resumed the goal. Take the next step now.'
 
 export function install(rt) {
@@ -511,7 +511,7 @@ export function install(rt) {
   // Every non-task change is a group event: a notice the members read, which the
   // group chat shows as a goal row.
   const announce = (room, reply) => {
-    rt.logRoom?.(room, { who: 'DS Bot', kind: 'notice', reason: 'goal', ...reply })
+    rt.logRoom?.(room, { who: 'Jubala Bot', kind: 'notice', reason: 'goal', ...reply })
   }
 
   // A goal message into the room's own Session, which relays it as a new round:
@@ -621,7 +621,7 @@ export function install(rt) {
     goal.revision += 1
     goal.updatedAt = Date.now()
     await rt.save()
-    await queueGoalRelay(room, 'nudge', '[Goal check]', 'DS Bot')
+    await queueGoalRelay(room, 'nudge', '[Goal check]', 'Jubala Bot')
   }
 
   // Work can outlive its round, so settlement checks an otherwise quiet room.
@@ -715,7 +715,7 @@ export function install(rt) {
       const member = rt.botOf(self)
       if (member === undefined) return 'Only Bots on the team can use group_goal.'
       const action = String(args.action ?? '')
-      let room = rt.roomOf(rt.groupOwners.get(exec.agent?.id)?.roomId)
+      let room = rt.roomOf(rt.groupOwners.get(exec.agent?.id)?.roomId ?? rt.taskOwners?.get(exec.agent?.id)?.roomId)
       if (room === undefined) {
         if (String(args.group ?? '').trim() === '') return required('group', action)
         const picked = rt.pickRoom(args.group, self)

@@ -13,7 +13,7 @@ import { LocalAgentAdapter } from './adapter.js'
 import { AcpEngine } from './acp.js'
 import { CodexEngine } from './codex.js'
 import { ClaudeEngine } from './claude.js'
-import { ENGINES, customRoute, isLocalAgentRoute, validateCustom } from './engines.js'
+import { ENGINES, customRoute, isLocalAgentRoute, signInFor, validateCustom } from './engines.js'
 import { cleanEnv, findEngineExecutable, findExecutable, probeSignIn, probeVersion, refreshSearchDirs } from './discover.js'
 
 const SIGNED_IN_TTL_MS = 60_000
@@ -25,7 +25,7 @@ const SIGNED_IN_TTL_MS = 60_000
 // instead of the mode they asked for (#1539).
 export function presetOf(rt, sessionId) {
   const bot = rt.botOf(rt.selfOf(sessionId))
-  const room = rt.roomOf(rt.groupOwners.get(sessionId)?.roomId)
+  const room = rt.roomOf(rt.groupOwners.get(sessionId)?.roomId ?? rt.taskOwners?.get(sessionId)?.roomId)
   return room?.permission ?? bot?.permission ?? rt.permissionCatalog?.()?.defaultPreset ?? 'workspace-write'
 }
 
@@ -47,6 +47,9 @@ export function install(rt) {
   const customAgents = () => store().custom
   const customRouteId = () => store().custom.map(agent => customRoute(agent.id))
   const allRoutes = () => [...Object.keys(ENGINES), ...customRouteId()]
+  // The Jubala build keeps Claude Code for the user's own use: no Bot runs on it,
+  // so it is never offered and a Bot saved on it is not served.
+  const OFF_ROUTES = new Set(['local-claude-code'])
 
   // Only CLIs found on this machine get a route; the scan result feeds the page.
   const found = new Map()
@@ -55,10 +58,11 @@ export function install(rt) {
     await refreshSearchDirs()
     if (disposed) return []
     for (const route of Object.keys(ENGINES)) {
+      if (OFF_ROUTES.has(route)) continue
       const spec = ENGINES[route]
       const path = findEngineExecutable(spec, findExecutable)
       if (path === undefined) found.delete(route)
-      else if (found.get(route)?.path !== path) found.set(route, { route, name: spec.name, path, version: undefined, signIn: spec.signIn })
+      else if (found.get(route)?.path !== path) found.set(route, { route, name: spec.name, path, version: undefined, signIn: signInFor(spec, path) })
     }
     applyRoutes()
     return [...found.values()]
@@ -96,6 +100,12 @@ export function install(rt) {
       store().sessions[sessionId] = record
       void rt.save().catch(() => {})
     },
+    savedWindow: (route, model) => store().windows?.[route]?.[model],
+    saveWindow: (route, model, size) => {
+      const windows = store().windows ??= {}
+      ;(windows[route] ??= {})[model] = size
+      void rt.save().catch(() => {})
+    },
     recordUsage: entry => rt.recordUsage?.(entry),
     // A change that rides along with the next save: the CLI reports its context on
     // every model call.
@@ -107,14 +117,14 @@ export function install(rt) {
     cwdFor: async (sessionId) => {
       try {
         const agent = await rt.resolveAgent(sessionId)
-        return agent.session.header?.cwd ?? rt.workDirOf?.({ botId: rt.selfOf(sessionId), roomId: rt.groupOwners.get(sessionId)?.roomId }) ?? rt.teamFolder?.() ?? tmpdir()
+        return agent.session.header?.cwd ?? rt.workDirOf?.({ botId: rt.selfOf(sessionId), roomId: rt.groupOwners.get(sessionId)?.roomId ?? rt.taskOwners?.get(sessionId)?.roomId }) ?? rt.teamFolder?.() ?? tmpdir()
       } catch {
         return rt.teamFolder?.() ?? tmpdir()
       }
     },
     probeCwd: () => mkdtempSync(join(tmpdir(), 'dsb-probe-')),
     toolsFor: (options) => {
-      // Only DS Bot's own team tools cross the bridge; the CLI keeps its own.
+      // Only Jubala Bot's own team tools cross the bridge; the CLI keeps its own.
       const names = new Set([...rt.teamTools.map(def => def.name), 'approve_agent_action'])
       return (options.tools ?? []).filter(tool => names.has(tool.name))
     },
@@ -127,7 +137,7 @@ export function install(rt) {
   const usedRefs = () => [...new Set(Object.values(state.bots ?? {}).flatMap(bot => [bot.model, bot.appliedModel]).filter(Boolean))]
   // A route a Bot runs on stays registered when its CLI goes away: the turn then fails
   // with the repair card, and nothing moves the Bot to another run mode by itself.
-  const servedRoutes = () => [...new Set([...found.keys(), ...customRouteId(), ...usedRefs().map(ref => splitRef(ref)?.provider).filter(isLocalAgentRoute)])]
+  const servedRoutes = () => [...new Set([...found.keys(), ...customRouteId(), ...usedRefs().map(ref => splitRef(ref)?.provider).filter(isLocalAgentRoute)])].filter(route => !OFF_ROUTES.has(route))
   function applyRoutes() {
     if (!supported()) return
     const candidates = servedRoutes()
@@ -164,7 +174,7 @@ export function install(rt) {
   // Helpers the rest of the host asks.
 
   const isLocalAgentRef = ref => isLocalAgentRoute(splitRef(ref)?.provider ?? '')
-  // What a ref runs on: the local agent's route, or 'model' for DS Bot's own models.
+  // What a ref runs on: the local agent's route, or 'model' for Jubala Bot's own models.
   // Two refs with the same answer share a conversation; two with different ones never do.
   const engineOf = (ref) => {
     if (!ref) return undefined

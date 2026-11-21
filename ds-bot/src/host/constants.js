@@ -2,13 +2,13 @@
 // the limits on messages, group chats, and chat reads.
 
 // Classic avatar inks, offered as Bot colors.
-export const COLORS = ['deepseek', 'blue', 'violet', 'orange', 'green', 'magenta', 'cyan', 'red', 'yellow', 'brown', 'gray', 'black', 'aurora']
+export const COLORS = ['mandarin', 'deepseek', 'blue', 'violet', 'orange', 'green', 'magenta', 'cyan', 'red', 'yellow', 'brown', 'gray', 'black', 'aurora']
 // Deeper inks, also offered as accent swatches; each is a valid Bot color too.
 export const EXTRA_COLORS = ['charcoal', 'graphite', 'rose', 'sky', 'tangerine', 'cobalt']
 // Renamed color ids, so a Bot saved with an old one keeps its color (LEGACY: old id → new id).
 export const LEGACY_COLORS = { kimi: 'charcoal', zai: 'graphite', minimax: 'rose', stepfun: 'sky', mimo: 'tangerine', qwen: 'cobalt' }
 // Renamed theme ids, so a saved choice keeps its look (LEGACY: old id → new id).
-export const LEGACY_THEMES = { grok: 'mono' }
+export const LEGACY_THEMES = { grok: 'mono', deepseek: 'jubala' }
 
 export const OCR_PROMPT = [
   'Transcribe all text in this image exactly, in its original language, keeping line breaks and reading order; use Markdown tables for tables.',
@@ -70,18 +70,24 @@ export const AGENT_NAME = 'DSH Agent'
 export const AGENT_SESSION_TITLE_MAX = 80
 // Every tool this plugin defines for Bot Sessions; tools.js registers them in
 // each Bot session's own scope. `read_browser` only exists in the Desktop
-// profile, so the list served to one session can be shorter.
+// profile, and `read_document` only while DeepSeek OCR is on, so the list
+// served to one session can be shorter.
 export const TEAM_TOOLS = [
   'list_bots', 'message_bot', 'stop_bot', 'create_bot', 'update_bot', 'list_bot_models',
   'create_group', 'update_group', 'delete_group', 'group_todo', 'post_to_group', 'ask_user', 'show_view',
   'request_secret', 'list_secrets', 'group_relay', 'read_own_chat',
-  'read_group_chat', 'bot_remember', 'bot_forget', 'bot_recall', 'read_browser',
+  'read_group_chat', 'bot_remember', 'bot_forget', 'bot_recall', 'read_browser', 'read_document',
   'list_capabilities', 'save_capability', 'delete_capability',
   'attach_capability', 'detach_capability', 'group_goal', 'group_task', 'list_connectors', 'request_connector',
+  'task_start', 'task_send', 'task_stop', 'task_list', 'task_read',
 ]
 // Consecutive automatic admin wakes with no goal progress before the goal waits
 // for the user instead of waking the admin again.
 export const GOAL_IDLE_NUDGES = 2
+// How long a Bot's own chat waits for a shell call before it goes on as a background
+// job and the step moves on (settings can change it; 0 hands every call over).
+export const BACKGROUND_WAIT_MS = 5_000
+export const BACKGROUND_AFTER_MAX_SEC = 600
 // A member still at work this long after its first tool call lets the round go on; it
 // posts its reply when the work is done.
 export const ROOM_WORK_GRACE_MS = 15_000

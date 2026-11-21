@@ -20,7 +20,7 @@ export const openTasksOf = room => listOf(room).filter(task => OPEN_STATUSES.inc
 export const pastTasksOf = room => listOf(room).filter(task => !OPEN_STATUSES.includes(task.status))
 const newId = () => `t_${randomBytes(4).toString('hex')}`
 
-// Why DS Bot blocked a task: the member's turn failed, or the user stopped it. The panel
+// Why Jubala Bot blocked a task: the member's turn failed, or the user stopped it. The panel
 // words the same facts in the user's language.
 export const blockedLine = blocked => blocked.cause === 'stopped' ? 'stopped by the user'
   : blocked.cause === 'restarted' ? 'not updated after DeepSeek Harness restarted'
@@ -103,7 +103,7 @@ export function install(rt) {
       const bot = owner(task)
       const mine = task.botId === self ? ' (yours)' : ''
       const progress = task.progress === '' ? '' : `\n  progress: ${task.progress}`
-      const blocked = task.blocked === undefined ? '' : `\n  blocked by DS Bot: ${blockedLine(task.blocked)}`
+      const blocked = task.blocked === undefined ? '' : `\n  blocked by Jubala Bot: ${blockedLine(task.blocked)}`
       return `- ${task.id} · ${bot?.name ?? task.botId} · ${task.status} · ${task.goal}${mine}${progress}${blocked}`
     })
     const past = pastTasksOf(room_)
@@ -130,7 +130,7 @@ export function install(rt) {
       const self = rt.selfOf(exec.agent?.id)
       const member = rt.botOf(self)
       if (member === undefined) return 'Only Bots on the team can use group_task.'
-      const room = rt.roomOf(rt.groupOwners.get(exec.agent?.id)?.roomId)
+      const room = rt.roomOf(rt.groupOwners.get(exec.agent?.id)?.roomId ?? rt.taskOwners?.get(exec.agent?.id)?.roomId)
       if (room === undefined) return 'group_task works inside a group chat, where the work belongs to the group. Call it from your group session.'
       const isAdmin = rt.isMain(self) || rt.isAdminOf(room, self)
       const action = String(args.action ?? '')

@@ -39,6 +39,7 @@ function fakeHost(given) {
 const seed = () => ({
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },
     b: { id: 'b', name: 'Writer', role: 'Write', sessionId: 'b', createdAt: 2 },
@@ -258,7 +259,7 @@ test('a member\'s failed turn blocks its open tasks in the group with the reason
   host.emit('gb', 'turn/start', { turn: 3 })
   host.emit('gb', 'turn/end', { turn: 3, reason: { kind: 'error', error: { code: 'QUOTA', status: 402, message: 'Insufficient balance' } } })
   await settle(() => task('Write the draft').blocked.code === 'QUOTA')
-  assert.match(await host.tool({ action: 'show' }, 'ga'), /· Writer · blocked · Write the draft\n {2}blocked by DS Bot: its model call failed \(QUOTA 402\)/)
+  assert.match(await host.tool({ action: 'show' }, 'ga'), /· Writer · blocked · Write the draft\n {2}blocked by Jubala Bot: its model call failed \(QUOTA 402\)/)
 
   host.emit('gb', 'turn/start', { turn: 4 })
   host.emit('gb', 'turn/end', { turn: 4, reason: { kind: 'completed' } })
@@ -284,7 +285,7 @@ test('the user stopping a member blocks its open tasks; a block the Bot set itse
   assert.equal(task('Write the draft').status, 'active')
   assert.equal(task('Write the draft').blocked, undefined)
 
-  // A completed turn lifts only what DS Bot blocked.
+  // A completed turn lifts only what Jubala Bot blocked.
   host.emit('gb', 'turn/end', { turn: 1, reason: { kind: 'completed' } })
   await new Promise(resolve => setTimeout(resolve, 20))
   assert.equal(task('Wait for the data').status, 'blocked')
@@ -305,9 +306,9 @@ test('a turn picked up after a restart that leaves a task untouched blocks it; o
   const { at, ...blocked } = task('Write the draft').blocked
   assert.deepEqual(blocked, { by: 'system', cause: 'restarted', from: 'active' })
   assert.equal(task('Check the facts').status, 'active')
-  assert.match(await host.tool({ action: 'show' }, 'ga'), /blocked by DS Bot: not updated after DeepSeek Harness restarted/)
+  assert.match(await host.tool({ action: 'show' }, 'ga'), /blocked by Jubala Bot: not updated after DeepSeek Harness restarted/)
 
-  // Finishing a task DS Bot blocked leaves no block behind.
+  // Finishing a task Jubala Bot blocked leaves no block behind.
   await host.tool({ action: 'complete', id: task('Write the draft').id, result: 'Draft delivered' }, 'gb')
   assert.equal(task('Write the draft').status, 'done')
   assert.equal(task('Write the draft').blocked, undefined)

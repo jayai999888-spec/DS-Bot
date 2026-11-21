@@ -14,6 +14,9 @@ import { t } from './i18n.js'
 // How long "Opening…" stays before the note says the Session is still on its way.
 // This timer does not take the cover down.
 export const OPENING_WAIT_MS = 5000
+// A Session the list still does not hold by then is not coming (#1929): the cover comes
+// down and `onGiveUp` says so, instead of waiting for ever.
+export const OPENING_GIVE_UP_MS = 30000
 
 // The same wait, once its note should change. A different target, or no wait, is left
 // as it is — a late timer must not clear a cover the user has already moved on from.
@@ -25,9 +28,12 @@ function openingPastWait(pending, target) {
 // One cover for one asked-for Session. `end` is the only way down (that Session is
 // current, or the user opened something else). When the wait runs long, `onSlow` runs
 // once and the cover stays up.
-export function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, schedule = setTimeout, clear = clearTimeout, onSlow } = {}) {
+export function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, giveUpMs = OPENING_GIVE_UP_MS, schedule = setTimeout, clear = clearTimeout, onSlow, onGiveUp } = {}) {
   let timer = null
+  let giveUp = null
   const stop = () => {
+    if (giveUp !== null) clear(giveUp)
+    giveUp = null
     if (timer === null) return
     clear(timer)
     timer = null
@@ -37,6 +43,15 @@ export function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, schedule = setTi
       ui.set(state => ({ ...state, pendingOpen: pending }))
       stop()
       const target = pending?.target
+      giveUp = schedule(() => {
+        giveUp = null
+        let held = false
+        ui.set(state => {
+          held = state.pendingOpen?.target === target
+          return held ? { ...state, pendingOpen: null } : state
+        })
+        if (held) onGiveUp?.(pending)
+      }, giveUpMs)
       timer = schedule(() => {
         timer = null
         let held = false

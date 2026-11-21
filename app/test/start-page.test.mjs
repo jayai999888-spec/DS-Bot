@@ -8,7 +8,7 @@ import { langOf, TEXT, t } from '../src/start/text.mjs'
 
 const dir = new URL('../src/start/', import.meta.url)
 const read = name => readFileSync(new URL(name, dir), 'utf8')
-const SCRIPTS = ['start.js', 'whale.js', 'text.mjs']
+const SCRIPTS = ['start.js', 'orange.js', 'text.mjs']
 const html = read('start.html')
 const code = Object.fromEntries(SCRIPTS.map(name => [name, read(name)]))
 const uncommented = text => text.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//gu, '')
@@ -60,17 +60,17 @@ test('the page sends only the acts of the start window', () => {
   const sent = new Set([
     ...[...html.matchAll(/data-act="(\w+)"/gu)].map(match => match[1]),
     ...[...code['start.js'].matchAll(/\bact: '(\w+)'|\bact\('(\w+)'/gu)].map(match => match[1] ?? match[2]),
-    ...[...code['whale.js'].matchAll(/\bact\('(\w+)'\)/gu)].map(match => match[1]),
+    ...[...code['orange.js'].matchAll(/\bact\('(\w+)'\)/gu)].map(match => match[1]),
   ].filter(name => !local.has(name)))
   assert.deepEqual([...sent].sort(), ['answer', 'copyDetails', 'freshStart', 'handoffDone', 'handoffShow', 'importModel', 'importOption', 'installUpdate', 'manualDownload', 'painted', 'pick', 'reloadView', 'retry', 'saveLog', 'wait'])
   // Every act the main process takes is one that the page sends, under the same name.
   for (const name of START_ACTS) assert.ok(sent.has(name), `the main process takes ${name}, which the page never sends`)
 })
 
-// The progress is a ring of arcs round the whale, one per stage: radius 106 round the centre of
+// The progress is a ring of arcs round the orange, one per stage: radius 106 round the centre of
 // a 220 box, from the top, clockwise, 10 degrees apart, with one circle that closes the ring at the
 // hand-off. Three arcs of 120 degrees; a first start that copies a team has a fourth stage, the
-// import, and four arcs of 90 degrees (whale.js arcPath draws them again). The rings that the
+// import, and four arcs of 90 degrees (orange.js arcPath draws them again). The rings that the
 // whale left at its stops and the elapsed clock are gone.
 test('the start page draws the progress as a ring of three or four arcs and a closing circle', () => {
   const arcs = [...html.matchAll(/<g class="arc" data-phase="(\w+)" data-state="pending">(.*?)<\/g>/gu)]
@@ -97,7 +97,7 @@ test('the start page draws the progress as a ring of three or four arcs and a cl
   })
   assert.match(read('start.css'), /\.ring:not\(\[data-n="4"\]\) \.arc\[data-phase=import\]\{display:none\}/u)
   // The director draws the same arcs.
-  const source = code['whale.js']
+  const source = code['orange.js']
   const arcD = source.match(/^export function arcD\(from, to\) \{$[\s\S]*?^\}$/mu)[0].replace('export ', '')
   const arcPathOf = source.match(/^export const arcPath = .*$/mu)[0].replace('export ', '')
   const arcPath = new Function(`${arcD}\n${arcPathOf}\nreturn arcPath`)()
@@ -107,13 +107,13 @@ test('the start page draws the progress as a ring of three or four arcs and a cl
   // The hidden stage list has the import's stage too, shown only on such a start.
   assert.match(html, /<li class="station" data-phase="data"[^>]*>.*\r?\n<li class="station" data-phase="import" data-state="pending" hidden>.*\r?\n<li class="station" data-phase="engine"/u)
   assert.equal(html.match(/<circle class="ring-full" cx="110" cy="110" r="106" pathLength="100" transform="rotate\(-90 110 110\)"\/>/gu)?.length, 1)
-  // The ring, the water, the whale and its hit box move as one block when a card comes.
-  assert.match(html, /<div class="pond">\r?\n<svg class="ring"[\s\S]*?<div class="water"[\s\S]*?<div class="lane">[\s\S]*?<span class="spout"><svg class="plume"[^>]*\shidden>[\s\S]*?<div class="whale-hit"[\s\S]*?<div class="fx" aria-hidden="true"><span class="ripple"><\/span><\/div>\r?\n<\/div>/u)
+  // The ring, the ground line, the orange and its hit box move as one block when a card comes.
+  assert.match(html, /<div class="pond">\r?\n<svg class="ring"[\s\S]*?<div class="ground"[\s\S]*?<div class="lane">[\s\S]*?<span class="sparks"><svg class="spark"[^>]*\shidden>[\s\S]*?<div class="orange-hit"[\s\S]*?<div class="fx" aria-hidden="true"><span class="ripple"><\/span><\/div>\r?\n<\/div>/u)
   assert.doesNotMatch(html, /class="(?:trace|elapsed)"/u)
-  // The layer the whale flies in to the Main Bot's avatar at the hand-off (whale.js leap), and
-  // the whale's box at the top of its jump, which the team page takes over.
+  // The layer the orange flies in to the Main Bot's avatar at the hand-off (orange.js leap), and
+  // the orange's box at the top of its jump, which the team page takes over.
   assert.match(html, /<\/main>\r?\n<div class="flight" aria-hidden="true"><\/div>/u)
-  assert.match(code['whale.js'], /act\('handoffShow', \{ whale: \{ x: box\.left, y: box\.top - LIFT, size: box\.width \} \}\)/u)
+  assert.match(code['orange.js'], /act\('handoffShow', \{ mark: \{ x: box\.left, y: box\.top - LIFT, size: box\.width \} \}\)/u)
   assert.doesNotMatch(read('start.css'), /\.(?:trace|elapsed)\b/u)
 })
 
@@ -162,33 +162,33 @@ test('an empty or hidden arc leaves no dot: no dash touches its path', () => {
 // fills; a stage seen running fills at once. While the import card waits, the ring holds after
 // the first arc.
 test('every stage is seen active before it fills, even one done before the page painted or while a card waited', () => {
-  const whale = code['whale.js']
-  const legs = whale.slice(whale.indexOf('async function runLegs()'), whale.indexOf('function failStation()'))
+  const director = code['orange.js']
+  const legs = director.slice(director.indexOf('async function runLegs()'), director.indexOf('function failStation()'))
   assert.match(legs, /while \(D\.at < want\.station && want\.view !== 'handoff'\) \{[\s\S]*?if \(!resume && !failure\(\) && stationEl\(i\)\.dataset\.state === 'pending'\) \{\s*clearTimeout\(activeTimer\)\s*showActive\(i\)/u)
   assert.doesNotMatch(legs, /if \(!ran\) \{/u, 'only the first stage gets its turn')
-  assert.match(whale, /if \(holding\(\)\) station = Math\.min\(station, 1\)/u)
-  assert.match(whale, /\(holding\(\) && i >= 1\)\) return/u)
+  assert.match(director, /if \(holding\(\)\) station = Math\.min\(station, 1\)/u)
+  assert.match(director, /\(holding\(\) && i >= 1\)\) return/u)
   // The team's arc, when the team view was ready before it turned active: at the hand-off of a
   // first start, inside the main process's 2.5 s fallback.
-  const handoff = whale.slice(whale.indexOf('async function handoff()'), whale.indexOf('root.dataset.ring = \'closed\''))
+  const handoff = director.slice(director.indexOf('async function handoff()'), director.indexOf('root.dataset.ring = \'closed\''))
   assert.match(handoff, /if \(!resume && first && D\.checks === t && stationEl\(t\)\.dataset\.state === 'pending'\) \{\s*D\.handing = true\s*showActive\(t\)\s*await sleep\(HOLD\)/u)
   assert.match(legs, /await hold\(Math\.max\(D\.activeAt\[i\] \? D\.activeAt\[i\] \+ HOLD : 0/u)
-  assert.match(whale, /const HOLD = 420\b/u)
-  // The reconcile waits for the entrance first, so the arc turns active on a whale that has surfaced.
-  assert.match(whale, /async function step\(\) \{\s*await entered/u)
+  assert.match(director, /const HOLD = 420\b/u)
+  // The reconcile waits for the entrance first, so the arc turns active on an orange that has landed.
+  assert.match(director, /async function step\(\) \{\s*await entered/u)
 })
 
 // The window turns opaque OPEN_MS after it shows (start-window.mjs); the entrance waits for the
 // snapshot's `shown`, so that it is seen from its first frame.
-test('the whale\'s entrance waits until the window is on screen', () => {
+test('the orange\'s entrance waits until the window is on screen', () => {
   const page = code['start.js']
   assert.match(page, /if \(bridge && !resume\) \{\s*root\.dataset\.held = ''/u)
   assert.match(page, /if \(next\.shown\) release\(\)/u)
   assert.match(page, /createDirector\(\{ start: START, resume, begin,/u)
   assert.match(read('start.css'), /html\[data-held\] \*\{animation-play-state:paused!important\}/u)
-  const whale = code['whale.js']
-  assert.match(whale, /const entered = begun\.then\(\(\) => sleep\(entranceMs\)\)/u)
-  assert.match(whale, /begun\.then\(\(\) => sleep\(resume \? 0 : 700\)\)/u)
+  const director = code['orange.js']
+  assert.match(director, /const entered = begun\.then\(\(\) => sleep\(entranceMs\)\)/u)
+  assert.match(director, /begun\.then\(\(\) => sleep\(resume \? 0 : 700\)\)/u)
 })
 
 test('the footer is the place line alone, centred with a grey button, on first and later starts', () => {
@@ -268,9 +268,9 @@ test('every text key starts with one of the eleven layers', () => {
   for (const key of Object.keys(TEXT.zh)) assert.ok(LAYERS.includes(layerOf(key)), `${key}: unknown layer`)
 })
 
-// The whale speaks only when something went wrong (the 180 s question, a failure), and the hint
+// The orange speaks only when something went wrong (the 180 s question, a failure), and the hint
 // row only for a short drive: no greeting, stage lines, slow-start lines or clock.
-test('the whale and the hint row have only the lines for when the user is needed', () => {
+test('the orange and the hint row have only the lines for when the user is needed', () => {
   const layer = name => Object.keys(TEXT.zh).filter(key => layerOf(key) === name).sort()
   assert.deepEqual(layer('voice'), ['voice.failed', 'voice.viewFailed', 'voice.watchdog'])
   assert.deepEqual(layer('hint'), ['hint.space'])
@@ -333,7 +333,7 @@ test('a button that opens the system picker ends with …', () => {
 
 // docs/plans/2026-10-26-windows-onboarding.md, 用词: proper names and units only.
 test('the zh copy shows no English but the allowed names and units', () => {
-  const NAMES = ['DS Bot', 'DSH Desktop', 'DSH Web']
+  const NAMES = ['Jubala Bot', 'DSH Desktop', 'DSH Web']
   const WORDS = new Set(['DeepSeek', 'Bot', 'API', 'Key', 'Harness', 'DSH', 'Agent', 'MCP', 'Windows', 'PowerShell', 'GitHub', 'SmartScreen', 'OneDrive', 'cookie', 'HTTP', 'SOCKS', 'KB', 'MB', 'GB'])
   const english = []
   for (const [key, value] of Object.entries(TEXT.zh)) {
@@ -351,7 +351,7 @@ test('every text key that the page uses exists', () => {
   const matching = pattern => keys.filter(key => new RegExp(`^${pattern.replaceAll('.', '\\.').replace(/\{\w+\}/gu, '\\w+')}$`, 'u').test(key))
   for (const [, key] of html.matchAll(/data-t(?:-label)?="([^"]+)"/gu)) assert.ok(matching(key).length > 0, `start.html: unknown text key ${key}`)
   const literal = new RegExp(`^(?:${LAYERS.join('|')})\\.[\\w.]+$`, 'u')
-  for (const name of ['start.js', 'whale.js']) {
+  for (const name of ['start.js', 'orange.js']) {
     const text = uncommented(code[name])
     const used = [
       ...[...text.matchAll(/'([\w.]+)'/gu)].map(match => match[1]).filter(key => literal.test(key)),

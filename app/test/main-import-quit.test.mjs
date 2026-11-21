@@ -42,7 +42,7 @@ test('quitting during the copy stops it, then quits, and leaves no team behind',
   hostState.release()
   await waitFor(() => startWindows().every(win => win.destroyed), 'close the start window')
 
-  const data = join(home, '.ds-bot')
+  const data = join(home, '.jubala-bot')
   assert.equal(existsSync(join(data, 'bot', 'imported.json')), false, 'no copied team')
   // The check's folder goes once its Host, held until now, has stopped.
   const left = () => (existsSync(data) ? readdirSync(data).filter(name => name.startsWith('.import-')) : [])

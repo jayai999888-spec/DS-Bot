@@ -16,6 +16,7 @@ function seed({ diary, privateBot, archives = [], picked, openPart = false }) {
   return {
     version: 1,
     mainBotIds: ['a'],
+    orangeStored: true,
     privateArchives: archives,
     workspaceId: 'w1',
     bots: {
@@ -67,7 +68,7 @@ async function start({ services = {}, privateBot = true, archives, memberPick = 
     }
     return agents.get(sessionId)
   }
-  const registry = new Map([['w1', { id: 'w1', path: team, title: 'DS Bot' }]])
+  const registry = new Map([['w1', { id: 'w1', path: team, title: 'Jubala Bot' }]])
   let created = 0
   Object.assign(ctx, {
     llm: { listProviders: () => [], listModels: async () => [], resolveModelInfo: async () => ({}) },
@@ -76,7 +77,7 @@ async function start({ services = {}, privateBot = true, archives, memberPick = 
       list: () => [...registry.values()],
       resolveByPath: async path => [...registry.values()].find(workspace => workspace.path === path),
       create: async (path) => {
-        const workspace = { id: 'w-new', path, title: 'DS Bot' }
+        const workspace = { id: 'w-new', path, title: 'Jubala Bot' }
         registry.set(workspace.id, workspace)
         return workspace
       },
@@ -650,6 +651,22 @@ test('a kept Bot whose memory never moved does not close the archive folder', as
   const archiveRoot = join(home, 'memory', 'archive')
   mkdirSync(archiveRoot, { recursive: true })
   assert.deepEqual(await run('glob', { pattern: '**/*', path: archiveRoot }, 'b'), { ran: true })
+})
+
+test('another Bot cannot glob or read a private OCR spill that names the Session in its path', async (t) => {
+  const { run, diary, stop } = await start()
+  t.after(stop)
+  const spill = join(diary, '.ocr', P, P, 'scan.ocr.txt')
+  mkdirSync(join(diary, '.ocr', P, P), { recursive: true })
+  writeFileSync(spill, 'private ocr text')
+  const otherRead = await run('read', { file_path: spill }, 'b')
+  assert.equal(otherRead.ran, false)
+  assert.match(otherRead.error, CLOSED)
+  const otherGlob = await run('glob', { pattern: '**/*.ocr.txt', path: diary }, 'b')
+  assert.equal(otherGlob.ran, false)
+  assert.match(otherGlob.error, CLOSED)
+  assert.deepEqual(await run('read', { file_path: spill }, P), { ran: true })
+  assert.deepEqual(await run('glob', { pattern: '**/*.ocr.txt', path: diary }, P), { ran: true })
 })
 
 test('with no private Bot the tools run as they did', async (t) => {

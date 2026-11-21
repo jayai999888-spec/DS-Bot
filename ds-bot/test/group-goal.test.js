@@ -12,6 +12,7 @@ import { ROOM_WORK_GRACE_MS } from '../src/host/constants.js'
 const seed = (room = {}, extraRooms = {}) => ({
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },
     b: { id: 'b', name: 'Writer', role: 'Write', sessionId: 'b', createdAt: 2 },
@@ -327,7 +328,7 @@ test('an idle round wakes the admin for a goal check; [PASS] waits for the user'
   await settle(() => host.agentOf('ga').calls.length === 2)
   const prompt = text(host.agentOf('ga').calls[1])
   assert.match(prompt, /goal check/)
-  assert.match(prompt, /Goal check from DS Bot/)
+  assert.match(prompt, /Goal check from Jubala Bot/)
   host.begin('ga')
   host.finish('ga', '[PASS]')
   await settle(() => check() !== undefined)

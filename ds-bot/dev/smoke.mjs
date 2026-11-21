@@ -162,35 +162,35 @@ const expect = (condition, message) => (condition ? undefined : message)
 const saidText = (calls, pattern) => calls.some(call => (call.out ?? []).some(block => block.type === 'text' && pattern.test(block.text)))
 
 const send = (sessionId, text) => api('send', { sessionId, text })
-const chief = () => botNamed('Chief')
+const chief = () => botNamed('小橘')
 
 let models = []
-await step('bootstrap: Chief waits for a model', () => api('state'), (value, calls) => {
+await step('bootstrap: 小橘 waits for a model', () => api('state'), (value, calls) => {
   const current = state()
   const bots = Object.values(current.bots)
-  // The model card offers DS Bot models only; a CLI found on this machine is no pick there.
+  // The model card offers Jubala Bot models only; a CLI found on this machine is no pick there.
   models = modelsFor(value.models)
-  return expect(bots.length === 1 && bots[0].name === 'Chief' && current.mainBotIds[0] === bots[0].id, 'expected one Main Bot named Chief')
-    ?? expect(bots[0].model === undefined && bots[0].kickoff !== undefined, 'Chief should hold its greeting until a model is picked')
-    ?? expect(value.bots[0].waiting === true, 'the view should show Chief as waiting')
-    ?? expect(calls.length === 0, `Chief called the model ${calls.length} times before it had one`)
+  return expect(bots.length === 1 && bots[0].name === '小橘' && current.mainBotIds[0] === bots[0].id, 'expected one Main Bot named 小橘')
+    ?? expect(bots[0].model === undefined && bots[0].kickoff !== undefined, '小橘 should hold its greeting until a model is picked')
+    ?? expect(value.bots[0].waiting === true, 'the view should show 小橘 as waiting')
+    ?? expect(calls.length === 0, `小橘 called the model ${calls.length} times before it had one`)
     ?? expect(models.length > 0, 'no models listed for the model card')
 })
 
-await step('user picks a model; Chief greets and asks in its reply', () => api('update-bot', { id: chief().id, model: models.at(-1).ref }), (_value, calls) => {
+await step('user picks a model; 小橘 greets and asks in its reply', () => api('update-bot', { id: chief().id, model: models.at(-1).ref }), (_value, calls) => {
   const current = state()
-  return expect(chief().model === models.at(-1).ref, `Chief runs on ${chief().model}`)
+  return expect(chief().model === models.at(-1).ref, `小橘 runs on ${chief().model}`)
     ?? expect(chief().kickoff === undefined, 'the greeting is still held')
     ?? expect(!current.questions?.[chief().sessionId ?? chief().id], 'the greeting should not leave a question card')
-    ?? expect(saidText(calls, /先让团队帮你做哪块/), 'expected Chief to ask in its reply')
+    ?? expect(saidText(calls, /先让团队帮你做哪块/), 'expected 小橘 to ask in its reply')
 })
 
-await step('Chief creates Writer, who replies', () => send(chief().id, '创建一个叫Writer的bot'), async () => {
+await step('小橘 creates Writer, who replies', () => send(chief().id, '创建一个叫Writer的bot'), async () => {
   const writer = botNamed('Writer')
   if (!writer) return 'no Writer'
   const entries = await api('exchange', { a: chief().id, b: writer.id })
   const kinds = entries.map(entry => entry.role)
-  return expect(writer.createdBy === chief().id, 'Writer should be created by Chief')
+  return expect(writer.createdBy === chief().id, 'Writer should be created by 小橘')
     ?? expect(kinds.includes('request') && kinds.includes('reply'), `expected a request and a reply, got ${kinds}`)
 })
 
@@ -242,7 +242,7 @@ await step('user creates Coder, who keeps the default model', () => api('create-
     ?? expect(!Object.values(state().bots).some(entry => 'lab' in entry), 'a Bot still has a lab')
 })
 
-await step('Chief creates a group', () => send(chief().id, '建群 研发群: Writer, Coder'), () => {
+await step('小橘 creates a group', () => send(chief().id, '建群 研发群: Writer, Coder'), () => {
   const room = roomNamed('研发群')
   if (!room) return 'no group 研发群'
   const names = room.members.map(id => state().bots[id]?.name).sort()
@@ -262,14 +262,14 @@ await step('admin calls everyone', () => send(roomNamed('研发群').id, '讨论
   return expect(answers.length >= 2, `expected at least two answers, got ${answers.length}`)
 })
 
-await step('Chief posts to the group', () => send(chief().id, '群发 研发群: 今天下午开会'), () => {
+await step('小橘 posts to the group', () => send(chief().id, '群发 研发群: 今天下午开会'), () => {
   const log = roomNamed('研发群').log ?? []
-  return expect(log.some(line => line.who === 'Chief' && line.text.includes('今天下午开会')), 'post missing from the group log')
+  return expect(log.some(line => line.who === '小橘' && line.text.includes('今天下午开会')), 'post missing from the group log')
 })
 
-await step('Chief sets the group notice', () => send(chief().id, '改群 研发群 公告: 周五交付'), () => expect(roomNamed('研发群').notice === '周五交付', 'notice not set'))
+await step('小橘 sets the group notice', () => send(chief().id, '改群 研发群 公告: 周五交付'), () => expect(roomNamed('研发群').notice === '周五交付', 'notice not set'))
 
-await step('Chief reads the group', () => send(chief().id, '看群 研发群'), (_value, calls) => expect(saidText(calls, /^群里最近/), 'no read_group_chat answer'))
+await step('小橘 reads the group', () => send(chief().id, '看群 研发群'), (_value, calls) => expect(saidText(calls, /^群里最近/), 'no read_group_chat answer'))
 
 // Group memory: what the group keeps stays in the group.
 const groupFact = '研发群的产物放在 out 目录'
@@ -320,7 +320,7 @@ await step('the big view survives the switch to an earlier part', async () => {
 }, found => expect(found?.view?.children?.length === 4 && found.view.children.every(node => node.type === 'text' && node.text === 'x'.repeat(1900)), 'the earlier part lost the view blueprint'))
 
 // Work still under way (the mock steward reads 阶段未完 in the latest user message): the
-// part is condensed in place with DS Bot's checkpoint, not switched, and the condensed
+// part is condensed in place with Jubala Bot's checkpoint, not switched, and the condensed
 // messages stay searchable. Then work that reaches a stopping point switches again.
 const writerParts = () => (botNamed('Writer').segments ?? []).length
 const partsBeforeWork = writerParts()
@@ -345,10 +345,10 @@ for (const round of [1, 2, 3, 4]) {
   })
 }
 
-await step('exchange log between Chief and Writer', () => api('exchange', { a: chief().id, b: botNamed('Writer').id }), entries => expect(entries.length >= 2, `got ${entries.length}`))
+await step('exchange log between 小橘 and Writer', () => api('exchange', { a: chief().id, b: botNamed('Writer').id }), entries => expect(entries.length >= 2, `got ${entries.length}`))
 
-// Writer hands Chief's work on to Coder and waits, and the team view shows it; Coder's
-// result goes up to Chief with Writer's answer.
+// Writer hands 小橘's work on to Coder and waits, and the team view shows it; Coder's
+// result goes up to 小橘 with Writer's answer.
 await step('Writer waits for the work it handed on, then answers with it', async () => {
   await send(chief().id, '转告 Writer: 转告 Coder: 慢慢做 3')
   const writer = botNamed('Writer').id
@@ -360,8 +360,8 @@ await step('Writer waits for the work it handed on, then answers with it', async
 }, async (waiting, calls) => {
   const entries = await api('exchange', { a: chief().id, b: botNamed('Writer').id })
   return expect(waiting?.bots?.includes(botNamed('Coder').id) && waiting.for.includes(chief().id), `Writer did not show that it waits for Coder (${JSON.stringify(waiting)})`)
-    ?? expect(saidText(calls, /^Coder 交回了，我把结果交给 Chief/), 'Writer did not go on when Coder answered')
-    ?? expect(entries.some(entry => entry.role === 'reply' && entry.from === botNamed('Writer').id && String(entry.text).includes('[Handed back to Writer for this work]')), 'Chief did not get Coder\'s result with Writer\'s answer')
+    ?? expect(saidText(calls, /^Coder 交回了，我把结果交给 小橘/), 'Writer did not go on when Coder answered')
+    ?? expect(entries.some(entry => entry.role === 'reply' && entry.from === botNamed('Writer').id && String(entry.text).includes('[Handed back to Writer for this work]')), '小橘 did not get Coder\'s result with Writer\'s answer')
 })
 
 await step('update Writer', () => api('update-bot', { id: botNamed('Writer').id, role: 'Copywriter', instructions: 'Write the copy.' }), () => {
@@ -371,7 +371,7 @@ await step('update Writer', () => api('update-bot', { id: botNamed('Writer').id,
 
 // dsh keeps each Session under a folder named after its cwd. A change of working folder
 // moves the Bot's own chat on to a fresh part made there; the fresh part then stays put.
-// The native realpath is the one DS Bot saves; on Windows the JS one keeps 8.3 short names.
+// The native realpath is the one Jubala Bot saves; on Windows the JS one keeps 8.3 short names.
 const project = realpathSync.native(mkdtempSync(join(tmpdir(), 'ds-bot-smoke-folder-')))
 const folderOf = sessionId => readdirSync(join(HOME, 'sessions')).find(dir => existsSync(join(HOME, 'sessions', dir, sessionId)))
 const coderParts = () => (botNamed('Coder').segments ?? []).length
@@ -429,27 +429,163 @@ await api('capability-save', { name: skillName, kind: 'skill', description: skil
 await attach(chief(), echoName, true)
 await attach(chief(), skillName, true)
 
-await step('Chief sees its attached MCP and skill', () => send(chief().id, '查能力 smoke'), (_value, calls) => {
-  const report = reportOf(calls, 'Chief')
-  return expect(report?.endsWith(sees), `Chief reported ${report}`)
+await step('小橘 sees its attached MCP and skill', () => send(chief().id, '查能力 smoke'), (_value, calls) => {
+  const report = reportOf(calls, '小橘')
+  return expect(report?.endsWith(sees), `小橘 reported ${report}`)
 })
 
 const capabilityRoom = await api('create-room', { name: 'Capability smoke', members: [chief().id, botNamed('Coder').id], admin: chief().id })
-await step('Chief first group turn sees its attached MCP and skill', () => send(capabilityRoom.id, '查能力 smoke'), (_value, calls) => {
-  const report = reportOf(calls, 'Chief')
-  return expect(report?.endsWith(sees), `Chief reported ${report} in the group`)
+await step('小橘 first group turn sees its attached MCP and skill', () => send(capabilityRoom.id, '查能力 smoke'), (_value, calls) => {
+  const report = reportOf(calls, '小橘')
+  return expect(report?.endsWith(sees), `小橘 reported ${report} in the group`)
 })
 
-await step('Coder does not inherit Chief capabilities', () => send(botNamed('Coder').id, '查能力 smoke'), (_value, calls) => {
+await step('Coder does not inherit 小橘 capabilities', () => send(botNamed('Coder').id, '查能力 smoke'), (_value, calls) => {
   const report = reportOf(calls, 'Coder')
   return expect(report?.endsWith(seesNothing), `Coder reported ${report}`)
 })
 
 await attach(chief(), echoName, false)
 await attach(chief(), skillName, false)
-await step('detached capabilities disappear from Chief', () => send(chief().id, '查能力 smoke'), (_value, calls) => {
-  const report = reportOf(calls, 'Chief')
-  return expect(report?.endsWith(seesNothing), `Chief reported ${report}`)
+await step('detached capabilities disappear from 小橘', () => send(chief().id, '查能力 smoke'), (_value, calls) => {
+  const report = reportOf(calls, '小橘')
+  return expect(report?.endsWith(seesNothing), `小橘 reported ${report}`)
+})
+
+await step('Chief runs a background task forked from its own chat and receives the report', async () => {
+  await send(chief().id, '调用 task_start {"title":"后台冒烟","brief":"检查上下文并回报"}')
+  const deadline = Date.now() + 25_000
+  let task
+  while (Date.now() < deadline) {
+    const view = await api('state')
+    const chiefView = view.bots?.find(item => item.id === chief().id)
+    task = (chiefView?.tasks ?? []).find(item => item.title === '后台冒烟')
+    if (task?.status === 'completed') break
+    await sleep(300)
+  }
+  await settle()
+  const page = task === undefined ? null : await api('bot-task-read', { botId: chief().id, taskId: task.id })
+  const swapBlocked = task === undefined ? false : await api('bot-open-part', { botId: chief().id, sessionId: task.sessionId }).then(() => false, () => true)
+  return { task, page, swapBlocked }
+}, ({ task, page, swapBlocked }, calls) => {
+  const outputs = calls.flatMap(call => call.out ?? []).filter(block => block.type === 'text').map(block => block.text)
+  const taskLine = outputs.find(line => line.includes('后台任务已完成，共继承'))
+  const inherited = Number(/共继承 (\d+) 条消息/.exec(taskLine ?? '')?.[1] ?? 0)
+  const fgReport = outputs.find(line => line.includes('已收到后台任务汇报'))
+  return expect(
+    task?.status === 'completed'
+      && inherited > 5
+      && fgReport !== undefined
+      && page?.sessionId === task.sessionId
+      && swapBlocked === true,
+    `task=${JSON.stringify(task)} inherited=${inherited} fgReport=${fgReport} page=${page?.sessionId} swapBlocked=${swapBlocked}`,
+  )
+})
+
+await step('busy foreground auto-moves to background on new user message and reports back', async () => {
+  const oldSid = chief().sessionId ?? chief().id
+  const callsBefore = mockLog().length
+  await send(chief().id, '慢活 4')
+  // Wait until list_bots tool call has been issued (toolCount >= 1) and second model call is in flight.
+  const busyDeadline = Date.now() + 10_000
+  while (Date.now() < busyDeadline) {
+    if (mockLog().length > callsBefore) break
+    await sleep(100)
+  }
+  await sleep(300)
+  // User sends a new message while Chief is busy -> oldSid moves into bot.tasks[] as fg-handoff.
+  await send(chief().id, '前台新问题')
+  const newSid = chief().sessionId ?? chief().id
+  const deadline = Date.now() + 25_000
+  let movedTask
+  while (Date.now() < deadline) {
+    const view = await api('state')
+    const chiefView = view.bots?.find(item => item.id === chief().id)
+    movedTask = (chiefView?.tasks ?? []).find(item => item.sessionId === oldSid)
+    if (movedTask?.status === 'completed') break
+    await sleep(300)
+  }
+  await settle()
+  return { oldSid, newSid, movedTask }
+}, ({ oldSid, newSid, movedTask }, calls) => {
+  const outputs = calls.flatMap(call => call.out ?? []).filter(block => block.type === 'text').map(block => block.text)
+  const slowDone = outputs.find(line => line.includes('慢活已完成'))
+  const fgReport = outputs.find(line => line.includes('已收到后台任务汇报') && line.includes('慢活已完成'))
+  return expect(
+    newSid !== oldSid
+      && movedTask?.origin === 'fg-handoff'
+      && movedTask?.status === 'completed'
+      && slowDone !== undefined
+      && fgReport !== undefined,
+    `oldSid=${oldSid} newSid=${newSid} movedTask=${JSON.stringify(movedTask)} slowDone=${slowDone} fgReport=${fgReport}`,
+  )
+})
+
+await step('peer Bot messaging a busy Bot spawns a bot-handoff task without switching foreground', async () => {
+  const fgBefore = chief().sessionId ?? chief().id
+  const beforeCount = (chief().tasks ?? []).length
+  const callsBefore = mockLog().length
+  await send(chief().id, '慢活 6')
+  const busyDeadline = Date.now() + 10_000
+  while (Date.now() < busyDeadline) {
+    if (mockLog().length > callsBefore) break
+    await sleep(100)
+  }
+  await sleep(300)
+  await send(botNamed('Coder').id, '转告 Chief：并行核对接口')
+  const deadline = Date.now() + 25_000
+  let peerTask
+  while (Date.now() < deadline) {
+    const view = await api('state')
+    const chiefView = view.bots?.find(item => item.id === chief().id)
+    peerTask = (chiefView?.tasks ?? []).slice(beforeCount).find(item => item.origin === 'bot-handoff')
+    if (peerTask?.status === 'completed') break
+    await sleep(300)
+  }
+  await settle()
+  const fgAfter = chief().sessionId ?? chief().id
+  return { fgBefore, fgAfter, peerTask }
+}, ({ fgBefore, fgAfter, peerTask }, calls) => {
+  const outputs = calls.flatMap(call => call.out ?? []).filter(block => block.type === 'text').map(block => block.text)
+  const peerReplied = outputs.some(line => line.includes('给 Coder 的回复'))
+  return expect(
+    fgBefore === fgAfter
+      && peerTask?.origin === 'bot-handoff'
+      && peerTask?.status === 'completed'
+      && peerReplied,
+    `fgBefore=${fgBefore} fgAfter=${fgAfter} peerTask=${JSON.stringify(peerTask)} peerReplied=${peerReplied}`,
+  )
+})
+
+await step('group member runs a background task in a group chat and reports back to the group', async () => {
+  await send(capabilityRoom.id, '@Coder 调用 task_start {"title":"群后台冒烟","brief":"检查群上下文并回报"}')
+  const deadline = Date.now() + 25_000
+  let task
+  while (Date.now() < deadline) {
+    const view = await api('state')
+    const coderView = view.bots?.find(item => item.id === botNamed('Coder').id)
+    task = (coderView?.tasks ?? []).find(item => item.title === '群后台冒烟')
+    if (task?.status === 'completed') break
+    await sleep(300)
+  }
+  await settle()
+  const finalState = await api('state')
+  const roomView = finalState.rooms?.find(item => item.id === capabilityRoom.id)
+  const page = task === undefined ? null : await api('bot-task-read', { botId: botNamed('Coder').id, taskId: task.id })
+  return { task, preview: roomView?.preview ?? '', page }
+}, ({ task, preview, page }, calls) => {
+  const outputs = calls.flatMap(call => call.out ?? []).filter(block => block.type === 'text').map(block => block.text)
+  const taskLine = outputs.find(line => line.includes('后台任务已完成，共继承'))
+  const groupReport = outputs.find(line => line.includes('已收到后台任务汇报'))
+  return expect(
+    task?.status === 'completed'
+      && task?.roomId === capabilityRoom.id
+      && taskLine !== undefined
+      && groupReport !== undefined
+      && preview.includes('已收到后台任务汇报')
+      && page?.sessionId === task.sessionId,
+    `task=${JSON.stringify(task)} taskLine=${taskLine} groupReport=${groupReport} preview=${preview} page=${page?.sessionId}`,
+  )
 })
 
 if (outFile) writeFileSync(outFile, `${JSON.stringify(transcript, null, 2)}\n`)

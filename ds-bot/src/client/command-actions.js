@@ -1,10 +1,10 @@
-// DS Bot's own actions in the `/` menu of a Bot's chat and a group chat. The DSH
+// Jubala Bot's own actions in the `/` menu of a Bot's chat and a group chat. The DSH
 // command rows cannot be removed from that menu through the documented client API (the
 // `/` source registry is global and offers no per-Session filtering); the host module
 // `agent-commands.js` stops their execution there. This module only adds rows:
 //
 //   - Scheduled task (`/scheduled-task`) opens this chat's scheduled tasks.
-//   - In a group chat, a bare `/goal` opens DS Bot's group goal instead of DSH's goal
+//   - In a group chat, a bare `/goal` opens Jubala Bot's group goal instead of DSH's goal
 //     command. The DSH row stays; the decoration replaces its bare invocation only.
 //
 // "Reference a chat" stays in the composer's "+" menu: a command action receives the

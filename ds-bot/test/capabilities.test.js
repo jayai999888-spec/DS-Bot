@@ -17,6 +17,7 @@ const makeHome = state => {
 const team = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', capabilities: [], createdAt: 1 },
     worker: { id: 'worker', sessionId: 'worker', name: 'Worker', capabilities: [], createdAt: 2 },
@@ -260,7 +261,7 @@ test('capability tool descriptions and attach results explain approval', async t
     { name: 'blocked' },
     { agent: { id: 'worker' } },
   )
-  assert.ok(attached.endsWith(' The user must allow blocked in DS Bot settings before it can work.'))
+  assert.ok(attached.endsWith(' The user must allow blocked in Jubala Bot settings before it can work.'))
 })
 
 test('a deleted Bot drops only a pending local MCP it alone asked for', async t => {

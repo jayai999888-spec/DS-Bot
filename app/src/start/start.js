@@ -1,10 +1,10 @@
 // The start page: binds window.dsBotStart and applies each full snapshot to the page (the
-// whale's line and the hint row, which speak only when the user is needed, the sheet and its
-// cards, focus and the live region). The whale, the ring of arcs that is the progress and the
-// hidden stage list belong to the director in whale.js. Text is set only through textContent
+// orange's line and the hint row, which speak only when the user is needed, the sheet and its
+// cards, focus and the live region). The orange, the ring of arcs that is the progress and the
+// hidden stage list belong to the director in orange.js. Text is set only through textContent
 // (and text nodes), never as markup.
 import { fill as fillIn, t } from './text.mjs'
-import { createDirector, reduced, reducedFx, play, spring, sleep, clamped } from './whale.js'
+import { createDirector, reduced, reducedFx, play, spring, sleep, clamped } from './orange.js'
 
 const root = document.documentElement
 const asked = new URLSearchParams(location.search).get('start')
@@ -19,7 +19,7 @@ if (bridge) root.dataset.start = START
 const first = START === 'first'
 root.dataset.sheet = 'none'
 // The window shows see-through once this page has painted and turns opaque a moment later
-// (start-window.mjs OPEN_MS); the snapshot then says `shown`. Until then the whale's entrance
+// (start-window.mjs OPEN_MS); the snapshot then says `shown`. Until then the orange's entrance
 // waits: its CSS animations hold their first frame (start.css html[data-held]) and the
 // director's clock has not started.
 let onScreen = () => {}
@@ -63,8 +63,9 @@ function render(el, vars = {}) {
     return CODE.has(part) ? Object.assign(document.createElement('code'), { textContent: value }) : value
   }))
 }
+const HTML_LANG = { zh: 'zh-CN', 'zh-TW': 'zh-TW', ja: 'ja', ko: 'ko', es: 'es', fr: 'fr', de: 'de', en: 'en' }
 function renderStatic() {
-  root.lang = lang === 'zh' ? 'zh-CN' : 'en'
+  root.lang = HTML_LANG[lang] ?? lang ?? 'en'
   for (const el of document.querySelectorAll('.track [data-t], .footrow [data-t], .caption [data-t]')) render(el)
   $('.track').setAttribute('aria-label', say('status.track'))
   for (const st of document.querySelectorAll('.station')) st.querySelector('.sr').textContent = say(`status.state.${st.dataset.state}`)
@@ -94,10 +95,10 @@ function varsOf(snap) {
 }
 function announce(text) { if (text) live.textContent = text }
 
-// ---- the whale's line ----
+// ---- the orange's line ----
 // One short line under the ring, and only when something went wrong: the 180 s question or a
-// failure. A slow start is told by the whale's pose alone. A card speaks with its own first line,
-// so the whale's line is empty while a card is up (the 180 s question is the exception: its card
+// failure. A slow start is told by the orange's pose alone. A card speaks with its own first line,
+// so the orange's line is empty while a card is up (the 180 s question is the exception: its card
 // holds only the buttons). A new line fades in once the old one has faded out.
 const VOICES = { failed: 'voice.failed', viewFailed: 'voice.viewFailed', watchdog: 'voice.watchdog' }
 const FADE_MS = 160
@@ -228,10 +229,10 @@ function enter(el) {
   el.inert = false
   el.hidden = false
 }
-// The whale's line fades and veils in on CSS; shift() cancels only its scripted rise.
+// The orange's line fades and veils in on CSS; shift() cancels only its scripted rise.
 const rises = el => el.getAnimations().filter(a => !(a instanceof CSSTransition) && !(a instanceof CSSAnimation))
-// The stage rises to make room for the sheet; the pond (the whale and its ring) shrinks and
-// rises with it on the same spring, so the ring ends above the card, and the whale's line rises
+// The stage rises to make room for the sheet; the pond (the orange and its ring) shrinks and
+// rises with it on the same spring, so the ring ends above the card, and the orange's line rises
 // with them so that it stays under the ring (start.css html[data-up]).
 function shift(up, jump) {
   const from = getComputedStyle(stage).translate
@@ -280,7 +281,7 @@ async function showBlock(name, jump) {
 }
 
 // 〔复制过来〕, 〔继续复制〕 or a retry: the card does not fold away. Its surface shrinks to a drop
-// that turns the whale's blue and jumps up into the import's arc, which lights up as it lands and
+// that turns the orange's color and jumps up into the import's arc, which lights up as it lands and
 // then fills with the copy; the pond comes back down after it (start-window §6). Reduced motion
 // folds the card as usual and turns the arc on at once.
 const FLIGHT_MS = 520
@@ -298,15 +299,15 @@ async function flyIn(mine) {
     if (mine !== sheetRun) return
     const dot = (r, k) => `inset(${cy - r + k}px ${cx - r + k}px ${box.height - cy - r + k}px ${cx - r + k}px round ${r}px)`
     const dx = target.x - (box.left + cx), dy = target.y - (box.top + cy)
-    const blue = 'var(--bt-ink-deepseek)'
+    const ink = 'var(--st-ink)'
     // Shrink and rise, then the hop onto the arc; the arc lights as the drop arrives, under its fade.
     const flights = [edge, fill].map((layer, k) => {
       const from = getComputedStyle(layer)
       const frames = [
         { clipPath: from.clipPath, translate: '0px 0px', backgroundColor: from.backgroundColor, opacity: 1, easing: 'cubic-bezier(.3,.7,.4,1)' },
-        { clipPath: dot(6, k), translate: `${(dx * 0.25).toFixed(1)}px ${(dy * 0.7).toFixed(1)}px`, backgroundColor: blue, opacity: 1, offset: 0.45, easing: 'cubic-bezier(.4,0,.6,1)' },
-        { clipPath: dot(5, k), translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, backgroundColor: blue, opacity: 1, offset: ARRIVE },
-        { clipPath: dot(3, k), translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, backgroundColor: blue, opacity: 0 },
+        { clipPath: dot(6, k), translate: `${(dx * 0.25).toFixed(1)}px ${(dy * 0.7).toFixed(1)}px`, backgroundColor: ink, opacity: 1, offset: 0.45, easing: 'cubic-bezier(.4,0,.6,1)' },
+        { clipPath: dot(5, k), translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, backgroundColor: ink, opacity: 1, offset: ARRIVE },
+        { clipPath: dot(3, k), translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, backgroundColor: ink, opacity: 0 },
       ]
       for (const a of layer.getAnimations()) a.cancel()
       return play(layer, frames, { duration: FLIGHT_MS, easing: 'linear' })
@@ -337,7 +338,7 @@ function importPoint() {
 }
 
 // What a new card says to a screen reader: its first line and its first visible sentence (the
-// 180 s card has only buttons; the whale's line asks its question).
+// 180 s card has only buttons; the orange's line asks its question).
 function cardWords(el, name) {
   if (name === 'watchdog') return say('voice.watchdog')
   const title = el.querySelector('.card-title')

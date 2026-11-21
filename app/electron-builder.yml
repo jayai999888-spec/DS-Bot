@@ -1,7 +1,7 @@
-appId: io.github.fei2411.dsbot
-productName: DS Bot
+appId: io.github.jayai999888.jubalabot
+productName: 橘巴拉Bot
 copyright: Copyright 2026 Fei2411 and the DS Bot contributors
-artifactName: DS-Bot-${version}-${os}-${arch}.${ext}
+artifactName: Jubala-Bot-${version}-${os}-${arch}.${ext}
 directories:
   output: dist-pack
 files:
@@ -61,8 +61,8 @@ win:
       arch: [x64]
   icon: assets/icon.ico
 nsis:
-  # Preserve the GUID derived from the legacy appId so installed copies upgrade in place.
-  guid: 32c46dfc-ed78-5d41-85a4-a3c7f083f2e0
+  # Derived from Jubala Bot's own appId, so it installs beside DS Bot instead of replacing it.
+  guid: 3d9f564e-e2ca-5b90-85dc-4b2979a9ac17
   oneClick: false
   perMachine: false
   allowElevation: false
@@ -84,7 +84,7 @@ mac:
   # Without this key macOS registers no Local Network entry for the app and
   # blocks LAN connections from tool processes outright ("No route to host").
   extendInfo:
-    NSLocalNetworkUsageDescription: DS Bot runs commands that connect to devices on your local network.
+    NSLocalNetworkUsageDescription: Jubala Bot runs commands that connect to devices on your local network.
 linux:
   # The Linux Host uses the payload's plain Node, which cannot read asar archives.
   asar: false
@@ -95,14 +95,17 @@ linux:
       arch: [x64]
     - target: deb
       arch: [x64]
-  # The binary and the deb's menu entry take this name; productName has a space, which a
+  # The binary and the deb's menu entry take this name; productName has Chinese characters, which a
   # terminal command should not have.
-  executableName: dsbot
+  executableName: jubalabot
   # A deb needs a maintainer; package.json's author has no email, so it goes here.
-  maintainer: Fei2411 <https://github.com/Fei2411>
+  maintainer: jayai999888-spec <https://github.com/jayai999888-spec>
   # Links the running window to the menu entry (WM_CLASS = app id).
   syncDesktopName: true
-  icon: assets/icon.png
+  # The menu/taskbar reads the icon from hicolor/<size>x<size>/apps/. electron-builder installs
+  # each PNG from this directory; a single PNG file would install at just its own size again,
+  # and 1024x1024 is not a registered hicolor size.
+  icon: assets/icons
   category: Utility
 # Let apt replace the legacy deb instead of leaving two installed applications.
 deb:
@@ -112,5 +115,5 @@ deb:
 # so the build itself never publishes (--publish never).
 publish:
   provider: github
-  owner: Fei2411
+  owner: jayai999888-spec
   repo: DS-Bot

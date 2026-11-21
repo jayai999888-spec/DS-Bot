@@ -28,12 +28,12 @@ export const WATCHDOG_MS = 180_000
 export const TEAM_VIEW_MS = 20_000
 export const DESTROY_AFTER_MS = 300
 // The hand-off (§8): the start window does not resize (stepped setBounds repaints only now and
-// then, and the whale in it stutters). The team window, already under it, fades in while the
-// start window fades out; window opacity is the compositor's. The team page gets the whale at the
+// then, and the orange in it stutters). The team window, already under it, fades in while the
+// start window fades out; window opacity is the compositor's. The team page gets the orange at the
 // top of its jump and holds it there through the fade, then glides it onto the avatar.
 export const CROSSFADE = { duration: 220, step: 16 }
 export const HOLD_MS = CROSSFADE.duration + 40
-// How long the team page may take to draw the whale it is handed before the fade starts anyway.
+// How long the team page may take to draw the orange it is handed before the fade starts anyway.
 export const TEAM_WAIT_MS = 150
 export const TEAM_HANDOFF = 'ds-bot:handoff'
 export const FAILURE_LINES = 200
@@ -125,7 +125,7 @@ export function mainRect(start, area, size = MAIN_SIZE) {
 }
 
 /**
- * Where the start page's whale lands at the hand-off (start-window §8): the Main Bot's avatar as
+ * Where the start page's orange lands at the hand-off (start-window §8): the Main Bot's avatar as
  * the team view reported it, in CSS px of that page, turned into DIP and then into the start
  * page's own coordinates once the start window has grown onto the team window's rect. The team
  * page may be zoomed, so its viewport's width gives the scale. Undefined unless the report is a
@@ -145,15 +145,15 @@ export function landingOf(report, { team, start }) {
 }
 
 /**
- * The whale the start page hands over, in CSS px of the team page: the start page's own box
+ * The orange the start page hands over, in CSS px of the team page: the start page's own box
  * ({ x, y, size } in its CSS px, which are DIP) through both windows' content origins and the
  * team page's zoom. Undefined unless it is a plausible box.
- * @param {unknown} whale { x, y, size }
+ * @param {unknown} mark { x, y, size }
  * @param {{ start: { x: number, y: number }, team: { x: number, y: number, width: number }, viewportWidth: number }} windows
  */
-export function handoffBox(whale, { start, team, viewportWidth }) {
-  if (whale === null || typeof whale !== 'object') return undefined
-  const [x, y, size] = ['x', 'y', 'size'].map(key => Number(whale[key]))
+export function handoffBox(mark, { start, team, viewportWidth }) {
+  if (mark === null || typeof mark !== 'object') return undefined
+  const [x, y, size] = ['x', 'y', 'size'].map(key => Number(mark[key]))
   if (![x, y, size, viewportWidth].every(Number.isFinite) || size < 16 || viewportWidth <= 0) return undefined
   const zoom = team.width / viewportWidth
   const round = value => Math.round(value * 2) / 2
@@ -249,9 +249,9 @@ export function startSnapshot(state, now) {
   return snapshot
 }
 
-export const detailsText = ({ version, platform, arch, reason, lines }) => [`DS Bot ${version} (${platform} ${arch})`, `reason: ${reason}`, '', ...lines].join('\n')
+export const detailsText = ({ version, platform, arch, reason, lines }) => [`Jubala Bot ${version} (${platform} ${arch})`, `reason: ${reason}`, '', ...lines].join('\n')
 
-const note = message => { console.log(`DS Bot: start window: ${message}`) }
+const note = message => { console.log(`Jubala Bot: start window: ${message}`) }
 // The page sends a button's detail as { value }; anything else counts as none.
 const valueOf = payload => (payload !== null && typeof payload === 'object' && typeof payload.value === 'string' ? payload.value.slice(0, 40) : undefined)
 // An option of the import card: its name and whether it is ticked.
@@ -273,7 +273,7 @@ export class StartWindow {
   #handing = false
   #under = false
   #revealed = false
-  // Whether the engine of this attempt is up; the stages done say where the whale is, which a
+  // Whether the engine of this attempt is up; the stages done say where the orange is, which a
   // retry never moves back.
   #engineUp = false
   // What a dialog of the window (the folder picker) or a card keeps waiting: the hand-off, which
@@ -337,13 +337,13 @@ export class StartWindow {
     const win = new BrowserWindow({
       ...rect,
       useContentSize: true, resizable: false, maximizable: false, fullscreenable: false, minimizable: true,
-      show: false, title: 'DS Bot', icon: this.#o.icon,
+      show: false, title: 'Jubala Bot', icon: this.#o.icon,
       backgroundColor: material ? '#00000000' : colors.main,
       // Frameless with the system window controls over the page's empty 40 px band.
       ...frameOptions(process.platform, material, { color: material ? '#00000000' : colors.main, symbolColor: colors.ink }),
       webPreferences: {
         preload: this.#o.preload, contextIsolation: true, sandbox: true, nodeIntegration: false, webviewTag: false, spellcheck: false,
-        // The page paces the whale and the hand-off on timers, which a covered or minimized
+        // The page paces the orange and the hand-off on timers, which a covered or minimized
         // window would otherwise run once a second.
         backgroundThrottling: false,
         additionalArguments: [`--ds-bot-start=${pathToFileURL(this.#o.page).href}`],
@@ -357,7 +357,7 @@ export class StartWindow {
     this.#url = startUrl(this.#o.page, start)
     const contents = win.webContents
     // The window shows once its page says it has drawn its first frame (the 'painted' act), so it
-    // never opens on an empty panel: the page's whale and ring come about 1 s after the window.
+    // never opens on an empty panel: the page's orange and ring come about 1 s after the window.
     win.once('ready-to-show', () => { note(`the start page painted ${sinceLaunch()} ms after launch`) })
     this.#later('show', PAINT_WAIT_MS, () => { this.#showStart('the page did not say it painted', { now: true }) })
     this.#painted = new Promise((resolve) => {
@@ -405,7 +405,7 @@ export class StartWindow {
   }
 
   // Shown see-through, then opaque after OPEN_MS; `now` (a dialog, a page that never painted)
-  // does not wait. The page starts the whale's entrance once the snapshot says `shown`.
+  // does not wait. The page starts the orange's entrance once the snapshot says `shown`.
   #showStart(why, { now = false } = {}) {
     this.#clear('show')
     const win = this.#window
@@ -476,7 +476,7 @@ export class StartWindow {
   }
 
   /**
-   * The start begins again in another folder (§7): the stages go back to the start, the whale
+   * The start begins again in another folder (§7): the stages go back to the start, the orange
    * sinks and surfaces with its arcs emptied, and the clock starts from 0. The first success after
    * it celebrates, as after a retry.
    */
@@ -649,15 +649,15 @@ export class StartWindow {
     return mainRect(start, screen.getDisplayMatching(start).workArea)
   }
 
-  // The whale's landing for this hand-off: the team window goes on its rect now (handoffShow
+  // The orange's landing for this hand-off: the team window goes on its rect now (handoffShow
   // places it again, in case the start window is dragged meanwhile), and the start window's frame
   // offset carries over to the rect it grows to. The team page measured itself at the size the
-  // window had before that. The landing is optional: anything odd, and the whale dives. A
+  // window had before that. The landing is optional: anything odd, and the orange shrinks away. A
   // minimized start window does not grow, and its bounds would not say where it is.
   #landing(report) {
     const main = this.#o.mainWindow()
     if (main === undefined || main.isDestroyed() || this.#window.isMinimized()) return undefined
-    if (report === undefined) { note('no place to land: the whale dives'); return undefined }
+    if (report === undefined) { note('no place to land: the orange shrinks away'); return undefined }
     try {
       const measured = main.getContentBounds()
       const rect = this.placeMain(main)
@@ -666,10 +666,10 @@ export class StartWindow {
       const inner = this.#window.getContentBounds()
       const landing = landingOf(report, { team: { x: team.x, y: team.y, width: measured.width }, start: { x: rect.x + inner.x - outer.x, y: rect.y + inner.y - outer.y } })
       const inside = landing !== undefined && landing.x >= 0 && landing.y >= 0 && landing.x + landing.size <= rect.width && landing.y + landing.size <= rect.height
-      note(inside ? `the whale lands at ${String(landing.x)}, ${String(landing.y)} (${String(landing.size)} px)` : 'no place to land: the whale dives')
+      note(inside ? `the orange lands at ${String(landing.x)}, ${String(landing.y)} (${String(landing.size)} px)` : 'no place to land: the orange shrinks away')
       return inside ? landing : undefined
     } catch (error) {
-      note(`no place to land (${error instanceof Error ? error.message : String(error)}): the whale dives`)
+      note(`no place to land (${error instanceof Error ? error.message : String(error)}): the orange shrinks away`)
       return undefined
     }
   }
@@ -728,7 +728,7 @@ export class StartWindow {
     if (this.#open() && this.#state !== undefined) this.#window.webContents.send(START_STATE, startSnapshot(this.#state, Date.now()))
   }
 
-  // 180 s on the start's clock without the engine: the whale asks whether to try again.
+  // 180 s on the start's clock without the engine: the orange asks whether to try again.
   #armWatchdog() {
     this.#clear('watchdog')
     const { start, view, clock } = this.#state
@@ -803,7 +803,7 @@ export class StartWindow {
     const reason = this.#state.failure?.reason ?? 'other'
     const text = detailsText({ version, platform: process.platform, arch: process.arch, reason, lines: this.#o.log.tail(SAVED_LINES) })
     try {
-      const filePath = await saveAs(this.#window, 'DS-Bot-log.txt')
+      const filePath = await saveAs(this.#window, 'Jubala-Bot-log.txt')
       if (!filePath) return
       await writeFile(filePath, text, 'utf8')
       note(`the log was saved to ${filePath}`)
@@ -826,31 +826,31 @@ export class StartWindow {
     const box = this.#state.landing === undefined || this.#readyReport === undefined ? undefined : this.#teamBox(main, payload)
     if (box === undefined || !this.#under) { this.#reveal(); return }
     main.webContents.send(TEAM_HANDOFF, { ...box, hold: HOLD_MS })
-    this.#later('teamWait', TEAM_WAIT_MS, () => { note('the team page did not say it drew the whale'); this.#reveal() })
+    this.#later('teamWait', TEAM_WAIT_MS, () => { note('the team page did not say it drew the orange'); this.#reveal() })
   }
 
-  /** The team page has drawn the whale it was handed: the windows cross-fade. */
+  /** The team page has drawn the orange it was handed: the windows cross-fade. */
   teamReady() {
     if (!this.#handing || this.#revealed || this.#timers.teamWait === undefined) return
-    note(`the team page drew the whale at handoffShow + ${String(Date.now() - this.#showAt)} ms`)
+    note(`the team page drew the orange at handoffShow + ${String(Date.now() - this.#showAt)} ms`)
     this.#reveal()
   }
 
   #teamBox(main, payload) {
     try {
-      const whale = payload !== null && typeof payload === 'object' ? payload.whale : undefined
+      const mark = payload !== null && typeof payload === 'object' ? payload.mark : undefined
       const start = this.#window.getContentBounds()
       const team = main.getContentBounds()
-      return handoffBox(whale, { start, team, viewportWidth: Number(this.#readyReport.viewportWidth) })
+      return handoffBox(mark, { start, team, viewportWidth: Number(this.#readyReport.viewportWidth) })
     } catch (error) {
-      note(`no whale to hand over (${error instanceof Error ? error.message : String(error)})`)
+      note(`no orange to hand over (${error instanceof Error ? error.message : String(error)})`)
       return undefined
     }
   }
 
   // At ready() the team window shows, see-through, out of the taskbar and under the start window,
   // so that Windows' own opening transition has run by the reveal (shown at the reveal, it dims
-  // the page for a few frames) and the team page is drawn and can take the whale.
+  // the page for a few frames) and the team page is drawn and can take the orange.
   #underlay(main) {
     try {
       main.setSkipTaskbar(true)
@@ -906,8 +906,8 @@ export class StartWindow {
   }
 
   // The team window, on its rect around and under the start window, fades in while the start
-  // window fades out over it. With a whale handed over, the team page holds it where the start
-  // page's whale is through this fade, so the two stay on each other.
+  // window fades out over it. With an orange handed over, the team page holds it where the start
+  // page's orange is through this fade, so the two stay on each other.
   #crossfade(main, win, how) {
     // A team window hidden while it waited (closed to the tray) comes back for the fade.
     if (!main.isVisible()) main.showInactive()

@@ -28,7 +28,7 @@ export function useDictation(onText) {
     const timer = setTimeout(() => setNote(''), 2600)
     return () => clearTimeout(timer)
   }, [note])
-  const start = ({ continuous = true, onEnd } = {}) => {
+  const start = ({ continuous = true, onEnd, onError } = {}) => {
     const Api = speechApi()
     if (!Api) { setNote(t('Dictation is not available in this browser')); return false }
     const engine = new Api()
@@ -47,6 +47,7 @@ export function useDictation(onText) {
     engine.onerror = (event) => {
       if (event.error === 'aborted' || event.error === 'no-speech') return
       setNote(event.error === 'not-allowed' || event.error === 'service-not-allowed' ? t('Microphone access is blocked') : t("Couldn't hear that"))
+      onError?.(event.error)
     }
     engine.onend = () => { setListening(false); recognition.current = null; onEnd?.() }
     recognition.current = engine
@@ -115,7 +116,7 @@ export function menuIcons(roster) {
 
 // The composer's "+" in a Bot's chat or a group chat: add files, reference another
 // chat, or set a scheduled task for this chat. It stands in for the shell's command
-// menu, whose plan, permission, model and compact rows reach past what DS Bot keeps
+// menu, whose plan, permission, model and compact rows reach past what Jubala Bot keeps
 // for its Bots; "/" still opens that menu. Files go through the shell's own file
 // input beside it.
 export function ComposerPlus({ sessionId, inputActions, useInput, useRoster, actions }) {

@@ -1,7 +1,7 @@
 import { createElement as h, Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { FishLogo } from './dsh-primitives.js'
-import { inkFill } from './inks.js'
+import { inkFill, INKS } from './inks.js'
 import { isMainOf } from './sources.js'
 import { currentPart, previewOf, relativeShort } from './text.js'
 import { PlusIcon, SearchIcon, SidebarIcon, GaugeIcon, ClockIcon, GearIcon, PinMarkIcon, ConnectorIcon, PlugIcon, SwitchIcon, CloudDownloadIcon, SignInIcon, SignOutIcon, SlidersIcon, ChevronRightIcon, DotsIcon, FolderIcon } from './icons.js'
@@ -17,6 +17,7 @@ import { showsDshRow } from './dsh-offer.js'
 import { quietly } from './diagnostics.js'
 import { frameLayout, dragColumn, RAIL_WIDTH, FALLBACK_SIDEBAR_WIDTH, userSidebarToggle } from './frame-layout.js'
 import { chatRoom, dshCollapsed } from './frame-watch.js'
+import { useEscape } from './overlay-hooks.js'
 
 // -------------------------------------------------------------------------
 // Sidebar
@@ -39,9 +40,13 @@ const nameIfCut = (event) => {
   else row.removeAttribute('title')
 }
 
-// Whether an approval waits for the user: for a Bot, in any of its Sessions; for a group,
-// from any of its members there.
-const useApproval = (useWork, match) => (useWork ? useWork(work => (work.approvals ?? []).some(match)) : false)
+// Whether an approval waits for the user: for a Bot, in its own chat; for a group,
+// from any of its members in that group (both DSH tool approvals and computer-use asks).
+const useApproval = (useWork, useComputer, matchApproval, matchAsk) => {
+  const tool = useWork ? useWork(work => (work.approvals ?? []).some(matchApproval)) : false
+  const app = useComputer ? useComputer(comp => Object.values(comp?.asks ?? {}).some(matchAsk)) : false
+  return tool || app
+}
 
 // Work running in group Sessions, as "botId|tool" keys so a row redraws only when it
 // changes: the groups one Bot works in, or the members at work in one group.
@@ -60,7 +65,7 @@ const waitingFor = (roster, waits) => {
   return names.length === 0 ? '' : t('Waiting for {names}', { names: names.join(t(' and ')) })
 }
 
-function BotRow({ bot, roster, actions, useSessions, useSessionStatus, useSessionRetainInfo, useActivity, useWork, wide, marked, onDragStart }) {
+function BotRow({ bot, roster, actions, useSessions, useSessionStatus, useSessionRetainInfo, useActivity, useWork, useComputer, wide, marked, onDragStart }) {
   const id = bot.id
   const part = currentPart(bot)
   const preview = useSessions(list => previewOf(list, part, roster.exchangeTurns[part]))
@@ -70,13 +75,16 @@ function BotRow({ bot, roster, actions, useSessions, useSessionStatus, useSessio
   useMarkedUnread(id, active, marked, actions)
   const main = isMainOf(roster, id)
   const tile = roster.mainBotId === id
-  const approval = useApproval(useWork, entry => entry.botId === id)
+  const approval = useApproval(useWork, useComputer, entry => entry.roomId === undefined && entry.botId === id, ask => ask.roomId === undefined && ask.botId === id)
   const alert = roster.questions?.[part] !== undefined || approval
   const doing = useActivity(map => map[id])
   // Work in a group runs in a Session of its own, so the Bot's chat stays idle meanwhile.
   const groups = useGroupWork(useWork, rooms => Object.entries(rooms).flatMap(([roomId, entries]) => entries.filter(entry => entry.botId === id).map(entry => ({ id: roomId, ...doingOf(entry) }))))
   const away = !running && groups.length > 0
-  const state = botState(running || away, doing, alert)
+  // Group approvals live on the group's row and header island, not on the Bot's
+  // own DM avatar (#1623).
+  const dmDoing = doing === 'alert' && !approval ? undefined : doing
+  const state = botState(running || away, dmDoing, alert)
   // A Bot running in its own chat previews what it is doing, like a group's row.
   const runningLine = running && doing ? doingLine(doing) : null
   const awayLine = away ? workLine(roster.roomsById[groups[0].id]?.name ?? t('a group chat'), groups[0], groups.length - 1) : null
@@ -118,7 +126,7 @@ function BotRow({ bot, roster, actions, useSessions, useSessionStatus, useSessio
     : !wide && !active && (alert || unread) ? h('span', { className: `bt-dot${alert ? ' bt-dot-wait' : ''}`, 'aria-hidden': true }) : null)
 }
 
-function RoomRow({ room, roster, actions, useSessions, useSessionStatus, useSessionRetainInfo, useWork, wide, marked, onDragStart }) {
+function RoomRow({ room, roster, actions, useSessions, useSessionStatus, useSessionRetainInfo, useWork, useComputer, wide, marked, onDragStart }) {
   const id = room.id
   // The group's own Session is a chain of parts; the row shows the current one.
   const sessionId = room.sessionId ?? id
@@ -127,7 +135,7 @@ function RoomRow({ room, roster, actions, useSessions, useSessionStatus, useSess
   const active = useSessionRetainInfo(sessionId, info => (info?.retainedBy?.mainView ?? 0) > 0)
   const unread = useSessionStatus(map => map.get(sessionId)?.completionUnread === true) || (marked && !active)
   useMarkedUnread(id, active, marked, actions)
-  const approval = useApproval(useWork, entry => entry.roomId === id)
+  const approval = useApproval(useWork, useComputer, entry => entry.roomId === id, ask => ask.roomId === id)
   const members = useGroupWork(useWork, rooms => (rooms[id] ?? []).filter(entry => entry.botId !== undefined).map(entry => ({ id: entry.botId, ...doingOf(entry) })))
   const first = roster.byId[members[0]?.id]
   const workingLine = first ? workLine(first.name, members[0], members.length - 1) : null
@@ -270,7 +278,7 @@ function renderSidebarEntry(entry, rowProps, markedUnread, onDragStart) {
 }
 
 function SectionBlock({ section, entries, rowProps, markedUnread, renaming, dropTarget, onDragStart, onDragOverSec, onDropSec }) {
-  const { roster, actions, useSessions, useSessionStatus, useWork, wide } = rowProps
+  const { roster, actions, useSessions, useSessionStatus, useWork, useComputer, wide } = rowProps
   const input = useRef(null)
   useLayoutEffect(() => {
     if (!renaming) return
@@ -315,16 +323,21 @@ function SectionBlock({ section, entries, rowProps, markedUnread, renaming, drop
   const workBits = useWork ? useWork(work => {
     const botIds = new Set(entries.filter(e => e.kind === 'bot').map(e => e.item.id))
     const roomIds = new Set(entries.filter(e => e.kind === 'room').map(e => e.item.id))
-    const approval = (work.approvals ?? []).some(a => botIds.has(a.botId) || roomIds.has(a.roomId))
+    const approval = (work.approvals ?? []).some(a => (a.roomId === undefined && botIds.has(a.botId)) || roomIds.has(a.roomId))
     const roomWorking = Object.entries(work.rooms ?? {}).some(([rId, list]) => (
       (roomIds.has(rId) && list.some(e => e.botId !== undefined)) || list.some(e => botIds.has(e.botId))
     ))
     return `${approval ? 1 : 0}|${roomWorking ? 1 : 0}`
   }) : '0|0'
+  const hasComputerAsk = useComputer ? useComputer(comp => {
+    const botIds = new Set(entries.filter(e => e.kind === 'bot').map(e => e.item.id))
+    const roomIds = new Set(entries.filter(e => e.kind === 'room').map(e => e.item.id))
+    return Object.values(comp?.asks ?? {}).some(ask => (ask.roomId === undefined && botIds.has(ask.botId)) || roomIds.has(ask.roomId))
+  }) : false
   const parsedStatuses = JSON.parse(statusBits)
   const [hasApproval, hasRoomWork] = workBits.split('|').map(v => v === '1')
   const hasQuestion = entries.some(entry => entry.kind === 'bot' && roster.questions?.[currentPart(entry.item)] !== undefined)
-  const hasAlert = hasQuestion || hasApproval
+  const hasAlert = hasQuestion || hasApproval || hasComputerAsk
   const hasWorking = hasRoomWork || parsedStatuses.some(([, run]) => run === 1)
   const hasUnread = parsedStatuses.some(([id, , unread]) => unread === 1 && id !== activeSession)
     || entries.some(entry => markedUnread[entry.item.id] === true && entry !== activeEntry)
@@ -525,7 +538,7 @@ export function TeamSidebar(props) {
     const stamps = JSON.parse(updated)
     const entries = [
       ...roster.bots.filter(bot => bot.id !== roster.mainBotId).map(bot => ({ kind: 'bot', item: bot, at: stamps[currentPart(bot)] ?? bot.createdAt })),
-      ...roster.rooms.map(room => ({ kind: 'room', item: room, at: stamps[room.id] ?? room.createdAt })),
+      ...roster.rooms.map(room => ({ kind: 'room', item: room, at: stamps[currentPart(room)] ?? room.createdAt })),
       // The Agent sorts by its most recent Session, falling back to when it was added.
       ...(roster.agents ?? []).map(agent => ({ kind: 'agent', item: agent, at: Math.max(0, ...agent.sessions.map(id => stamps[id] ?? 0)) || agent.createdAt })),
     ]
@@ -736,20 +749,15 @@ export function TeamSidebar(props) {
   }, [wide, frameSnap.viewport, frameSnap.collapsed, lapsed])
 
   // The drawer closes on a row pick, on Escape and on a press outside it.
+  useEscape(() => actions.setLeftDrawer?.(false), mode === 'drawer')
   useEffect(() => {
     if (mode !== 'drawer') return undefined
     const onDown = (event) => {
       if (event.target instanceof Element && event.target.closest('.bt-leftcol')) return
       actions.setLeftDrawer?.(false)
     }
-    const onKey = (event) => {
-      if (event.key !== 'Escape') return
-      event.stopPropagation()
-      actions.setLeftDrawer?.(false)
-    }
     window.addEventListener('mousedown', onDown)
-    window.addEventListener('keydown', onKey, true)
-    return () => { window.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onKey, true) }
+    return () => { window.removeEventListener('mousedown', onDown) }
   }, [mode])
 
   const navigate = (open, id) => {
@@ -764,7 +772,7 @@ export function TeamSidebar(props) {
     openAgentSession: id => navigate(actions.openAgentSession, id),
     newAgentSession: id => navigate(actions.newAgentSession, id),
   }
-  const rowProps = { roster, actions: rowActions, useSessions, useUi, useSessionStatus: props.useSessionStatus, useSessionRetainInfo: props.useSessionRetainInfo, useActivity: props.useActivity, useWork: props.useWork, wide: wideContent }
+  const rowProps = { roster, actions: rowActions, useSessions, useUi, useSessionStatus: props.useSessionStatus, useSessionRetainInfo: props.useSessionRetainInfo, useActivity: props.useActivity, useWork: props.useWork, useComputer: props.useComputer, wide: wideContent }
   // Typing while the sidebar has focus starts a search.
   const typeToSearch = (event) => {
     if (event.defaultPrevented || event.key.length !== 1 || event.key === ' ' || event.metaKey || event.ctrlKey || event.altKey || event.nativeEvent.isComposing) return
@@ -849,7 +857,7 @@ export function TeamSidebar(props) {
     shown === 'hidden' ? null : h(LeftColumn, { mode: shown, width: ourWidth, onGrip: startDrag, leaving }, content))
 }
 
-// The update button at the sidebar's top right: a cloud while a newer DS Bot —
+// The update button at the sidebar's top right: a cloud while a newer Jubala Bot —
 // or a newer verified DSH — is available, then the install's progress and
 // result. Its card has one row each for the bot and DSH, with their versions,
 // the release notes link, and each row's own button.
@@ -867,7 +875,7 @@ function UpdateButton({ useUpdate, actions }) {
       if (event.target instanceof Element && (event.target.closest('.bt-update-pop') || button.current?.contains(event.target))) return
       setOpen(false)
     }
-    const onKey = (event) => { if (event.key === 'Escape') { event.stopPropagation(); setOpen(false); button.current?.focus() } }
+    const onKey = (event) => { if (event.key === 'Escape' && !event.isComposing && event.keyCode !== 229) { event.stopPropagation(); setOpen(false); button.current?.focus() } }
     window.addEventListener('mousedown', onDown)
     window.addEventListener('keydown', onKey, true)
     return () => { window.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onKey, true) }
@@ -895,31 +903,31 @@ function UpdateButton({ useUpdate, actions }) {
     setDshError('')
     void actions.installDshUpdate().catch(failure => setDshError(hostText(failure?.message ?? String(failure))))
   }
-  const label = phase === 'installing' ? t('Updating DS Bot…')
+  const label = phase === 'installing' ? t('Updating Jubala Bot…')
     : dshPhase === 'installing' ? t('Updating DSH…')
-      : phase === 'installed' ? t('DS Bot {version} is installed. Restart DSH to use it.', { version: update.installed ?? update.latest })
-        : phase === 'updated' ? t('DS Bot {version} is installed.', { version: update.installed ?? update.latest })
+      : phase === 'installed' ? t('Jubala Bot {version} is installed. Restart DSH to use it.', { version: update.installed ?? update.latest })
+        : phase === 'updated' ? t('Jubala Bot {version} is installed.', { version: update.installed ?? update.latest })
         : dshPhase === 'installed' ? t('Restart DSH to start using DSH {version}.', { version: dsh.installed ?? dsh.verified })
-          : update?.available ? t('DS Bot {version} is available', { version: update.latest })
+          : update?.available ? t('Jubala Bot {version} is available', { version: update.latest })
             : t('DSH {version} is available', { version: dsh?.verified })
   const message = error || (phase === 'failed' ? update.error : '')
   const dshMessage = dshError || (dshPhase === 'failed' ? dsh?.error : '')
   const dshText = dshPhase === 'installed'
     ? t('Restart DSH to start using DSH {version}.', { version: dsh.installed ?? dsh.verified })
     : dsh?.available === false && dsh?.blockedBy
-      ? t('Update DS Bot {version} first.', { version: dsh.blockedBy })
+      ? t('Update Jubala Bot {version} first.', { version: dsh.blockedBy })
       : t('You have {version}.', { version: dsh?.current })
   return h(Fragment, null,
     h('button', {
       ref: button, type: 'button', className: 'bt-round bt-update', 'data-phase': cloudPhase, 'aria-label': label, title: label,
       'aria-haspopup': 'dialog', 'aria-expanded': open, onClick: toggle,
     }, h(CloudDownloadIcon, { done: phase === 'installed' || phase === 'updated' }), phase === 'failed' || dshPhase === 'failed' ? h('span', { className: 'bt-update-dot', 'aria-hidden': true }) : null),
-    shown && box ? createPortal(h('div', { className: 'bt-update-pop', role: 'dialog', 'aria-label': update?.available || phase !== 'idle' ? t('DS Bot update') : t('DSH update'), style: box, 'data-leaving': leaving || undefined },
+    shown && box ? createPortal(h('div', { className: 'bt-update-pop', role: 'dialog', 'aria-label': update?.available || phase !== 'idle' ? t('Jubala Bot update') : t('DSH update'), style: box, 'data-leaving': leaving || undefined },
       update?.available || phase !== 'idle' ? h(Fragment, null,
-        h('div', { className: 'bt-update-title' }, phase === 'installed' || phase === 'updated' ? t('Update installed') : t('DS Bot {version}', { version: update.latest })),
+        h('div', { className: 'bt-update-title' }, phase === 'installed' || phase === 'updated' ? t('Update installed') : t('Jubala Bot {version}', { version: update.latest })),
         h('div', { className: 'bt-update-text' }, phase === 'installed'
-          ? t('Restart DSH to start using DS Bot {version}.', { version: update.installed ?? update.latest })
-          : phase === 'updated' ? t('DS Bot {version} is installed.', { version: update.installed ?? update.latest })
+          ? t('Restart DSH to start using Jubala Bot {version}.', { version: update.installed ?? update.latest })
+          : phase === 'updated' ? t('Jubala Bot {version} is installed.', { version: update.installed ?? update.latest })
             : t('You have {version}.', { version: update.current })),
         message ? h('div', { className: 'bt-update-error', role: 'alert' }, t('The update did not finish: {reason}', { reason: message })) : null,
         h('div', { className: 'bt-update-actions' },
@@ -970,7 +978,7 @@ const NO_SNAPSHOT = () => null
 
 // The footer avatar opens an account menu above itself, with Bot settings as one
 // entry. Shell panels hidden from the Bot sidebar (plugins, automation) live here too.
-// `seat` is the shell's settings.launcher seat: at priority -10 the whale wins it
+// `seat` is the shell's settings.launcher seat: at priority -10 the orange wins it
 // over a shell account plugin's own launcher (the Desktop's "··· More"), which comes
 // back in Agent mode; FooterAccount stands in while no seat exists at all.
 export function AccountLauncher({ seat = true, settingsOpen, actions }) {
@@ -992,7 +1000,7 @@ export function AccountLauncher({ seat = true, settingsOpen, actions }) {
     }
     const onKey = (event) => {
       if (stepMenuFocus(menuRef.current, event, button.current)) return
-      if (event.key === 'Escape') { event.stopPropagation(); setOpen(false); button.current?.focus() }
+      if (event.key === 'Escape' && !event.isComposing && event.keyCode !== 229) { event.stopPropagation(); setOpen(false); button.current?.focus() }
     }
     window.addEventListener('mousedown', onDown)
     window.addEventListener('keydown', onKey, true)
@@ -1080,8 +1088,8 @@ export function AccountLauncher({ seat = true, settingsOpen, actions }) {
 
 // The desktop app keeps its main window hidden until the team interface has drawn
 // the first state, and shows its failure page when that never comes. The report
-// says where the Main Bot's avatar is when it wears the start window's whale: the
-// start window hands that whale over at the top of its jump, and it glides onto
+// says where the Main Bot's avatar is when it wears the default look (MAIN_LOOK): the
+// start window hands its mark over at the top of its jump, and it glides onto
 // the avatar here.
 let readyReported = false
 function useReportReady(drawn, roster) {
@@ -1109,7 +1117,7 @@ function mainMarkOf(id) {
 }
 
 // The Main Bot's avatar in the team column, in CSS px of the page, with the page's size.
-// Only the default look: a photo or another character would not match the start window's whale.
+// Only the default look: a photo or another character would not match the start window's mark.
 function mainAvatarPlace(roster) {
   const main = roster?.byId?.[roster.mainBotId]
   if (main === undefined || main.avatar?.image || typeof document === 'undefined') return undefined
@@ -1125,7 +1133,7 @@ function mainAvatarPlace(roster) {
 
 // The avatar's box where the team column comes to rest. The column also slides in as it first
 // draws (bt-leftcol-in, from off the left edge), and measured mid-slide the avatar would be
-// outside the page and the whale would have nowhere to land; offsetLeft and offsetTop leave the
+// outside the page and the mark would have nowhere to land; offsetLeft and offsetTop leave the
 // slide's transform out.
 function restingBox(mark) {
   const box = mark.getBoundingClientRect()
@@ -1137,7 +1145,7 @@ function restingBox(mark) {
   return { left: box.left + dx, top: box.top + dy, width: box.width, height: box.height }
 }
 
-// The whale the start window hands over (app/src/start-window.mjs): `from` is where it is on
+// The mark the start window hands over (app/src/start-window.mjs): `from` is where it is on
 // this page at the top of its jump. A copy of the avatar waits there for `hold` ms, while the two
 // windows cross-fade, then glides onto the avatar in one compositor animation, so the jump does
 // not stutter the way a window that resizes under it would. x and y ease differently, so the path
@@ -1156,7 +1164,8 @@ function glideOnto(mark, from) {
   Object.assign(outer.style, { position: 'fixed', left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, zIndex: '2147483647', pointerEvents: 'none' })
   Object.assign(inner.style, { width: '100%', height: '100%', transformOrigin: '0 0' })
   Object.assign(copy.style, { width: '100%', height: '100%' })
-  copy.style.setProperty('--bt-ink-deepseek', getComputedStyle(mark).getPropertyValue('--bt-ink-deepseek'))
+  const ink = `--bt-ink-${MAIN_LOOK.color}`
+  copy.style.setProperty(ink, getComputedStyle(mark).getPropertyValue(ink))
   inner.append(copy)
   outer.append(inner)
   outer.setAttribute('aria-hidden', 'true')
@@ -1239,7 +1248,7 @@ export function BotReturn({ wide, useSurface, useRoster, actions }) {
   // Agent mode draws no team sidebar; there this button is the team interface.
   useReportReady(mode === 'agent' && ready)
   if (mode !== 'agent') return null
-  const label = t('Back to DS Bot')
+  const label = t('Back to Jubala Bot')
   return h('button', { type: 'button', className: 'bt-return', 'aria-label': label, title: label, onClick: () => actions.setSurface('bot') },
     h(BotMark, { look: MAIN_LOOK, size: 20 }),
     wide ? h('span', { className: 'bt-return-name' }, label) : null,
@@ -1253,25 +1262,25 @@ export const RETURN_CSS = `
 .bt-return:active{transform:scale(.96)}
 .bt-return .bt-mark{display:inline-flex;flex:none;line-height:0}
 .bt-return .bt-mark svg{width:100%;height:100%;overflow:visible}
-/* Shell styles carry --bt-ink-deepseek and Agent mode withdraws them; pin it here. */
-.bt-return .bt-mark{--bt-ink-deepseek:#4D6BFE}
+/* Shell styles carry the --bt-ink-* inks and Agent mode withdraws them; pin MAIN_LOOK's here. */
+.bt-return .bt-mark{--bt-ink-${MAIN_LOOK.color}:${INKS[MAIN_LOOK.color][0]}}
 .bt-return-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bt-return-swap{display:inline-flex;flex:none;line-height:0;opacity:.55}
 .bt-return-swap svg{width:16px;height:16px}
 `
 
 export function BrandMark({ size = 24 }) {
-  return h('span', { className: 'bt-brand-whale' }, h(BotMark, { look: MAIN_LOOK, size }))
+  return h('span', { className: 'bt-brand-mark' }, h(BotMark, { look: MAIN_LOOK, size }))
 }
 export function BrandName() {
-  return h('span', { style: { fontWeight: 600, fontSize: 14 } }, 'DS Bot')
+  return h('span', { style: { fontWeight: 600, fontSize: 14 } }, t('Jubala Bot'))
 }
 
-// With the whale holding the settings seat, the Bot row is just the account menu;
+// With the orange holding the settings seat, the Bot row is just the account menu;
 // FooterAccount only shows when the seat went to no one. The shell's footer classes
 // are CSS-module names, so they match on their stems.
 export const SIDEBAR_CSS = `
-.bt-confirm{width:260px;max-width:72vw;padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
+.bt-confirm{width:100%;max-width:260px;box-sizing:border-box;padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
 .bt-confirm-text{margin:0;font-size:13px;line-height:19px;color:var(--bt-ink-2)}
 .bt-confirm-error{margin:0;font-size:12px;line-height:17px;color:var(--bt-danger);overflow-wrap:anywhere}
 .bt-confirm-row{display:flex;justify-content:flex-end;gap:8px}
@@ -1291,7 +1300,7 @@ export const SIDEBAR_CSS = `
 [class*="_footArea"]:has(.bt-foot-account)>[class*="_settingsArea"]{grid-column:3}
 [class*="_footArea"]:has(.bt-foot-account)>[class*="_settingsArea"] button[class*="_trigger"] [class*="_label"]{display:none!important}
 
-/* The update cloud springs in when a newer DS Bot shows up; its arrow drops in a
+/* The update cloud springs in when a newer Jubala Bot shows up; its arrow drops in a
    loop while the install runs. */
 .bt-round.bt-update{position:relative;color:var(--bt-accent,#4D6BFE);animation:bt-update-in ${SPRING_SHAPE.duration}ms ${SPRING_SHAPE.easing}}
 .bt-round.bt-update svg{width:17px;height:17px}
@@ -1318,7 +1327,7 @@ export const SIDEBAR_CSS = `
 
 /* The DSH Agent row and its expanding Session list. The black whale is the
    harness's own mark, so the row reads as "plain dsh" next to the Bot marks. */
-.bt-agent-ava{flex:none;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--bt-hover);color:var(--bt-ink)}
+.bt-agent-ava{flex:none;width:36px;height:36px;border-radius:50%;corner-shape:round;display:inline-flex;align-items:center;justify-content:center;background:var(--bt-hover);color:var(--bt-ink)}
 .bt-agent-ava.bt-run{animation:bt-agent-pulse 1.4s ease-in-out infinite}
 @keyframes bt-agent-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 .bt-agent-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows ${SPRING_SHAPE.duration}ms ${SPRING_SHAPE.easing}}
@@ -1357,9 +1366,9 @@ export const SIDEBAR_CSS = `
 .bt-sec-dot{width:6px;height:6px;border-radius:50%;corner-shape:round;flex:none}
 .bt-sec-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto}
 .bt-sec-count{font-size:11px;line-height:16px;font-weight:500;color:var(--bt-ink-3);font-variant-numeric:tabular-nums;flex:none}
-.bt-sec-head-wrap:hover .bt-sec-count-hide{display:none}
+.bt-sec-head-wrap:is(:hover,:focus-within) .bt-sec-count-hide{display:none}
 .bt-sec-tail{margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:none}
-.bt-sec-head-wrap:hover .bt-sec-tail{padding-right:44px}
+.bt-sec-head-wrap:is(:hover,:focus-within) .bt-sec-tail{padding-right:44px}
 .bt-sec-pile{display:inline-flex;align-items:center;animation:bt-sec-pile-in ${SPRING_POP.duration}ms ${SPRING_POP.easing}}
 @keyframes bt-sec-pile-in{from{opacity:0;transform:translateX(6px) scale(.82)}to{opacity:1;transform:none}}
 .bt-sec-pile-item{display:inline-flex;border-radius:50%;corner-shape:round;background:var(--bt-sidebar);box-shadow:0 0 0 1.5px var(--bt-sidebar)}
@@ -1369,9 +1378,10 @@ export const SIDEBAR_CSS = `
 .bt-sec-status[data-kind=working]{background:var(--bt-green);box-shadow:0 0 0 2px color-mix(in srgb,var(--bt-green) 22%,transparent)}
 .bt-sec-status[data-kind=alert]{width:12px;height:12px;background:var(--bt-accent);color:var(--bt-accent-ink);font-size:8.5px;line-height:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
 .bt-sec-status[data-kind=unread]{background:var(--bt-accent)}
-.bt-sec-acts{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:none;align-items:center;gap:2px}
-.bt-sec-head-wrap:hover .bt-sec-acts,.bt-sec-acts:focus-within{display:inline-flex}
-.bt-sec-act{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--bt-ink-3);cursor:pointer;transition:background-color .12s ease,color .12s ease,transform ${SPRING_TAP.duration}ms ${SPRING_TAP.easing}}
+.bt-sec-acts{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:2px;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.bt-sec-head-wrap:is(:hover,:focus-within) .bt-sec-acts{opacity:1;pointer-events:auto}
+.bt-sec-act{position:relative;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--bt-ink-3);cursor:pointer;transition:background-color .12s ease,color .12s ease,transform ${SPRING_TAP.duration}ms ${SPRING_TAP.easing}}
+.bt-sec-act::after{content:"";position:absolute;inset:-4px}
 .bt-sec-act:hover{background:var(--bt-active);color:var(--bt-ink)}
 .bt-sec-act:active{transform:scale(.9)}
 .bt-sec-act:focus-visible{outline:2px solid var(--bt-accent);outline-offset:-2px}
@@ -1402,5 +1412,5 @@ export const SIDEBAR_CSS = `
 .bt-menu-color-dot:focus-visible{outline:2px solid var(--bt-accent);outline-offset:2px}
 .bt-sec-add-menu{max-width:260px}
 .bt-sec-add-list{display:flex;flex-direction:column;gap:2px;max-height:240px;overflow-y:auto}
-@media (prefers-reduced-motion:reduce){.bt-sec-body,.bt-sec-chev,.bt-sec-act,.bt-rail-folder{transition:none}.bt-sec-pile{animation:none}}
+@media (prefers-reduced-motion:reduce){.bt-sec-body,.bt-sec-chev,.bt-sec-act,.bt-rail-folder{transition:none}.bt-sec-pile,.bt-agent-ava.bt-run{animation:none}}
 `

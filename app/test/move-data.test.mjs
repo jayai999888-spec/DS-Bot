@@ -60,8 +60,8 @@ test('the new data location is an empty or new folder apart from the data, the t
 })
 
 test('the program folder is the whole app bundle on macOS', () => {
-  assert.equal(installFolder('/Applications/DS Bot.app/Contents/MacOS/DS Bot', 'darwin'), '/Applications/DS Bot.app')
-  assert.equal(installFolder(join('C:', 'Programs', 'DS Bot', 'DS Bot.exe'), 'win32'), join('C:', 'Programs', 'DS Bot'))
+  assert.equal(installFolder('/Applications/Jubala Bot.app/Contents/MacOS/Jubala Bot', 'darwin'), '/Applications/Jubala Bot.app')
+  assert.equal(installFolder(join('C:', 'Programs', 'Jubala Bot', 'Jubala Bot.exe'), 'win32'), join('C:', 'Programs', 'Jubala Bot'))
 })
 
 test('the data is copied whole, without the lock and the temporary folders, and the old folder stays', async (t) => {
@@ -155,9 +155,26 @@ test('links in the data lead inside the copy, not back into the old folder', asy
   assert.equal(readFileSync(join(to, 'bot', 'absolute', 'g', 's1', 'log.jsonl'), 'utf8'), 'chat')
 })
 
-// Windows makes a link to nothing that is not a folder only with special rights, which the
-// tests do not have, so there it is a link the copy cannot make again.
+// Windows makes a link to nothing that is not a folder only with special rights, which a
+// user's tests do not have, so there it is a link the copy cannot make again. An
+// administrator (as on CI runners) has them, and then the link copies like any other.
+const canLinkFiles = () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ds-bot-link-probe-'))
+  try {
+    symlinkSync(join(dir, 'nothing'), join(dir, 'probe'), 'file')
+    return true
+  } catch {
+    return false
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
 test('a link the move cannot make again stops the move; the import skips it', { skip: process.platform !== 'win32' }, async (t) => {
+  if (canLinkFiles()) {
+    t.skip('this process may make file links, so every link copies')
+    return
+  }
   const { root, from } = setup(t)
   symlinkSync(join(root, 'gone'), join(from, 'lost'), 'junction')
   const to = join(root, 'new')

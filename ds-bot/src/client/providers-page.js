@@ -125,6 +125,13 @@ export function fallbacksFor(provider, draft, roster) {
   return { switching, failed, local }
 }
 
+// DSH always serves the DeepSeek API route. While it has no key and no models it only
+// repeats the DeepSeek account row, so it stays off the list; the model menu still
+// offers "Enter a DeepSeek API key" for it.
+export function shownProviders(providers) {
+  return providers.filter(provider => !(provider.id === 'deepseek-official' && provider.key?.configured !== true && provider.models.length === 0 && provider.error === undefined))
+}
+
 export function ProvidersPage({ actions, run, roster, Section, advanced = null }) {
   const [view, setView] = useState(null)
   const [open, setOpen] = useState(null)
@@ -134,10 +141,11 @@ export function ProvidersPage({ actions, run, roster, Section, advanced = null }
   useEffect(() => { void apply(actions.providers()) }, [])
   if (view === null) return null
   if (!view.available) return h('p', { className: 'bt-set-hint' }, t('This DSH cannot set up model providers.'))
+  const shown = shownProviders(view.providers)
   const addBtn = adding ? null : h('button', { type: 'button', className: 'bt-soft bt-soft-sm bt-with-icon', onClick: () => setAdding(true) }, h(PlusIcon), t('Add a provider'))
   return [
-    h(Section, { key: 'list', title: t('Model providers · {count}', { count: view.providers.length }), action: addBtn },
-      view.providers.map(provider => h(ProviderRow, {
+    h(Section, { key: 'list', title: t('Model providers · {count}', { count: shown.length }), action: addBtn },
+      shown.map(provider => h(ProviderRow, {
         key: provider.id, provider, apply, actions, roster, revision: view.revision,
         open: open === provider.id, onToggle: () => setOpen(open === provider.id ? null : provider.id),
       })),
@@ -152,7 +160,7 @@ export function ProvidersPage({ actions, run, roster, Section, advanced = null }
 function keyState(key) {
   if (key === null) return null
   if (!key.configured) return ['missing', t('Needs an API key')]
-  return key.writable ? ['set', t('Key set')] : ['outside', t('Key set outside DS Bot')]
+  return key.writable ? ['set', t('Key set')] : ['outside', t('Key set outside Jubala Bot')]
 }
 
 export function ProviderRow({ provider, apply, actions, roster, revision, open, onToggle }) {
@@ -242,7 +250,7 @@ export function ProviderRow({ provider, apply, actions, roster, revision, open, 
       state ? h('span', { className: 'bt-set-control' }, h('span', { className: 'bt-provider-state', 'data-state': state[0] }, state[1])) : null),
     open ? h('div', { className: 'bt-secret-edit' },
       provider.key?.writable ? h(KeyEditor, { provider, apply, actions }) : null,
-      provider.key && !provider.key.writable ? h('div', { className: 'bt-set-hint' }, t('This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.')) : null,
+      provider.key && !provider.key.writable ? h('div', { className: 'bt-set-hint' }, t('This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.')) : null,
       modelsBlock,
       provider.removable ? h('div', { className: 'bt-secret-row-actions' },
         confirm
