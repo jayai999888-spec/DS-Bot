@@ -125,6 +125,13 @@ export function fallbacksFor(provider, draft, roster) {
   return { switching, failed, local }
 }
 
+// DSH always serves the DeepSeek API route. While it has no key and no models it only
+// repeats the DeepSeek account row, so it stays off the list; the model menu still
+// offers "Enter a DeepSeek API key" for it.
+export function shownProviders(providers) {
+  return providers.filter(provider => !(provider.id === 'deepseek-official' && provider.key?.configured !== true && provider.models.length === 0 && provider.error === undefined))
+}
+
 export function ProvidersPage({ actions, run, roster, Section, advanced = null }) {
   const [view, setView] = useState(null)
   const [open, setOpen] = useState(null)
@@ -134,10 +141,11 @@ export function ProvidersPage({ actions, run, roster, Section, advanced = null }
   useEffect(() => { void apply(actions.providers()) }, [])
   if (view === null) return null
   if (!view.available) return h('p', { className: 'bt-set-hint' }, t('This DSH cannot set up model providers.'))
+  const shown = shownProviders(view.providers)
   const addBtn = adding ? null : h('button', { type: 'button', className: 'bt-soft bt-soft-sm bt-with-icon', onClick: () => setAdding(true) }, h(PlusIcon), t('Add a provider'))
   return [
-    h(Section, { key: 'list', title: t('Model providers · {count}', { count: view.providers.length }), action: addBtn },
-      view.providers.map(provider => h(ProviderRow, {
+    h(Section, { key: 'list', title: t('Model providers · {count}', { count: shown.length }), action: addBtn },
+      shown.map(provider => h(ProviderRow, {
         key: provider.id, provider, apply, actions, roster, revision: view.revision,
         open: open === provider.id, onToggle: () => setOpen(open === provider.id ? null : provider.id),
       })),

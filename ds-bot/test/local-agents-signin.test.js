@@ -320,3 +320,13 @@ test('probeSignIn parses JSON status, auth error phrases, and credential file fa
   assert.equal(await probeSignIn(silent, check, { home }), true)
   assert.equal(await probeSignIn(silent, check, { home: join(root, 'empty-home') }), null)
 })
+
+test('Kimi CLI counts as signed in once kimi login has written its credential file', async (t) => {
+  const home = mkdtempSync(join(tmpdir(), 'dsb-kimi-'))
+  t.after(() => rmSync(home, { recursive: true, force: true }))
+  const check = ENGINES['local-kimi-cli'].signedIn
+  assert.equal(await probeSignIn('kimi', check, { home }), null)
+  mkdirSync(join(home, '.kimi-code', 'credentials'), { recursive: true })
+  writeFileSync(join(home, '.kimi-code', 'credentials', 'kimi-code.json'), '{}')
+  assert.equal(await probeSignIn('kimi', check, { home }), true)
+})
