@@ -1,7 +1,8 @@
 // Draws the app icon from the 橘巴拉 IP avatar in brand/ip-avatar.jpg and writes assets/icon.svg,
 // assets/icon.png (1024 px), assets/icon.ico (Windows, 16 to 256 px), the tray marks:
 // assets/tray.ico (Windows), assets/tray.png (Linux) and assets/trayTemplate.png with its
-// @2x (macOS), and the icons of ../mobile/assets.
+// @2x (macOS), the per-size PNGs in assets/icons/, which electron-builder installs into
+// hicolor/<size>x<size>/apps/ for the Linux menu and taskbar, and the icons of ../mobile/assets.
 // Usage: npm run icon. It runs itself again inside Electron, which turns the SVG into PNGs.
 import { spawnSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -17,6 +18,9 @@ const ICO_SIZES = [16, 20, 24, 32, 36, 40, 48, 64, 72, 96, 128, 256]
 // The app tile shows the IP avatar; the tray and the mobile icons keep the little orange, which
 // still reads at 16 px and as a one-colour template.
 const AVATAR = `data:image/jpeg;base64,${readFileSync(join(dirname(here), '..', 'brand', 'ip-avatar.jpg')).toString('base64')}`
+// The Linux hicolor set: 1024x1024 is not a registered hicolor directory, so a single large
+// PNG installs as an unresolvable icon. electron-builder copies these into hicolor/<size>x<size>/apps/.
+const HICOLOR_SIZES = [16, 24, 32, 48, 64, 96, 128, 256, 512]
 // The tray icon is small: the sizes a notification area shows, and one plain png for Linux.
 const TRAY_ICO_SIZES = [16, 20, 24, 32]
 const TRAY_PNG_SIZE = 24
@@ -128,12 +132,14 @@ async function renderInElectron(jobs) {
 }
 
 if (process.versions.electron) {
+  const hicolor = HICOLOR_SIZES.map(size => ({ svg: iconSvg(0.92, size), size }))
   const jobs = [
     { svg: iconSvg(0.805), size: 1024 },
     ...ICO_SIZES.map(size => ({ svg: iconSvg(0.92, size), size })),
     ...TRAY_ICO_SIZES.map(size => ({ svg: markSvg(size), size })),
     { svg: markSvg(TRAY_PNG_SIZE), size: TRAY_PNG_SIZE },
     ...TRAY_TEMPLATE_SIZES.map(size => ({ svg: markSvg(size, { ink: '#000000' }), size })),
+    ...hicolor,
   ]
   // Android keeps the adaptive icon's foreground inside the middle 66%, so the orange is smaller there.
   const mobile = [
@@ -149,7 +155,9 @@ if (process.versions.electron) {
   const { app } = await import('electron')
   app.whenReady().then(() => renderInElectron(jobs)).then(([large, ...rest]) => {
     const small = rest.slice(0, ICO_SIZES.length)
-    const tray = rest.slice(ICO_SIZES.length, rest.length - mobile.length)
+    const trayCount = TRAY_ICO_SIZES.length + 1 + TRAY_TEMPLATE_SIZES.length
+    const tray = rest.slice(ICO_SIZES.length, ICO_SIZES.length + trayCount)
+    const hicolorPngs = rest.slice(ICO_SIZES.length + trayCount, ICO_SIZES.length + trayCount + HICOLOR_SIZES.length)
     rest.slice(rest.length - mobile.length).forEach((png, index) => writeFileSync(join(mobileAssets, mobile[index][0]), png))
     writeFileSync(join(assets, 'icon.png'), large)
     writeFileSync(join(assets, 'icon.ico'), icoFile(ICO_SIZES.map((size, index) => ({ size, png: small[index] }))))
@@ -157,6 +165,10 @@ if (process.versions.electron) {
     writeFileSync(join(assets, 'tray.png'), tray[TRAY_ICO_SIZES.length])
     writeFileSync(join(assets, 'trayTemplate.png'), tray[TRAY_ICO_SIZES.length + 1])
     writeFileSync(join(assets, 'trayTemplate@2x.png'), tray[TRAY_ICO_SIZES.length + 2])
+    mkdirSync(join(assets, 'icons'), { recursive: true })
+    for (const [index, size] of HICOLOR_SIZES.entries()) {
+      writeFileSync(join(assets, 'icons', `${size}x${size}.png`), hicolorPngs[index])
+    }
     app.exit(0)
   }).catch((error) => {
     console.error(error)
@@ -170,5 +182,5 @@ if (process.versions.electron) {
   const electron = createRequire(import.meta.url)('electron')
   const run = spawnSync(electron, [here], { stdio: 'inherit', env })
   if (run.status !== 0) process.exit(run.status ?? 1)
-  console.log('icon: wrote assets/icon.svg, assets/icon.png, assets/icon.ico, the tray marks and the mobile icons')
+  console.log('icon: wrote assets/icon.svg, assets/icon.png, assets/icon.ico, the tray marks, the per-size icons in assets/icons/ and the mobile icons')
 }

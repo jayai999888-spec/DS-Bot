@@ -6,7 +6,7 @@
 /* /tokens */
 /* The orange's own color for the ring, the props and the sparks: the start page's, not a theme's. */
 @media (prefers-color-scheme:dark){:root{--st-ink:#F5A623}}
-:root{--st-ink:#F39A1E;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei UI",system-ui,sans-serif;--mono:ui-monospace,Consolas,monospace;--u:1.12px}
+:root{--st-ink:#F39A1E;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--mono:ui-monospace,Consolas,monospace;--u:1.12px}
 /* springs */
 /* Generated from ds-bot/src/client/motion.js by scripts/start-assets.mjs; do not edit. */
 :root {
@@ -329,7 +329,8 @@ html[data-hidden] *{animation-play-state:paused!important}
 :root .props>g{scale:none!important;transition:opacity .12s!important}
 :root :is(.arc-fill,.ring-full){transition-duration:.12s!important}
 :root .voice>span{animation:none!important;background:none!important;color:var(--bt-ink)!important}
-:root :is(.voice,.caption>*,.card,.miss,.banner,.log,.confirm,.models,[data-u]){filter:none!important;scale:none!important;transition-property:opacity!important;transition-duration:.12s!important;transition-delay:0s!important}
+:root :is(.voice,.caption>*,.card,.miss,.banner,.log,.confirm,.models,.more,[data-u]){filter:none!important;scale:none!important;transition-property:opacity!important;transition-duration:.12s!important;transition-delay:0s!important}
+:root .disclose svg{transition:none!important}
 :root .btn:active{scale:none}
 :root[data-exit~=lane] .lane{opacity:0;transition:opacity .12s}
 }
@@ -338,6 +339,6 @@ html[data-hidden] *{animation-play-state:paused!important}
 :root:is([data-effects=reduced],[data-effects=off]) :is(.arc-glow,.page,.gear-big,.gear-small,[data-p=engine],.box-moving,.mate),:root:is([data-effects=reduced],[data-effects=off])[data-orange] :is(.orange-loop,#eye-pair,.bt-eye),:root:is([data-effects=reduced],[data-effects=off])[data-leaf] #leaf{animation:none!important}
 :root[data-effects=off] :is(*,::before,::after){animation:none!important;transition:none!important}
 :root[data-effects=off] .props>g,:root[data-effects=off] .btn:active{scale:none!important}
-:root[data-effects=off] :is(.voice,.caption>*,.card,.miss,.banner,.log,.confirm,.models,[data-u]){filter:none!important;scale:none!important}
+:root[data-effects=off] :is(.voice,.caption>*,.card,.miss,.banner,.log,.confirm,.models,.more,[data-u]){filter:none!important;scale:none!important}
 
 @media (forced-colors:active){.sheet-edge{background:CanvasText}.sheet-fill{background:Canvas}.btn{border:1px solid ButtonText}.bar-fill{background:Highlight}.ground{background:CanvasText}.arc .arc-base{stroke:GrayText!important}.arc-fill,.ring-full,.arc-glow,.spark path{stroke:Highlight}.props :is(.folder-back,.folder-front,.gear,.mate circle,.box rect){fill:CanvasText}.page rect,.mate rect{fill:Canvas}.drop{forced-color-adjust:none;background:Highlight}}
