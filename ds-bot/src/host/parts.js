@@ -2184,6 +2184,35 @@ export function install(rt) {
     if (now !== undefined && (now.ref !== picked?.ref || now.effort !== picked?.effort)) await selectRoute({ name: bot.name }, freshId, now)
   }
 
+  // A Bot whose current Session is gone from DSH (moved or deleted outside it, #1929)
+  // starts a fresh one; its earlier parts stay with it. The client asks for this once a
+  // chat it opened never shows up. Answers the Session to open, or undefined when the
+  // current one is still there.
+  async function recoverLostChat(botId) {
+    await rt.load()
+    const bot = rt.botOf(botId)
+    if (bot === undefined) throw Object.assign(new Error('Unknown Bot'), { code: 'bot/not-found' })
+    if (readOnly()) throw Object.assign(new Error(rt.readOnly()), { code: 'bot/invalid' })
+    const lostId = rt.chatOf(bot.id)
+    const lost = await rt.resolveAgent(lostId).then(() => false, error => error?.code === 'session/not-found')
+    if (!lost) return undefined
+    const freshId = await rt.createSession(bot.name, { dir: rt.workDirOf({ botId: bot.id }) })
+    const ref = await rt.desiredModel(bot)
+    if (ref !== undefined) await selectRoute(bot, freshId, { ref, effort: await rt.desiredEffort(bot, ref) })
+    await rt.applyPermission(bot, freshId, undefined)
+      .catch(error => rt.warn('ds-bot: permission for the new Session of %s not applied: %s', bot.name, error))
+    if (rt.botOf(bot.id) !== bot || rt.chatOf(bot.id) !== lostId) {
+      await ctx.workspaceRegistry.archiveSession(freshId, { stopActivity: true }).catch(() => {})
+      return rt.botOf(bot.id) === undefined ? undefined : rt.chatOf(bot.id)
+    }
+    rt.chatOwners.delete(lostId)
+    bot.sessionId = freshId
+    rt.chatOwners.set(freshId, bot.id)
+    await rt.save()
+    rt.warn('ds-bot: the Session of %s was gone, so it starts a new one', bot.name)
+    return freshId
+  }
+
   // Opens a dedicated Session for a Bot's background task (`bot.tasks`).
   // Forks the foreground Session at the latest completed turn boundary when
   // running on a DSH model in the same folder, falling back to a fresh Session
@@ -2350,5 +2379,5 @@ export function install(rt) {
     return true
   }
 
-  Object.assign(rt, { clock, partsOf, partsOfThread, historyEntry, partLines, noteText, earlierPage, chatPage, taskPage, displayItems, applySteps, followFolder, followEngine, heldBack, newPart, openTaskPart, forkForegroundPart, switchPart, isSwitchingPart: id => switches.has(id), sessionTokens: session => tokensOf(session), switchJobs: () => switches.values() })
+  Object.assign(rt, { recoverLostChat, clock, partsOf, partsOfThread, historyEntry, partLines, noteText, earlierPage, chatPage, taskPage, displayItems, applySteps, followFolder, followEngine, heldBack, newPart, openTaskPart, forkForegroundPart, switchPart, isSwitchingPart: id => switches.has(id), sessionTokens: session => tokensOf(session), switchJobs: () => switches.values() })
 }

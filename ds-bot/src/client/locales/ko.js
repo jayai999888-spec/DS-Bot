@@ -1,6 +1,8 @@
 // Korean (ko) localization for Jubala Bot client and DSH settings namespaces.
 
 export const KO = {
+  "{name} could not be opened.": "{name}을(를) 열 수 없습니다.",
+  "The conversation of {name} was gone, so it starts a new one.": "{name}의 대화가 없어져 새 대화를 시작합니다.",
   'Background work': '백그라운드 작업',
   'Background commands after (seconds)': '명령 백그라운드 전환(초)',
   'A new reply is waiting': "새 답변이 도착했습니다",

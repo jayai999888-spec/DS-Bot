@@ -156,3 +156,27 @@ test('the cover names the Bot, says it is opening, and leaves the sidebar uncove
 test('no model draws nothing at all', () => {
   assert.equal(module.exports.OpeningCover({ model: null, column: 0 }), null)
 })
+
+test('a Session that never lands takes the cover down and says so (#1929)', () => {
+  const timers = []
+  const ui = { value: { pendingOpen: null }, set(next) { ui.value = typeof next === 'function' ? next(ui.value) : next } }
+  const gaveUp = []
+  const wait = bindOpeningWait(ui, {
+    onGiveUp: pending => gaveUp.push(pending.target),
+    schedule: (fn, ms) => { const timer = { fn, ms, live: true }; timers.push(timer); return timer },
+    clear: (timer) => { timer.live = false },
+  })
+  wait.begin({ target: 'lost', id: 'bot-1', name: 'Chief' })
+  const giveUp = timers.find(timer => timer.ms === module.exports.OPENING_GIVE_UP_MS)
+  timers.filter(timer => timer.ms === OPENING_WAIT_MS).forEach(timer => timer.fn())
+  assert.equal(ui.value.pendingOpen.slow, true)
+  giveUp.fn()
+  assert.equal(ui.value.pendingOpen, null)
+  assert.deepEqual(gaveUp, ['lost'])
+  // A wait that ended in time is not given up later.
+  wait.begin({ target: 'bot-2', id: 'bot-2', name: 'Newcomer' })
+  const second = timers.at(-2)
+  wait.end()
+  assert.equal(second.live, false)
+  assert.deepEqual(gaveUp, ['lost'])
+})

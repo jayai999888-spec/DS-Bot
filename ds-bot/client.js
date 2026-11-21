@@ -117,6 +117,8 @@ function convertHostErrors(pairs) {
 
 // src/client/locales/ja.js
 var JA = {
+  "{name} could not be opened.": "{name} を開けませんでした。",
+  "The conversation of {name} was gone, so it starts a new one.": "{name} の会話が見つからなかったため、新しい会話を始めます。",
   "Background work": "バックグラウンド作業",
   "Background commands after (seconds)": "コマンドをバックグラウンドへ（秒後）",
   "A new reply is waiting": "新しい返信があります",
@@ -2690,6 +2692,8 @@ var DSH_JA = {
 
 // src/client/locales/ko.js
 var KO = {
+  "{name} could not be opened.": "{name}을(를) 열 수 없습니다.",
+  "The conversation of {name} was gone, so it starts a new one.": "{name}의 대화가 없어져 새 대화를 시작합니다.",
   "Background work": "백그라운드 작업",
   "Background commands after (seconds)": "명령 백그라운드 전환(초)",
   "A new reply is waiting": "새 답변이 도착했습니다",
@@ -5308,6 +5312,8 @@ var DSH_KO = {
 
 // src/client/locales/es.js
 var ES = {
+  "{name} could not be opened.": "No se pudo abrir {name}.",
+  "The conversation of {name} was gone, so it starts a new one.": "La conversación de {name} ya no estaba, así que empieza una nueva.",
   "Background work": "Trabajo en segundo plano",
   "Background commands after (seconds)": "Pasar comandos a segundo plano tras (segundos)",
   "A new reply is waiting": "Tienes una nueva respuesta",
@@ -7926,6 +7932,8 @@ var DSH_ES = {
 
 // src/client/locales/fr.js
 var FR = {
+  "{name} could not be opened.": "Impossible d’ouvrir {name}.",
+  "The conversation of {name} was gone, so it starts a new one.": "La conversation de {name} n’existait plus, une nouvelle commence.",
   "Background work": "Travail en arrière-plan",
   "Background commands after (seconds)": "Passer les commandes en arrière-plan après (secondes)",
   "A new reply is waiting": "Une nouvelle réponse vous attend",
@@ -10499,6 +10507,8 @@ var DSH_FR = {
 
 // src/client/locales/de.js
 var DE = {
+  "{name} could not be opened.": "{name} konnte nicht geöffnet werden.",
+  "The conversation of {name} was gone, so it starts a new one.": "Die Unterhaltung von {name} war nicht mehr da, daher beginnt eine neue.",
   "Background work": "Hintergrundarbeit",
   "Background commands after (seconds)": "Befehle in den Hintergrund nach (Sekunden)",
   "A new reply is waiting": "Eine neue Antwort wartet auf dich",
@@ -14574,6 +14584,8 @@ var ZH = {
   // A Session that is still landing
   "Opening…": "正在打开…",
   "Still opening…": "还在打开…",
+  "{name} could not be opened.": "{name} 打不开。",
+  "The conversation of {name} was gone, so it starts a new one.": "{name} 原来的会话已经不在了，已为它新开一个会话。",
   "Add files": "添加文件",
   "Reference a chat": "引用对话",
   "Chat with {name}": "与 {name} 的对话",
@@ -46530,13 +46542,17 @@ var BROWSER_CSS = `
 // src/client/opening.js
 var import_react72 = require("react");
 var OPENING_WAIT_MS = 5e3;
+var OPENING_GIVE_UP_MS = 3e4;
 function openingPastWait(pending, target) {
   if (!pending || pending.target !== target || pending.slow === true) return pending ?? null;
   return { ...pending, slow: true };
 }
-function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, schedule = setTimeout, clear = clearTimeout, onSlow } = {}) {
+function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, giveUpMs = OPENING_GIVE_UP_MS, schedule = setTimeout, clear = clearTimeout, onSlow, onGiveUp } = {}) {
   let timer = null;
+  let giveUp = null;
   const stop = () => {
+    if (giveUp !== null) clear(giveUp);
+    giveUp = null;
     if (timer === null) return;
     clear(timer);
     timer = null;
@@ -46546,6 +46562,15 @@ function bindOpeningWait(ui, { waitMs = OPENING_WAIT_MS, schedule = setTimeout, 
       ui.set((state) => ({ ...state, pendingOpen: pending }));
       stop();
       const target = pending?.target;
+      giveUp = schedule(() => {
+        giveUp = null;
+        let held = false;
+        ui.set((state) => {
+          held = state.pendingOpen?.target === target;
+          return held ? { ...state, pendingOpen: null } : state;
+        });
+        if (held) onGiveUp?.(pending);
+      }, giveUpMs);
       timer = schedule(() => {
         timer = null;
         let held = false;
@@ -49479,6 +49504,22 @@ function apply(ctx) {
   const openingWait = bindOpeningWait(ui, {
     onSlow: () => {
       void Promise.resolve(ctx.sessions.refresh?.()).catch(quietly("refresh sessions"));
+    },
+    // A Bot's chat that never lands may be gone from DSH: the host gives the Bot a new
+    // Session and it opens; anything else says what happened.
+    onGiveUp: async (pending) => {
+      const say = (text) => ui.set((state) => ({ ...state, toast: { text, token: Date.now() } }));
+      const name = pending.name || pending.id;
+      if (roster.getSnapshot().byId[pending.id] === void 0) return say(t("{name} could not be opened.", { name }));
+      try {
+        const { sessionId } = await call("bot-recover-chat", { botId: pending.id });
+        if (sessionId === null) return say(t("{name} could not be opened.", { name }));
+        await pull();
+        say(t("The conversation of {name} was gone, so it starts a new one.", { name }));
+        actions.openSession(pending.id);
+      } catch (error) {
+        say(error?.message ?? String(error));
+      }
     }
   });
   const beginOpening = (target) => {

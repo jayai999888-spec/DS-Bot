@@ -547,6 +547,22 @@ export function apply(ctx) {
   }
   const openingWait = bindOpeningWait(ui, {
     onSlow: () => { void Promise.resolve(ctx.sessions.refresh?.()).catch(quietly('refresh sessions')) },
+    // A Bot's chat that never lands may be gone from DSH: the host gives the Bot a new
+    // Session and it opens; anything else says what happened.
+    onGiveUp: async (pending) => {
+      const say = text => ui.set(state => ({ ...state, toast: { text, token: Date.now() } }))
+      const name = pending.name || pending.id
+      if (roster.getSnapshot().byId[pending.id] === undefined) return say(t('{name} could not be opened.', { name }))
+      try {
+        const { sessionId } = await call('bot-recover-chat', { botId: pending.id })
+        if (sessionId === null) return say(t('{name} could not be opened.', { name }))
+        await pull()
+        say(t('The conversation of {name} was gone, so it starts a new one.', { name }))
+        actions.openSession(pending.id)
+      } catch (error) {
+        say(error?.message ?? String(error))
+      }
+    },
   })
   const beginOpening = (target) => {
     const owner = ownerOfSession(target)

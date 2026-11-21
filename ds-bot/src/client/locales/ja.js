@@ -1,6 +1,8 @@
 // Japanese (ja) localization for Jubala Bot client and DSH settings namespaces.
 
 export const JA = {
+  "{name} could not be opened.": "{name} を開けませんでした。",
+  "The conversation of {name} was gone, so it starts a new one.": "{name} の会話が見つからなかったため、新しい会話を始めます。",
   "Background work": "バックグラウンド作業",
   "Background commands after (seconds)": "コマンドをバックグラウンドへ（秒後）",
   'A new reply is waiting': "新しい返信があります",

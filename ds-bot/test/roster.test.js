@@ -1512,3 +1512,34 @@ test('a window learns that the other dsh closed and takes the team over without 
   assert.notEqual(live.liveKey, first.liveKey, 'a changed read-only notice moves the live key')
   assert.equal((await call('create-bot', { name: 'Took over' })).ok, true)
 })
+
+test('a Bot whose Session is gone gets a new one when the client asks, and a live one is left alone (#1929)', async (t) => {
+  const { call, stop, home, ctx } = start({
+    version: 1,
+    mainBotIds: ['m1'],
+    whaleStored: true,
+    orangeStored: true,
+    chatTitleStored: true,
+    revision: 1,
+    bots: {
+      m1: { id: 'm1', sessionId: 'm1', name: '小橘', role: '团队总管', instructions: '', createdAt: 1 },
+      b2: { id: 'b2', sessionId: 'gone', name: '青简', role: '写稿', instructions: '', createdAt: 2, segments: [{ sessionId: 'b2', endedAt: 3 }] },
+    },
+    rooms: {},
+    exchanges: [],
+    exchangeTurns: {},
+    questions: {},
+  })
+  t.after(stop)
+  const resolve = ctx.sessionController.resolveAgent
+  ctx.sessionController.resolveAgent = async sessionId => (sessionId === 'gone' ? { error: { code: 'session/not-found', message: 'session "gone" not found' } } : resolve(sessionId))
+  const kept = await call('bot-recover-chat', { botId: 'm1' })
+  assert.equal(kept.value.sessionId, null)
+  const fresh = (await call('bot-recover-chat', { botId: 'b2' })).value.sessionId
+  assert.match(fresh, /^s\d+$/)
+  const writer = JSON.parse(readFileSync(join(home, 'state.json'), 'utf8')).bots.b2
+  assert.equal(writer.sessionId, fresh)
+  // Its earlier parts stay readable.
+  assert.deepEqual(writer.segments, [{ sessionId: 'b2', endedAt: 3 }])
+  assert.equal((await call('bot-recover-chat', { botId: 'nobody' })).error.code, 'bot/not-found')
+})

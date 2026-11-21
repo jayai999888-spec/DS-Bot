@@ -1,6 +1,8 @@
 // Spanish (es) localization for Jubala Bot client and DSH settings namespaces.
 
 export const ES = {
+  "{name} could not be opened.": "No se pudo abrir {name}.",
+  "The conversation of {name} was gone, so it starts a new one.": "La conversación de {name} ya no estaba, así que empieza una nueva.",
   'Background work': 'Trabajo en segundo plano',
   'Background commands after (seconds)': 'Pasar comandos a segundo plano tras (segundos)',
   'A new reply is waiting': "Tienes una nueva respuesta",

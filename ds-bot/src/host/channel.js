@@ -870,6 +870,11 @@ export function install(rt) {
           return ok(await rt.localAgentsEndpoint(endpoint, body))
         // "New session" and "open an earlier session" on an abot's chat: ordinary
         // parts moves (parts.js), the same mechanism every Bot's chat uses.
+        case 'bot-recover-chat': {
+          const bot = rt.botOf(String(body.botId ?? ''))
+          if (bot === undefined) return fail('Unknown Bot', 'bot/not-found')
+          return ok({ sessionId: await rt.recoverLostChat(bot.id) ?? null })
+        }
         case 'bot-new-part': {
           await rt.load()
           const bot = rt.botOf(String(body.botId ?? ''))

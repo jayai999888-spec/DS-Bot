@@ -1458,6 +1458,8 @@ const ZH = {
   // A Session that is still landing
   'Opening…': '正在打开…',
   'Still opening…': '还在打开…',
+  '{name} could not be opened.': '{name} 打不开。',
+  'The conversation of {name} was gone, so it starts a new one.': '{name} 原来的会话已经不在了，已为它新开一个会话。',
   'Add files': '添加文件',
   'Reference a chat': '引用对话',
   'Chat with {name}': '与 {name} 的对话',

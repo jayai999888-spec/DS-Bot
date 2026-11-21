@@ -1,6 +1,8 @@
 // German (de) localization for Jubala Bot client and DSH settings namespaces.
 
 export const DE = {
+  "{name} could not be opened.": "{name} konnte nicht geöffnet werden.",
+  "The conversation of {name} was gone, so it starts a new one.": "Die Unterhaltung von {name} war nicht mehr da, daher beginnt eine neue.",
   'Background work': 'Hintergrundarbeit',
   'Background commands after (seconds)': 'Befehle in den Hintergrund nach (Sekunden)',
   'A new reply is waiting': "Eine neue Antwort wartet auf dich",
