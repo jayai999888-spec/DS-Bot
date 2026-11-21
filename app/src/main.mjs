@@ -28,6 +28,7 @@ import { explainOf, StartWindow } from './start-window.mjs'
 import { langOf } from './start/text.mjs'
 import { createDeferredPrompt } from './update-prompt.mjs'
 import { CAPTION_HEIGHT, cssColor, frameOptions, framelessOn, keepVibrancy, materialOf, nativeThemeSource } from './window-frame.mjs'
+import { zoomKey, zoomLevel } from './zoom-keys.mjs'
 
 const { rm } = disk.promises
 
@@ -42,7 +43,9 @@ const IPC = {
   browserViewNavigate: 'ds-bot:browser-view-navigate', browserViewCommand: 'ds-bot:browser-view-command',
   browserViewFocus: 'ds-bot:browser-view-focus', browserViewRead: 'ds-bot:browser-view-read',
   browserViewClose: 'ds-bot:browser-view-close', browserViewHold: 'ds-bot:browser-view-hold',
-  browserImportSources: 'ds-bot:browser-import-sources', browserImportPick: 'ds-bot:browser-import-pick',
+  browserImportSources: 'ds-bot:browser-import-sources', browserImportProbe: 'ds-bot:browser-import-probe',
+  browserImportPick: 'ds-bot:browser-import-pick',
+  browserImportPaste: 'ds-bot:browser-import-paste', browserImportLaunch: 'ds-bot:browser-import-launch',
   browserImportLive: 'ds-bot:browser-import-live', browserImportApply: 'ds-bot:browser-import-apply',
   browserImportCancel: 'ds-bot:browser-import-cancel',
   appUpdateState: 'ds-bot:app-update-state', appUpdateCheck: 'ds-bot:app-update-check',
@@ -67,6 +70,10 @@ const here = dirname(fileURLToPath(import.meta.url))
 const assets = join(here, '..', 'assets')
 // Drawn by scripts/icon.mjs. Windows takes the .ico for its several sizes.
 const iconFile = join(assets, process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+// Linux (X11) drops _NET_WM_ICON when the image is too big for one X property: a
+// 1024x1024 RGBA image is about 4 MB, the property limit is about 256 KB. The 128 px
+// hicolor file is small enough, but on Windows and macOS the full size stays.
+const windowIcon = process.platform === 'linux' ? join(assets, 'icons', '128x128.png') : iconFile
 // The tray icon of this platform: Windows takes the .ico, macOS the template and its @2x,
 // Linux the plain png.
 const trayIconFile = () => join(assets, process.platform === 'win32' ? 'tray.ico' : process.platform === 'darwin' ? 'trayTemplate.png' : 'tray.png')
@@ -78,7 +85,7 @@ if (process.env.DS_BOT_SHELL_DATA) app.setPath('userData', process.env.DS_BOT_SH
 const frameFile = join(app.getPath('userData'), 'start-frame.json')
 
 // Loaded once the start window is up (loadModules).
-let BotBrowserGuests, partitionOf, BotViews, isBotId, importFromBrowser, listSources, applyCookies, CookieImports, parseCookieFile
+let BotBrowserGuests, partitionOf, BotViews, isBotId, checkSourceLiveDebug, importFromBrowser, launchBrowserForDebug, listSources, applyCookies, seedOriginsInPartition, CookieImports, parseCookieFile
 let downloadSaver, chooseLocations, defaultPlaces, lang, pickerLabels, pickRoot, programFolder, saveLocations, teamIn, teamsAt, tx, HostProcess
 let copySessions, findTeam, importTeam, restoreSessions, teamInUse, teamSizes, userDshHome, copyData, copyReason, moveProblem, BUNDLES, CHECK_PROFILE, PROFILE, ImportFlow
 let watchReleases, watchUpdates, RELEASE_PAGE, getDshRuntimeVersion, electronUpdater
@@ -145,6 +152,9 @@ const copyAbort = new AbortController()
 let browserGuests
 let botViews
 let cookieImports
+const cachedImportSources = new Map()
+const activeLiveImports = new Map()
+let liveImportSeq = 0
 // The app's own folder and file picker, on the page of the window that asks (picker-host.mjs).
 const pickers = new Pickers({ ipcMain, getPath: name => app.getPath(name) })
 
@@ -195,12 +205,12 @@ if (canonical !== undefined) {
   logs = new LogFile({ dir: join(app.getPath('userData'), 'logs') })
   rawOutput = captureStdio(logs)
   app.once('will-quit', () => { logs.flush() })
-  console.log(`DS Bot ${app.getVersion()} (${process.platform} ${process.arch}), Electron ${process.versions.electron}`)
+  console.log(`Jubala Bot ${app.getVersion()} (${process.platform} ${process.arch}), Electron ${process.versions.electron}`)
   startWindow = new StartWindow({
     electron: { BrowserWindow, ipcMain, screen, shell: electronShell, clipboard, nativeTheme, systemPreferences },
     // 〔保存日志…〕 on the start window's failure cards.
     saveAs: (win, name) => askPicker(win, { mode: 'save', title: tx('dialog.saveLog'), start: knownFolder('desktop'), name }),
-    page: join(here, 'start', 'start.html'), preload: join(here, 'preload.cjs'), icon: iconFile, material, devTools: !app.isPackaged,
+    page: join(here, 'start', 'start.html'), preload: join(here, 'preload.cjs'), icon: windowIcon, material, devTools: !app.isPackaged,
     css: readFileSync(join(here, 'page-card.css'), 'utf8'),
     // On Windows the locale is known only once the app is ready.
     lang: () => langOf(app.getLocale()), motion: readStartFrame(frameFile).motion, effects: readStartFrame(frameFile).effects,
@@ -301,8 +311,8 @@ async function loadModules() {
   ])
   ;({ BotBrowserGuests, partitionOf } = browser)
   ;({ BotViews, isBotId } = views)
-  ;({ importFromBrowser, listSources } = sources)
-  ;({ applyCookies, CookieImports } = cookies)
+  ;({ checkSourceLiveDebug, importFromBrowser, launchBrowserForDebug, listSources } = sources)
+  ;({ applyCookies, seedOriginsInPartition, CookieImports } = cookies)
   ;({ parseCookieFile } = cookieFiles)
   ;({ downloadSaver } = downloads)
   ;({ chooseLocations, defaultPlaces, lang, pickerLabels, pickRoot, programFolder, saveLocations, teamIn, teamsAt, tx } = firstRun)
@@ -502,7 +512,7 @@ async function pickAndPlace() {
     return
   }
   if (root.reason !== undefined) {
-    console.log(`DS Bot: the place ${root.at} cannot be used (${root.reason})`)
+    console.log(`Jubala Bot: the place ${root.at} cannot be used (${root.reason})`)
     proposed = undefined
     startWindow.card({ kind: 'rejected', reason: root.reason, path: root.at })
     return
@@ -522,7 +532,7 @@ async function placeAnswer(value) {
   await startOver(root)
 }
 
-// The start begins again in the root R (start-window §7): the whale sinks at once, the engine
+// The start begins again in the root R (start-window §7): the orange shrinks away at once, the engine
 // that may be up on the default folder stops, what this start made there goes, and the boot runs
 // again. The places are saved at once: the import question has been answered by now.
 async function startOver(root) {
@@ -536,7 +546,7 @@ async function startOver(root) {
     // restart() also takes the card away, without letting a held hand-off of the old engine go;
     // the line names the new place from here on. The Host on the old folder is ended at once:
     // neither its boot nor an orderly shutdown of a folder about to go is of any use, and either
-    // would keep the whale under water for up to 10 s.
+    // would keep the orange away for up to 10 s.
     startWindow.restart()
     tellPlace(root.dataDir)
     await stopOld({ now: true })
@@ -545,7 +555,7 @@ async function startOver(root) {
     if (stopping || mine !== attempt) return
     setPlaces({ dataDir: root.dataDir, workspace: root.workspace })
     saveLocations(places)
-    console.log(`DS Bot: the data goes to ${places.dataDir}`)
+    console.log(`Jubala Bot: the data goes to ${places.dataDir}`)
   } finally {
     restarting = false
   }
@@ -615,16 +625,16 @@ async function startEngine(mine) {
   // taken has nothing left out.
   if (warm === undefined) {
     await restoreSessions(places.dataDir).then(({ copied, newer }) => {
-      if (copied.length > 0) console.log(`DS Bot: copied ${copied.join(', ')}, which the import left out`)
-      if (newer.length > 0) console.warn(`DS Bot: this DSH cannot read ${newer.join(', ')}, which the import left out`)
-    }, (error) => { console.error('DS Bot: the Sessions the import left out were not copied:', error) })
+      if (copied.length > 0) console.log(`Jubala Bot: copied ${copied.join(', ')}, which the import left out`)
+      if (newer.length > 0) console.warn(`Jubala Bot: this DSH cannot read ${newer.join(', ')}, which the import left out`)
+    }, (error) => { console.error('Jubala Bot: the Sessions the import left out were not copied:', error) })
   }
   if (!shadowedAsked) {
     const { shadowedBundles, removeShadowed } = await import('./profile-shadow.mjs')
     const shadowed = shadowedBundles(profileDir(), BUNDLES)
     if (shadowed.length > 0 && mine === attempt) {
       const names = shadowed.map(({ name, version }) => `${name} ${version}`).join(', ')
-      console.warn(`DS Bot: the profile carries its own ${names}, which shadows the bundled copy`)
+      console.warn(`Jubala Bot: the profile carries its own ${names}, which shadows the bundled copy`)
       if (await askCard({ kind: 'shadowed', names }) === 'remove' && mine === attempt) {
         // A failed removal stops the start with the reason, and the next try asks again.
         await removeShadowed(profileDir(), shadowed.map(entry => entry.name)).catch((error) => {
@@ -712,7 +722,7 @@ async function importStep(mine) {
   if (result.outcome === 'copied') {
     startWindow.done('import')
     const { summary } = result
-    console.log(`DS Bot: copied ${String(summary.bots)} Bots and ${String(summary.sessions)} Sessions from ${summary.from}`)
+    console.log(`Jubala Bot: copied ${String(summary.bots)} Bots and ${String(summary.sessions)} Sessions from ${summary.from}`)
     // The team lives here now; moving it is Settings' job (the data move).
     startWindow.place(undefined)
     return {}
@@ -734,7 +744,7 @@ async function importElsewhere(signal) {
     const root = rootOf(picked, { dshHome: userDshHome(), program: app.isPackaged ? programFolder() : undefined, current: places })
     if (root.same) return false
     if (root.reason !== undefined) {
-      console.log(`DS Bot: the place ${root.at} cannot be used (${root.reason})`)
+      console.log(`Jubala Bot: the place ${root.at} cannot be used (${root.reason})`)
       if (await askCard({ kind: 'rejected', reason: root.reason, path: root.at }, { signal }) === 'pick') continue
       return false
     }
@@ -793,7 +803,7 @@ function handleIpc() {
   })
   app.on('before-quit', () => { computerIndicator.dispose(); computerCursor.dispose() })
   ipcMain.on(IPC.ready, (event, report) => { if (fromWindow(event)) startWindow.ready(report) })
-  // It has drawn the whale the start window hands over: the windows cross-fade.
+  // It has drawn the orange the start window hands over: the windows cross-fade.
   ipcMain.on(IPC.handoffReady, (event) => { if (fromWindow(event)) startWindow.teamReady() })
   ipcMain.on(IPC.cardShown, (event, id) => { if (fromWindow(event)) cards.get(id)?.shown() })
   ipcMain.on(IPC.cardAnswer, (event, id, index) => { if (fromWindow(event)) cards.get(id)?.settle(Number.isInteger(index) ? index : -1) })
@@ -844,11 +854,43 @@ function handleIpc() {
   ipcMain.handle(IPC.browserViewRead, (event, botId, tabId, script) => { assertWindow(event); return botViews.operate(String(botId), 'read', { tabId: String(tabId), script }) })
   ipcMain.handle(IPC.browserViewClose, (event, botId, tabId) => { assertWindow(event); return botViews.operate(String(botId), 'close', { tabId: String(tabId) }) })
   ipcMain.handle(IPC.browserViewHold, (event, botId, held) => { assertWindow(event); return botViews.hold(String(botId), held === true) })
-  // Cookie imports: a file or an installed browser's profile is parsed or harvested into a
-  // pending set first; only apply (the user's confirm) writes into the Bot's partition.
-  ipcMain.handle(IPC.browserImportSources, (event) => {
+  // Cookie imports: a file, pasted payload, or installed browser profile is parsed or
+  // harvested into a pending set first; only apply (the user's confirm) writes into the
+  // Bot's partition.
+  const refreshImportSources = async () => {
+    const list = await listSources()
+    cachedImportSources.clear()
+    for (const s of list) cachedImportSources.set(s.id, s)
+    return list
+  }
+  const resolveImportSource = async (sourceId) => {
+    const id = String(sourceId ?? '')
+    const cached = cachedImportSources.get(id)
+    if (cached) return cached
+    const list = await refreshImportSources()
+    return list.find((item) => item.id === id) ?? null
+  }
+  ipcMain.handle(IPC.browserImportSources, async (event) => {
     assertWindow(event)
-    return listSources()
+    return (await refreshImportSources()).map((s) => ({
+      id: s.id,
+      kind: s.kind,
+      engine: s.engine,
+      name: s.name,
+      label: s.label,
+      profileName: s.profileName,
+      email: s.email ?? null,
+      hasCookies: s.hasCookies,
+      inspectUrl: s.inspectUrl ?? null,
+      liveDebugReady: s.liveDebugReady === true,
+      hasExe: Boolean(s.exe),
+    }))
+  })
+  ipcMain.handle(IPC.browserImportProbe, async (event, sourceId) => {
+    assertWindow(event)
+    const source = await resolveImportSource(sourceId)
+    if (!source) return { liveDebugReady: false }
+    return { liveDebugReady: await checkSourceLiveDebug(source) }
   })
   ipcMain.handle(IPC.browserImportPick, async (event) => {
     assertWindow(event)
@@ -861,35 +903,108 @@ function handleIpc() {
     if (!parsed.ok) return { error: parsed.error ?? 'unreadable', format: parsed.format }
     return cookieImports.store(parsed, { kind: 'file', label: basename(picked) })
   })
-  ipcMain.handle(IPC.browserImportLive, async (event, sourceId, close) => {
+  ipcMain.handle(IPC.browserImportPaste, async (event, text, defaultUrl) => {
     assertWindow(event)
-    const source = (await listSources()).find((item) => item.id === sourceId)
-    if (!source) throw new Error('DS Bot: an unknown browser profile')
-    let outcome
-    try {
-      outcome = await importFromBrowser(source, { close: close === true })
-    } catch (error) {
-      if (error?.code === 'app-bound') return { error: 'app-bound' }
-      throw error
-    }
-    if (outcome.running) return { running: true, label: source.label, kind: source.kind }
-    const result = {
-      format: 'live', entries: outcome.result.cookies.length + outcome.result.skipped.length,
-      cookies: outcome.result.cookies, skipped: outcome.result.skipped, warnings: [], info: {},
-    }
-    return { ...cookieImports.store(result, { kind: source.kind, label: source.label }), restarted: outcome.restarted }
+    const raw = typeof text === 'string' ? text : ''
+    if (Buffer.byteLength(raw, 'utf8') > IMPORT_FILE_MAX) return { error: 'too-large' }
+    const parsed = parseCookieFile(raw, { defaultUrl: typeof defaultUrl === 'string' ? defaultUrl : undefined })
+    if (!parsed.ok) return { error: parsed.error ?? 'unreadable', format: parsed.format }
+    const label = parsed.format === 'curl' ? 'cURL' : parsed.format === 'header-string' ? 'Cookie header' : 'Pasted cookies'
+    return cookieImports.store(parsed, { kind: 'paste', label })
   })
-  ipcMain.handle(IPC.browserImportApply, async (event, key, id) => {
+  ipcMain.handle(IPC.browserImportLaunch, async (event, sourceId) => {
     assertWindow(event)
-    if (typeof key !== 'string' || !key.startsWith('bot:')) throw new Error('DS Bot: a Bot storage key is required')
+    const source = await resolveImportSource(sourceId)
+    if (!source) return { launched: false }
+    return { launched: launchBrowserForDebug(source) }
+  })
+  ipcMain.handle(IPC.browserImportLive, async (event, sourceId, close, requestId) => {
+    assertWindow(event)
+    // Abort any older in-flight live import so Keychain / browser Allow prompts never stack.
+    for (const [prevKey, prevCtrl] of activeLiveImports) {
+      activeLiveImports.delete(prevKey)
+      prevCtrl.abort()
+    }
+    const reqKey = typeof requestId === 'string' && requestId ? requestId : `live:${++liveImportSeq}`
+    const controller = new AbortController()
+    activeLiveImports.set(reqKey, controller)
+    try {
+      const source = await resolveImportSource(sourceId)
+      if (controller.signal.aborted) return { canceled: true }
+      if (!source) throw new Error('Jubala Bot: an unknown browser profile')
+      let outcome
+      try {
+        outcome = await importFromBrowser(source, { close: close === true, signal: controller.signal })
+      } catch (error) {
+        if (error?.code === 'import-cancelled' || controller.signal.aborted) return { canceled: true }
+        if (['app-bound', 'keychain-denied', 'devtools-denied', 'devtools-timeout', 'devtools-wrong-profile'].includes(error?.code)) {
+          return { error: error.code }
+        }
+        throw error
+      }
+      if (controller.signal.aborted) return { canceled: true }
+      if (outcome.needsRemoteDebugging) {
+        return {
+          needsRemoteDebugging: true,
+          sourceId: source.id,
+          inspectUrl: outcome.inspectUrl,
+          browserName: outcome.browserName ?? source.name,
+          label: source.label,
+          kind: source.kind,
+          running: outcome.running === true,
+          hasExe: Boolean(source.exe),
+          lockedCount: outcome.lockedCount ?? 0,
+        }
+      }
+      if (outcome.running) return { running: true, label: source.label, kind: source.kind }
+      const result = {
+        format: 'live',
+        entries: outcome.result.cookies.length + outcome.result.skipped.length,
+        cookies: outcome.result.cookies,
+        origins: outcome.result.origins ?? [],
+        skipped: outcome.result.skipped,
+        warnings: [],
+        info: {},
+      }
+      return {
+        ...cookieImports.store(result, { kind: source.kind, label: source.label, id: source.id }),
+        restarted: outcome.restarted,
+        method: outcome.method,
+      }
+    } finally {
+      if (activeLiveImports.get(reqKey) === controller) activeLiveImports.delete(reqKey)
+    }
+  })
+  ipcMain.handle(IPC.browserImportApply, async (event, key, id, options) => {
+    assertWindow(event)
+    if (typeof key !== 'string' || !key.startsWith('bot:')) throw new Error('Jubala Bot: a Bot storage key is required')
     const pending = cookieImports.take(typeof id === 'string' ? id : '')
-    if (!pending) throw new Error('DS Bot: this import is no longer pending')
-    const storage = session.fromPartition(partitionOf(key))
-    return applyCookies(storage, pending.cookies)
+    if (!pending) throw new Error('Jubala Bot: this import is no longer pending')
+    const sites = Array.isArray(options?.sites) ? options.sites.map(String) : undefined
+    const persistSession = options?.persistSession === true
+    const partition = partitionOf(key)
+    const storage = session.fromPartition(partition)
+    const report = await applyCookies(storage, pending.cookies, { sites, persistSession })
+    const storageReport = (pending.origins ?? []).length > 0
+      ? await seedOriginsInPartition(BrowserWindow, partition, pending.origins, { sites })
+      : { originsStored: 0, entriesStored: 0, failedOrigins: [] }
+    return { ...report, ...storageReport }
   })
   ipcMain.handle(IPC.browserImportCancel, (event, id) => {
     assertWindow(event)
-    if (typeof id === 'string') cookieImports.drop(id)
+    if (typeof id === 'string' && id) {
+      cookieImports.drop(id)
+      const controller = activeLiveImports.get(id)
+      if (controller) {
+        activeLiveImports.delete(id)
+        controller.abort()
+      }
+    } else {
+      for (const [reqKey, controller] of activeLiveImports) {
+        activeLiveImports.delete(reqKey)
+        controller.abort()
+      }
+    }
   })
   // The app's own update state, for the About row. `updates` exists once the engine's first
   // start created it; before that (and in runs without an updater) the state is null.
@@ -953,14 +1068,14 @@ async function checkTeam(where, signal, onProgress) {
     try {
       signal.throwIfAborted()
       const { unreadable } = await check.start()
-      if (unreadable.length > 0) console.warn(`DS Bot: this DSH cannot read ${unreadable.join(', ')}`)
+      if (unreadable.length > 0) console.warn(`Jubala Bot: this DSH cannot read ${unreadable.join(', ')}`)
       return unreadable.length
     } finally {
       signal.removeEventListener('abort', stop)
       await check.stop()
     }
   } catch (error) {
-    if (!signal.aborted) console.error('DS Bot: the chats were not checked before the copy:', error)
+    if (!signal.aborted) console.error('Jubala Bot: the chats were not checked before the copy:', error)
     return 0
   } finally {
     await rm(home, { recursive: true, force: true, maxRetries: 5 }).catch((error) => { console.error(error) })
@@ -1006,7 +1121,7 @@ async function pickMove() {
 function moveCard(to) {
   const reason = moveReason(to)
   if (reason !== undefined) {
-    console.log(`DS Bot: the data cannot move to ${to} (${reason})`)
+    console.log(`Jubala Bot: the data cannot move to ${to} (${reason})`)
     startWindow.card({ kind: 'rejected', reason, path: to })
     return
   }
@@ -1158,7 +1273,7 @@ function startUpdates() {
     const debArch = { x64: 'amd64', arm64: 'arm64' }[process.arch] ?? process.arch
     return watchReleases({
       current: app.getVersion(), arch: process.arch, feed, ask: throwaway ? undefined : (version) => downloadPrompt.prompt(version), open: url => electronShell.openExternal(url),
-      asset: version => `DS-Bot-${version}-linux-${debArch}.deb`,
+      asset: version => `Jubala-Bot-${version}-linux-${debArch}.deb`,
     })
   }
   if (process.platform === 'win32' || process.platform === 'linux') {
@@ -1310,7 +1425,7 @@ function createWindow() {
     // The window never squeezes the chat: RAIL_WIDTH + MIN_CHAT from ds-bot's
     // src/client/frame-layout.js is the avatar rail plus the smallest chat column.
     ...startWindow.mainBounds(), minWidth: 508, minHeight: 480,
-    title: 'DS Bot', show: false, icon: iconFile,
+    title: 'Jubala Bot', show: false, icon: windowIcon,
     backgroundColor: material ? '#00000000' : dark ? '#1b1b1c' : '#ffffff',
     // Frameless as in DSH Desktop: the window controls overlay the page's band. On Windows the
     // caption buttons keep the sidebar's colors until the page sends the colors of the surface
@@ -1387,6 +1502,14 @@ function createWindow() {
     event.preventDefault()
     openOutside(url)
   })
+  if (process.platform !== 'darwin') {
+    contents.on('before-input-event', (event, input) => {
+      const action = zoomKey(input, process.platform)
+      if (action === null) return
+      event.preventDefault()
+      contents.setZoomLevel(zoomLevel(contents.getZoomLevel(), action))
+    })
+  }
   if (!app.isPackaged) {
     contents.on('before-input-event', (_event, input) => {
       if (input.type === 'keyDown' && (input.key === 'F12' || (input.control && input.shift && input.key.toLowerCase() === 'i'))) contents.toggleDevTools()
@@ -1491,7 +1614,7 @@ function shellText() {
 function assertWindow(event) {
   const contents = mainWindow?.webContents
   if (contents === undefined || event.sender !== contents || event.senderFrame !== contents.mainFrame
-    || !event.senderFrame.url.startsWith(`${origin}/`)) throw new Error('DS Bot: rejected IPC from an unknown page')
+    || !event.senderFrame.url.startsWith(`${origin}/`)) throw new Error('Jubala Bot: rejected IPC from an unknown page')
 }
 
 function fromWindow(event) {

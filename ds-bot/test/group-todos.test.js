@@ -11,6 +11,7 @@ import { fakeContext } from './fake-ctx.js'
 const baseTeam = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', role: 'Lead', instructions: '', createdAt: 1 },
     writer: { id: 'writer', sessionId: 'writer', name: 'Writer', role: 'Copy', instructions: '', createdAt: 2 },

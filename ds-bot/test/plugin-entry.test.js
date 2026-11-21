@@ -10,7 +10,7 @@ const PLUGIN = dirname(dirname(fileURLToPath(import.meta.url)))
 const read = file => readFileSync(join(PLUGIN, file), 'utf8')
 const staticImports = source => [...source.matchAll(/^\s*(?:import|export)\s[^'"]*?from\s+['"]([^'"]+)['"]/gm)].map(match => match[1])
 
-// DSH leaves out the browser half of an entry that failed to import, and DS Bot's
+// DSH leaves out the browser half of an entry that failed to import, and Jubala Bot's
 // bundle patch turns DSH's own settings shell off: a host module that failed to load
 // left no Settings and no way back to the classic view (#1237, #1314). The entry DSH
 // loads imports no host module before `apply`.

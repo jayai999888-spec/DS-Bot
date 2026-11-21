@@ -12,6 +12,7 @@ let rt
 const TEAM = {
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', name: 'Chief', role: 'Lead', sessionId: 'chief', createdAt: 1 },
     writer: {

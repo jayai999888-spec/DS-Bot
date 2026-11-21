@@ -48,7 +48,7 @@ const { parse } = harnessRequire('yaml')
 const packageFile = (name, file) => harnessRequire.resolve(`${name}/package.json`).replace(/package\.json$/, file)
 
 // DSH's own settings shell, run as its browser module would: the child slots its
-// `sidebar.settings` entry and its General section declare are the ones DS Bot's seat
+// `sidebar.settings` entry and its General section declare are the ones Jubala Bot's seat
 // must declare in its place.
 function dshShellDeclarations() {
   const source = readFileSync(packageFile('@deepseek-ai/dsh-client-ui-settings-general', 'lib/client.js'), 'utf8')
@@ -68,7 +68,7 @@ function dshShellDeclarations() {
   return children
 }
 
-// Slots a newer DSH's shell declares than the oldest DSH DS Bot runs on. Declaring one
+// Slots a newer DSH's shell declares than the oldest DSH Jubala Bot runs on. Declaring one
 // an older shell lacks is harmless: nothing registers into it there.
 const NEWER_SLOTS = new Set(['settings.section.icon'])
 
@@ -149,7 +149,7 @@ function settingsInstall({ dsh = false, ready = true } = {}) {
   return { entries, declared, held, dshTrigger, dshSeat, install, declare }
 }
 
-test('an enabled DSH settings shell keeps its trigger and DS Bot installs without a collision (#1245)', () => {
+test('an enabled DSH settings shell keeps its trigger and Jubala Bot installs without a collision (#1245)', () => {
   const rig = settingsInstall({ dsh: true })
   const installed = rig.install()
   assert.equal(rig.entries.get('settings.trigger:'), rig.dshTrigger)
@@ -161,7 +161,7 @@ test('an enabled DSH settings shell keeps its trigger and DS Bot installs withou
   for (const name of Object.keys(shell.SETTINGS_CHILDREN)) assert.ok(rig.declared.has(name))
 })
 
-test('DS Bot owns its default settings trigger only for its settings seat lifetime', () => {
+test('Jubala Bot owns its default settings trigger only for its settings seat lifetime', () => {
   const rig = settingsInstall()
   for (let attempt = 0; attempt < 2; attempt++) {
     const installed = rig.install()
@@ -206,7 +206,7 @@ test('the coordinator runs first-run steps on a blank main view, and a requested
   assert.equal(shell.pickStep({ steps, requested: 'a', active: false, completed: new Set(['a']) }).id, 'a')
 })
 
-test('a step\'s openSection lands on DS Bot\'s page for that section', () => {
+test('a step\'s openSection lands on Jubala Bot\'s page for that section', () => {
   assert.deepEqual([...shell.settingsPlace('models')], ['models'])
   assert.deepEqual([...shell.settingsPlace('general')], ['general'])
   assert.deepEqual([...shell.settingsPlace('plugins')], ['dsh', 'plugins'])
@@ -247,12 +247,13 @@ test('the settings file action shows only when the Host has a document to open',
 })
 
 // The dialog with DSH's ledger: renderSlot answers with a marker naming what it drew.
-function dialog({ page = 'general', id = null, sections, items = [], actions = {} } = {}) {
+function dialog({ page = 'general', id = null, sections, items = [], actions = {}, preferences } = {}) {
   const calls = []
   const drawn = []
   const dsh = {
     sections: sections ?? [{ id: 'account', order: -10, label: 'Account' }, { id: 'general', order: 0, label: 'General' }, { id: 'models', order: 10, label: 'Models' }, { id: 'plugins', order: 15, label: 'Plugins' }, { id: 'agent-presets', order: 20, label: 'Agent presets' }],
     items,
+    preferences,
     renderSlot: (name, owner, opts) => { drawn.push([name, opts?.only ?? null]); return { type: 'slot', props: { name, only: opts?.only ?? null } } },
   }
   const all = { closeSettings: () => calls.push('close'), openSettings: (...args) => calls.push(args), providers: () => {}, ...actions }
@@ -261,10 +262,10 @@ function dialog({ page = 'general', id = null, sections, items = [], actions = {
 }
 const navLabels = tree => walk(walk(tree, node => node.type === 'nav')[0], node => node.type === 'button').map(textOf)
 
-test('one Settings: DS Bot\'s pages, then DSH\'s, then Feedback and About; no Harness settings', () => {
+test('one Settings: Jubala Bot\'s pages, then DSH\'s, then Feedback and About; no Harness settings', () => {
   const labels = navLabels(dialog().tree)
   assert.ok(!labels.includes('Harness settings'))
-  assert.deepEqual(labels.slice(-5), ['Account', 'Plugins', 'Agent presets', 'Feedback', 'About DS Bot'])
+  assert.deepEqual(labels.slice(-5), ['Account', 'Plugins', 'Agent presets', 'Feedback', 'About Jubala Bot'])
   assert.equal(labels.filter(label => label === 'General').length, 1)
   assert.equal(labels.filter(label => label === 'Models').length, 1)
 })
@@ -302,6 +303,16 @@ test('DSH\'s General rows join General: the look under Appearance, the rest unde
   const only = node => walk(node, item => item.type === 'slot').map(item => item.props.only)
   assert.deepEqual(only(sections.find(node => node.props.key === 'look')), ['appearance', 'font-size'])
   assert.deepEqual(only(sections.find(node => node.props.key === 'more')), ['permission', 'language', 'developer-tools'])
+})
+
+test('Jubala Bot draws known General selectors, while unrelated DSH rows keep their public slots', () => {
+  const ids = ['language', 'transcript-view', 'link-opening', 'composer-enter', 'performance-usage', 'permission']
+  const { tree, drawn } = dialog({ items: [...ids, 'another-plugin'].map(id => ({ id })), preferences: {} })
+  const [general] = walk(tree, node => typeof node.type === 'function' && node.type.name === 'GeneralPage')
+  const sections = general.type(general.props)
+  assert.deepEqual(walk(sections, node => typeof node.type === 'function' && node.type.name === 'SettingsPreferences').map(node => node.props.id), ids)
+  assert.ok(drawn.some(([name, only]) => name === 'settings.general.item' && only === 'another-plugin'))
+  assert.ok(!drawn.some(([name, only]) => name === 'settings.general.item' && ids.includes(only)))
 })
 
 test('header actions from DSH and plugins sit beside the title', () => {
@@ -345,7 +356,7 @@ const heldSource = () => {
   return { getSnapshot: () => value, set: (next) => { value = next } }
 }
 
-test('a seat registration that DSH does not draw leaves DS Bot\'s own Settings dialog on', () => {
+test('a seat registration that DSH does not draw leaves Jubala Bot\'s own Settings dialog on', () => {
   const held = heldSource()
   const { slots, installed } = installShell(held)
   assert.ok(slots.registered.some(row => row.options.name === 'sidebar.settings'))
@@ -385,7 +396,7 @@ const mounted = async () => {
   return { shellModule, mount }
 }
 
-test('DS Bot holds the seat only while SettingsShell is on screen', async () => {
+test('Jubala Bot holds the seat only while SettingsShell is on screen', async () => {
   const { shellModule, mount } = await mounted()
   const held = heldSource()
   const seat = shellModule.seatHold(held)
@@ -424,10 +435,15 @@ test('the installer hands SettingsShell the hold through the seat\'s face', () =
   installed.dispose()
 })
 
-// Settings in Agent mode carries DS Bot's own rules only: the DSH page around it keeps its look.
+// Settings in Agent mode carries Jubala Bot's own rules only: the DSH page around it keeps its look.
 const styles = load(await bundle("export { botOwnCss, SHELL_CSS } from './src/client/styles.js'"))
 
-test('the Agent-mode sheet keeps DS Bot\'s own rules and drops the shell overrides', () => {
+test('settings slot icons take precedence over legacy plugin nav decorators', () => {
+  assert.match(styles.SHELL_CSS, /\.bt-settings-item:has\(>\.bt-settings-icon\)::before\{content:none!important\}/)
+  assert.match(styles.SHELL_CSS, /\.bt-settings-icon>\[data-slot="settings\.section\.icon"\]>svg\{display:block!important\}/)
+})
+
+test('the Agent-mode sheet keeps Jubala Bot\'s own rules and drops the shell overrides', () => {
   const css = `body{--bt-ink:#111;-webkit-tap-highlight-color:transparent}
 [class*="_footArea"]{display:grid}
 .bt-row,[class*="_trigger"] span{color:red}

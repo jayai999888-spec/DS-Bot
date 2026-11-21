@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path'
 import { replaceFile } from './files.js'
 import { assembleLlmStream } from './models.js'
 
-export const RESTART_ERROR = 'DS Bot restarted before this answer finished.'
+export const RESTART_ERROR = 'Jubala Bot restarted before this answer finished.'
 export const TOOL_ERROR = 'The model called a tool again after being told not to, so this aside was not answered.'
 export const EMPTY_ERROR = 'The model wrote nothing.'
 // Events that still belong to a turn. A model selection or a title does not.
@@ -358,15 +358,8 @@ export function install(rt) {
     if (cardsDir !== undefined && writes()) await rm(join(cardsDir, botId), { recursive: true, force: true }).catch(error => rt.warn('ds-bot: btw cards of %s not removed: %s', botId, error))
   }
 
-  // Channel can be installed without the roster (the thinking route test). The
-  // full runtime always has deleteBot, and that is the path that must drop cards.
-  if (typeof rt.deleteBot === 'function') {
-    const originalDelete = rt.deleteBot.bind(rt)
-    rt.deleteBot = async (id) => {
-      if (rt.botOf(id) !== undefined && !rt.isMain(id)) await dropBot(id)
-      return originalDelete(id)
-    }
-  }
+  // Channel can be installed without the roster (the thinking route test).
+  rt.onBotDelete?.(dropBot)
 
   Object.assign(rt, { btwDelete, btwDispose, btwView, btwPartCards: readPart })
 }

@@ -80,7 +80,7 @@ test('the user bubble keeps the text around a mention, and a group only calls it
   assert.equal(mentionableBots(roster, 'a').length, 4)
   assert.equal(mentionableBots(roster, 'elsewhere').length, 0)
   // With neither DSH's old text projection nor its user-text registry, DSH keeps its own
-  // bubble; with the registry DS Bot draws it (user-message.test.js).
+  // bubble; with the registry Jubala Bot draws it (user-message.test.js).
   assert.equal(canDrawUserMessages(false), false)
   assert.equal(canDrawUserMessages(true), true)
 })

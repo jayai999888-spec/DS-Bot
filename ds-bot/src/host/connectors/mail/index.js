@@ -241,6 +241,7 @@ export function install(rt, host) {
         if ((state.connectors?.mail?.offFor ?? []).includes(bot.id)) return 'The mailbox is turned off for you.'
         const account = accountOf(args.account)
         if (account === undefined) return accountList().length === 0 ? 'No mail account is added yet.' : `Name the account: ${accountList().map(a => a.address).join(', ')}`
+        if (rt.taskOwners?.has(exec.agent?.id)) return 'Background tasks cannot show send confirmation cards. Draft it with mail_draft or report back to your own chat so it can confirm with the user.'
         if (rt.groupOwners.has(exec.agent?.id)) return 'Send cards only work in your own chat. Draft it here with mail_draft, or call mail_send in your own chat.'
         if (!rt.chatOwners.has(exec.agent?.id)) return 'Send cards only work in your current own chat.'
         const readOnly = rt.readOnly()
@@ -518,7 +519,7 @@ export function install(rt, host) {
       if (url.pathname !== '/callback') { res.writeHead(404); res.end(); return }
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' })
       if (!url.searchParams.get('code')) {
-        res.end('<p style="font-family:sans-serif">Google sign-in did not finish — go back to DS Bot and try again.</p>')
+        res.end('<p style="font-family:sans-serif">Google sign-in did not finish — go back to Jubala Bot and try again.</p>')
         rt.warn('ds-bot: mail Google sign-in failed: %s', url.searchParams.get('error') ?? 'no code')
         return
       }

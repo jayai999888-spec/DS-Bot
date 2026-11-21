@@ -51,7 +51,7 @@ export function install(rt) {
 
   let bootstrapping = null
 
-  // The team folder is DS Bot's own: deleted, it is made again before a Session needs it.
+  // The team folder is Jubala Bot's own: deleted, it is made again before a Session needs it.
   async function keepTeamFolder() {
     const team = rt.teamFolder()
     if (team !== undefined) await mkdir(team, { recursive: true }).catch(error => rt.warn('ds-bot: team folder %s not made again: %s', team, error))
@@ -65,7 +65,7 @@ export function install(rt) {
     }
     const path = rt.defaultTeamFolder()
     await mkdir(path, { recursive: true })
-    const workspace = await ctx.workspaceRegistry.resolveByPath(path) ?? await ctx.workspaceRegistry.create(path, 'DS Bot')
+    const workspace = await ctx.workspaceRegistry.resolveByPath(path) ?? await ctx.workspaceRegistry.create(path, 'Jubala Bot')
     state.workspaceId = workspace.id
     await rt.save()
     return workspace.id
@@ -119,6 +119,7 @@ export function install(rt) {
   // from state.bots; while it is on its way out, no group or Bot change treats it as
   // alive, and a second deleteBot does not start.
   const deleting = new Set()
+  const botDeleteHooks = []
   const liveBot = id => (deleting.has(id) ? undefined : rt.botOf(id))
   const isHeld = (kind, name) => held[kind].has(normalize(name))
   async function holdName(kind, name, work) {
@@ -310,7 +311,7 @@ export function install(rt) {
     const greeting = sentKickoffs.get(botId)
     sentKickoffs.delete(botId)
     if (bot === undefined || greeting === undefined || bot.kickoff !== undefined) return
-    // "You are the Main Bot" must not go out after a demotion.
+    // "You are a Main Bot" must not go out after a demotion.
     if (greeting.main && !rt.isMain(botId)) return
     bot.kickoff = greeting
     void rt.save().catch(() => {})
@@ -390,7 +391,7 @@ export function install(rt) {
       : await rt.resolveModel(patch.model)
     // What a Bot runs on changes only from its settings, after the user confirmed: every
     // conversation of the Bot starts a new part for it. A Bot without a model runs on the
-    // one it last ran on, and one that never ran runs on DS Bot's models.
+    // one it last ran on, and one that never ran runs on Jubala Bot's models.
     const engineBefore = rt.engineOf === undefined ? undefined : rt.engineOfBot(bot) ?? 'model'
     if (modelRef === null && engineBefore !== undefined && engineBefore !== 'model') throw new Error(`${bot.name} runs on a local agent and keeps a model of it`)
     const engineChanged = !!modelRef && engineBefore !== undefined && rt.engineOf(modelRef) !== engineBefore
@@ -603,6 +604,15 @@ export function install(rt) {
     return next
   }
 
+  async function retitleChat(bot) {
+    try {
+      const agent = await rt.resolveAgent(rt.chatOf(bot.id))
+      if (agent?.session !== undefined) await ctx.sessionTitle.rename(agent.session, bot.name)
+    } catch (error) {
+      rt.warn('ds-bot: renaming the chat of %s failed: %s', bot.name, error)
+    }
+  }
+
   async function retitleRoom(room) {
     try {
       const agent = await rt.resolveAgent(rt.sessionOfRoom(room))
@@ -810,6 +820,13 @@ export function install(rt) {
       }
     }
     await rt.save()
+    for (const member of removed) {
+      await rt.stopMemberRoomTasks?.(room.id, member, 'removed from group')
+        .catch(error => rt.warn('ds-bot: stopping group tasks for removed member %s in %s failed: %s', member, room.name, error))
+      await rt.reconcileStoppedRoomTask?.(room.id, member)
+        .catch(error => rt.warn('ds-bot: reconciling group batch for removed member %s in %s failed: %s', member, room.name, error))
+    }
+    if (added.length > 0 || removed.length > 0) await rt.selectRoomSession?.(rt.sessionOfRoom(room), room)
     return { room, changes }
   }
 
@@ -818,6 +835,8 @@ export function install(rt) {
     if (room === undefined) throw new Error('Unknown group chat')
     // Before the group's Sessions leave the state, which the archive reads.
     const archived = rt.archiveGroupMemory(room)
+    await rt.stopRoomTasks?.(room.id, 'group deleted')
+      .catch(error => rt.warn('ds-bot: stopping tasks of deleted group %s failed: %s', room.name, error))
     for (const botId of Object.keys(room.sessions ?? {})) rt.dropGroupSession(room, botId)
     for (const segment of room.parts ?? []) delete state.switching[segment.sessionId]
     delete state.switching[rt.sessionOfRoom(room)]
@@ -937,6 +956,8 @@ export function install(rt) {
     if (rt.isMain(id)) throw new Error('A Main Bot cannot be deleted; remove its Main Bot role first')
     deleting.add(id)
     try {
+      for (const hook of botDeleteHooks) await hook(id)
+      rt.forgetBotTasks?.(bot)
       // Before the Bot and its group Sessions leave the state, which the archive reads.
       const archived = rt.archiveBotMemory(id)
       const current = rt.chatOf(id)
@@ -981,6 +1002,7 @@ export function install(rt) {
         delete closedArchive.archiving
       }
       const failed = await saveForDelete()
+      for (const room of touched) await rt.selectRoomSession?.(rt.sessionOfRoom(room), room)
       // Same as deleteRoom: stopActivity removes the Session's armed scheduled tasks.
       // Past parts are archived too: a part move can leave tasks on the old Session,
       // which otherwise stays armed and invisible. Already-archived ids are a no-op.
@@ -1012,17 +1034,19 @@ export function install(rt) {
     await rt.load()
     void rt.syncModels()
     if (state.mainBotIds.some(id => rt.botOf(id))) return
-    // Only the team's first Main Bot is stored as the DeepSeek whale; other Bots get a
+    // Only the team's first Main Bot is stored as the little orange; other Bots get a
     // look from their id, and a Bot made Main Bot later keeps its own.
-    bootstrapping ??= createBot({ name: defaults.mainName, role: defaults.mainRole, main: true, color: 'deepseek', avatar: { shape: 'whale' }, pickModel: true })
+    bootstrapping ??= createBot({ name: defaults.mainName, role: defaults.mainRole, main: true, color: 'mandarin', avatar: { shape: 'orange' }, pickModel: true })
       .finally(() => { bootstrapping = null })
     await bootstrapping
   }
 
   Object.assign(rt, {
+    // Reverse install order (side before BTW) matches the old delete wrappers.
+    onBotDelete: hook => { botDeleteHooks.unshift(hook) },
     ensureWorkspace, keepTeamFolder, createSession, createBot, duplicateBot, updateBot, setFlags,
     saveSection, reorderSections, deleteSection,
-    roomBusy, autoRoomName, retitleRoom, createRoom, updateRoom, deleteRoom,
+    roomBusy, autoRoomName, retitleChat, retitleRoom, createRoom, updateRoom, deleteRoom,
     addRoomTodo, setRoomTodoDone, removeRoomTodo, clearDoneRoomTodos,
     setMain, deleteBot, bootstrap, releaseKickoff, greetingOut, holdKickoffAgain, userWrote, userAnswered,
   })

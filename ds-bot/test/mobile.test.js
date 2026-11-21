@@ -18,7 +18,7 @@ import { shrink } from '../src/host/preview-worker.js'
 // each Session's page reads, oldest first.
 function start(config = {}) {
   const home = mkdtempSync(join(tmpdir(), 'ds-bot-mobile-'))
-  const ctx = fakeContext({ services: { attachments: fakeAttachments() } })
+  const ctx = fakeContext({ services: { attachments: fakeAttachments(config.attachmentDirectory) } })
   const sent = []
   const history = {}
   const inboxes = new Map()
@@ -160,7 +160,7 @@ test('roomItems turns a group Session into speaker-attributed items, oldest firs
     user(1, 'Plan the launch'),
     relayCall(2, 'r1'),
     relayResult(3, 'r1', [
-      { botId: 'm1', name: 'Chief', color: 'deepseek', text: '@Writer draft it', time: 10, duration: 1200 },
+      { botId: 'm1', name: '小橘', color: 'deepseek', text: '@Writer draft it', time: 10, duration: 1200 },
       { kind: 'user', text: 'and keep it short', time: 11 },
       { kind: 'working', botId: 'b2', name: 'Writer', time: 12 },
       { kind: 'failed', botId: 'b3', name: 'Coder', code: 'HTTP', text: '429', time: 13 },
@@ -177,7 +177,7 @@ test('roomItems turns a group Session into speaker-attributed items, oldest firs
   const { items, open } = roomItems(events)
   assert.deepEqual(items, [
     { id: '1', kind: 'user', text: 'Plan the launch', time: 1 },
-    { id: 'r1:0', kind: 'bot', botId: 'm1', name: 'Chief', color: 'deepseek', text: '@Writer draft it', time: 10, duration: 1200 },
+    { id: 'r1:0', kind: 'bot', botId: 'm1', name: '小橘', color: 'deepseek', text: '@Writer draft it', time: 10, duration: 1200 },
     { id: 'r1:1', kind: 'user', text: 'and keep it short', time: 11 },
     { id: 'r1:2', kind: 'event', event: 'working', botId: 'b2', name: 'Writer', time: 12 },
     { id: 'r1:3', kind: 'event', event: 'failed', botId: 'b3', name: 'Coder', text: '429', code: 'HTTP', time: 13 },
@@ -206,12 +206,12 @@ test('a group round logs notices a returning client reads back, and the feed say
   await emit(room.id, history[room.id][0])
   const running = relay(room.id, 'call-1')
   const first = await turnFor(sent)
-  await answer(first.sessionId, first.message.source.exchangeId, 'Chief here.', 1)
+  await answer(first.sessionId, first.message.source.exchangeId, '小橘 here.', 1)
   const second = await turnFor(sent, first)
 
   // While the round runs, the newest page carries what was said, live, where the call sits.
   const live = (await call('room-chat', { roomId: room.id })).value
-  assert.deepEqual(live.items.map(item => [item.id, item.kind, item.name ?? null, item.live ?? false]), [['1', 'user', null, false], ['call-1:0', 'bot', 'Chief', true]])
+  assert.deepEqual(live.items.map(item => [item.id, item.kind, item.name ?? null, item.live ?? false]), [['1', 'user', null, false], ['call-1:0', 'bot', '小橘', true]])
   assert.equal(live.running, true)
   assert.equal(live.speaking, writer.id)
 
@@ -219,7 +219,7 @@ test('a group round logs notices a returning client reads back, and the feed say
   const result = await running
   history[room.id].push(relayResult(3, 'call-1', result))
   const done = (await call('room-chat', { roomId: room.id })).value
-  assert.deepEqual(done.items.map(item => [item.id, item.text]), [['1', 'Start'], ['call-1:0', 'Chief here.'], ['call-1:1', 'Writer here.']])
+  assert.deepEqual(done.items.map(item => [item.id, item.text]), [['1', 'Start'], ['call-1:0', '小橘 here.'], ['call-1:1', 'Writer here.']])
   assert.equal(done.running, false)
   assert.equal(done.cursor, null)
 
@@ -227,7 +227,7 @@ test('a group round logs notices a returning client reads back, and the feed say
   const caught = (await call('notices', { boot, since: 0 })).value
   assert.equal(caught.reset, false)
   const groupNotices = caught.notices.filter(notice => notice.kind === 'group')
-  assert.deepEqual(groupNotices.map(notice => [notice.botId, notice.roomId, notice.title, notice.text]), [[chief, room.id, 'Launch', 'Chief here.'], [writer.id, room.id, 'Launch', 'Writer here.']])
+  assert.deepEqual(groupNotices.map(notice => [notice.botId, notice.roomId, notice.title, notice.text]), [[chief, room.id, 'Launch', '小橘 here.'], [writer.id, room.id, 'Launch', 'Writer here.']])
   const latest = caught.seq
   assert.deepEqual((await call('notices', { boot, since: latest })).value.notices, [])
   // A client from before a restart starts over.
@@ -239,7 +239,7 @@ test('a group round logs notices a returning client reads back, and the feed say
   const seen = []
   for (let at = 0; at < 40 && !(seen.some(event => event.event === 'room') && seen.filter(event => event.event === 'notice' && event.data.kind === 'group').length === 2); at += 1) seen.push(await next())
   assert.ok(seen.some(event => event.event === 'room' && event.data.roomId === room.id))
-  assert.deepEqual(seen.filter(event => event.event === 'notice' && event.data.kind === 'group').map(event => event.data.text), ['Chief here.', 'Writer here.'])
+  assert.deepEqual(seen.filter(event => event.event === 'notice' && event.data.kind === 'group').map(event => event.data.text), ['小橘 here.', 'Writer here.'])
 })
 
 test('a Bot\'s own chat message and its question card are notices; a hidden Bot-to-Bot turn is not', async (t) => {
@@ -358,7 +358,7 @@ test('a phone stages photos one by one, then send puts them in one message with 
   const { call, sent, stop } = start()
   const { chief } = await team(call)
   const pixel = Buffer.from('ffd8ffe000104a464946', 'hex').toString('base64')
-  assert.deepEqual(await call('stage-image', { mediaType: 'text/html', data: pixel }), { ok: false, error: { code: 'bot/invalid', message: 'This is not a photo DS Bot can send', details: {} } })
+  assert.deepEqual(await call('stage-image', { mediaType: 'text/html', data: pixel }), { ok: false, error: { code: 'bot/invalid', message: 'This is not a photo Jubala Bot can send', details: {} } })
   const first = (await call('stage-image', { mediaType: 'image/jpeg', data: pixel })).value.id
   const second = (await call('stage-image', { mediaType: 'image/png', data: pixel })).value.id
   const before = sent.length
@@ -842,6 +842,61 @@ test('file attachment chunks round-trip through the same client iterator', async
     return result.value
   }, { sessionId, attachmentId: ref.attachmentId })) chunks.push(Buffer.from(part.data))
   assert.deepEqual(Buffer.concat(chunks), bytes)
+  assert.ok(ctx.get('attachments').stats.streamBytes > bytes.length)
+})
+
+test('file attachment ranges read each byte once and locate history once', async t => {
+  const dir = mkdtempSync(join(tmpdir(), 'dsb-attachment-ranges-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  const { call, ctx, history, rt, stop } = start({ attachmentDirectory: dir })
+  t.after(stop)
+  const { chief } = await team(call)
+  const sessionId = (await call('state', {})).value.bots.find(bot => bot.id === chief).sessionId
+  const attachments = ctx.get('attachments')
+  const bytes = randomBytes(3 * 512 * 1024 + 7)
+  const ref = await attachments.saveFile({ data: bytes, name: 'ranges.bin' })
+  history[sessionId] = [{ seq: 1, type: 'user/message', data: { content: [{ type: 'file', attachment: ref }] } }]
+  let pages = 0
+  const page = ctx.sessionController.page
+  ctx.sessionController.page = (...args) => { pages++; return page(...args) }
+  const chunks = []
+  for await (const part of fileChunks(async (endpoint, payload) => {
+    const result = await call(endpoint, payload)
+    assert.equal(result.ok, true, JSON.stringify(result.error))
+    return result.value
+  }, { sessionId, attachmentId: ref.attachmentId })) chunks.push(Buffer.from(part.data))
+  assert.deepEqual(Buffer.concat(chunks), bytes)
+  assert.equal(pages, 1)
+  assert.equal(attachments.stats.streamBytes, 0)
+  const ask = offset => call('file-download', { sessionId, attachmentId: ref.attachmentId, offset })
+  assert.equal((await ask(bytes.length)).value.done, true)
+  assert.equal((await ask(bytes.length + 1)).error.code, 'bot/not-found')
+  writeFileSync(attachments.fileHostPath(ref), 'truncated')
+  assert.equal((await ask(0)).error.code, 'bot/not-found')
+  rmSync(attachments.fileHostPath(ref))
+  assert.equal((await ask(0)).error.code, 'bot/not-found')
+  writeFileSync(attachments.fileHostPath(ref), bytes)
+  // Keep the requested session recognizable but remove the cached target from its owned parts.
+  rt.chatOf = () => 'replacement-session'
+  rt.partsOf = () => []
+  assert.equal((await ask(0)).error.code, 'bot/not-found')
+  rt.chatOwners.delete(sessionId)
+  rt.botOf = () => undefined
+  assert.equal((await ask(0)).error.code, 'bot/not-found')
+})
+
+test('empty disk attachments return an empty final chunk', async t => {
+  const dir = mkdtempSync(join(tmpdir(), 'dsb-empty-attachment-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  const { call, ctx, history, stop } = start({ attachmentDirectory: dir })
+  t.after(stop)
+  const { chief } = await team(call)
+  const sessionId = (await call('state', {})).value.bots.find(bot => bot.id === chief).sessionId
+  const ref = await ctx.get('attachments').saveFile({ data: Buffer.alloc(0), name: 'empty.bin' })
+  history[sessionId] = [{ seq: 1, type: 'user/message', data: { content: [{ type: 'file', attachment: ref }] } }]
+  const result = await call('file-download', { sessionId, attachmentId: ref.attachmentId, offset: 0 })
+  assert.equal(result.ok, true)
+  assert.deepEqual([result.value.bytes, result.value.size, result.value.nextOffset, result.value.done], ['', 0, 0, true])
 })
 
 test('chat with steps computes thinking time from the loaded page without re-reading the session tail', async t => {

@@ -18,7 +18,7 @@ import { OpeningCover, openingModel } from './opening.js'
 const DIALOG_EXIT_MS = 160
 const MENU_EXIT_MS = 120
 
-export function Overlays({ useRoster, useUi, useSessions, useSessionStatus, useActivity, useWork, useRegistry, useBrowserPages, useBrowserTabs, useBrowserHolds, useUpdate, useFrame, useSidebarPref, useSettingsShellHeld, actions }) {
+export function Overlays({ useRoster, useUi, useSessions, useSessionStatus, useActivity, useWork, useComputer, useRegistry, useBrowserPages, useBrowserTabs, useBrowserHolds, useUpdate, useFrame, useSidebarPref, useSettingsShellHeld, actions }) {
   const roster = useRoster(value => value)
   const ui = useUi(value => value)
   useRegistry(value => value)
@@ -50,7 +50,7 @@ export function Overlays({ useRoster, useUi, useSessions, useSessionStatus, useA
     return () => clearTimeout(timer)
   }, [ui.details, ui.view, ui.renaming, ui.tab, shown === null])
   const pane = shown ?? kept
-  // The settings shell draws the dialog while DS Bot holds the seat.
+  // The settings shell draws the dialog while Jubala Bot holds the seat.
   const shellHeld = useSettingsShellHeld ? useSettingsShellHeld(value => value) : false
   const [settings, settingsLeaving] = useLinger(shellHeld ? null : ui.settings, DIALOG_EXIT_MS)
   // The memory dialog shows a Bot's memory or a group chat's.
@@ -69,7 +69,7 @@ export function Overlays({ useRoster, useUi, useSessions, useSessionStatus, useA
   return h(Fragment, null,
     h(NotificationWatcher, { key: 'ds-bot:notifications', useSessions, useSessionStatus, useRoster, useWork, actions }),
     opening ? createPortal(h(OpeningCover, { model: opening, column: layout.column }), document.body) : null,
-    pane ? createPortal(h(BotPanel, { pane, leaving: shown === null, room: layout.room, overlay: layout.panel === 'overlay', roster, actions, useSessions, useSessionStatus, useActivity, useWork, useBrowserTabs, useBrowserPages, useBrowserHolds }), document.body) : null,
+    pane ? createPortal(h(BotPanel, { pane, leaving: shown === null, room: layout.room, overlay: layout.panel === 'overlay', roster, actions, useSessions, useSessionStatus, useActivity, useWork, useComputer, useBrowserTabs, useBrowserPages, useBrowserHolds }), document.body) : null,
     ui.newChat ? createPortal(h(NewChat, { key: `${ui.newChat}:${ui.newChatSection ?? ''}`, mode: ui.newChat, sectionId: ui.newChatSection ?? null, paneLeft: layout.column, roster, actions }), document.body) : null,
     ui.palette ? createPortal(h(CommandPalette, { key: ui.palette.token, start: ui.palette.query, token: ui.palette.token, roster, actions, useSessions }), document.body) : null,
     ui.groupSearch && roster.roomsById[ui.groupSearch.roomId]

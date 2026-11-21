@@ -123,7 +123,7 @@ test('cursorHtml paints the arrow in the Bot color with the avatar and a ripple'
   assert.match(page, /class="ava"/)
   assert.match(page, /class="ring"/)
   const plain = cursorHtml({ color: 'red', ripple: false })
-  assert.match(plain, /fill="#4d6bfe"/)
+  assert.match(plain, /fill="#ee8414"/)
   assert.doesNotMatch(plain, /class="ring"/)
   assert.match(plain, /background:transparent/)
 })

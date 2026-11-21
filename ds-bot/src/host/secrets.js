@@ -103,7 +103,7 @@ export function install(rt) {
     source: store.locked ? null : store.source,
     ...(store.locked && store.reason ? { reason: store.reason } : {}),
   })
-  const LOCKED = 'The secrets store is locked. Unlock it in Settings → Secrets, or start DS Bot with DS_BOT_SECRETS_PASSPHRASE_FILE set to a file that holds the passphrase.'
+  const LOCKED = 'The secrets store is locked. Unlock it in Settings → Secrets, or start Jubala Bot with DS_BOT_SECRETS_PASSPHRASE_FILE set to a file that holds the passphrase.'
 
   /** @type {Map<string, {name:string, value:string, purpose:string, scope:'all'|string[], requestedBy:string|null, createdAt:number, updatedAt:number, lastUsedAt?:number}>} */
   const secrets = new Map()
@@ -315,7 +315,7 @@ export function install(rt) {
 
   // Resolves once secrets.json holds the current map; rejects when the write failed.
   const persist = () => {
-    if (blocked !== undefined) return Promise.reject(new Error(`The secrets file ${path} could not be read (${blocked}). DS Bot does not change it; fix or move the file and reload.`))
+    if (blocked !== undefined) return Promise.reject(new Error(`The secrets file ${path} could not be read (${blocked}). Jubala Bot does not change it; fix or move the file and reload.`))
     const readOnly = rt.readOnly()
     if (readOnly !== undefined) return Promise.reject(new Error(readOnly))
     if (store.mode === 'encrypted' && (store.locked || store.passphrase === null)) return Promise.reject(new Error(LOCKED))
@@ -679,6 +679,7 @@ export function install(rt) {
       if (!SECRET_NAME.test(name)) return 'Name the key with capitals, digits, and underscores, starting with a letter (for example GITHUB_TOKEN).'
       const secret = secrets.get(name)
       if (canUse(secret, bot.id)) return `${name} is already saved and you may use it: ${usage(name)}. You cannot see the value; never print it.`
+      if (rt.taskOwners?.has(id)) return `Background tasks cannot show secret cards directly. End or report back to your own chat naming ${name} and why you need it, so your own chat can request it from the user.`
       if (rt.groupOwners.has(id)) return 'Secret cards only work in your own chat. Tell the group you will ask the user in your own chat, and call request_secret there.'
       if (!rt.chatOwners.has(id)) return 'Secret cards only work in your current own chat.'
       const readOnly = rt.readOnly()
@@ -802,7 +803,7 @@ export function install(rt) {
       unregister = null
       declared = key
       if (list.length === 0) return
-      const variables = Object.fromEntries(list.map(secret => [envName(secret.name), { description: `DS Bot secret ${secret.name}${secret.purpose ? `: ${secret.purpose}` : ''}` }]))
+      const variables = Object.fromEntries(list.map(secret => [envName(secret.name), { description: `Jubala Bot secret ${secret.name}${secret.purpose ? `: ${secret.purpose}` : ''}` }]))
       const declaredKeys = new Set(Object.keys(variables))
       try {
         unregister = sub.shellEnv.register({

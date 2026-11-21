@@ -1,12 +1,12 @@
 {
-  "name": "dsbot",
-  "productName": "DS Bot",
-  "version": "0.3.8",
+  "name": "jubalabot",
+  "productName": "橘巴拉Bot",
+  "version": "0.3.8-jubala.1",
   "private": true,
-  "description": "DS Bot desktop app: the ds-bot team on its own pinned DeepSeek Harness.",
+  "description": "Jubala Bot desktop app: the ds-bot team on its own pinned DeepSeek Harness.",
   "author": "Fei2411",
-  "homepage": "https://github.com/Fei2411/DS-Bot",
-  "desktopName": "dsbot.desktop",
+  "homepage": "https://github.com/jayai999888-spec/DS-Bot",
+  "desktopName": "jubalabot.desktop",
   "license": "Apache-2.0",
   "type": "module",
   "main": "src/main.mjs",
@@ -20,7 +20,7 @@
     "check-lifecycle": "node scripts/check-lifecycle.mjs",
     "shot": "node scripts/shot.mjs",
     "icon": "node scripts/icon.mjs",
-    "test": "node --import ./test/reset-env.mjs --test \"test/*.test.mjs\""
+    "test": "node --import ./test/reset-env.mjs --test --test-timeout=120000 --test-force-exit \"test/*.test.mjs\""
   },
   "dependencies": {
     "@deepseek-ai/cordis-plugin-group": "1.1.0",

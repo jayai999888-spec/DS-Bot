@@ -4,7 +4,7 @@ import { SKIP_LOCAL_AGENT, SKIP_UNAVAILABLE, planModelChange, runModelChange, su
 
 // #1502: one place to move several Bots to the same model. A Bot's run mode is its own
 // property, so a Bot on a local agent keeps it and is reported instead of being moved
-// onto a DS Bot model.
+// onto a Jubala Bot model.
 
 const MODELS = [
   { ref: 'official/flash', name: 'Flash' },
@@ -35,7 +35,7 @@ test('one failed Bot does not stop the rest and keeps its error', async () => {
   assert.deepEqual(summarizeModelChange(results), { total: 3, updated: 2, unchanged: 0, skipped: 0, failed: 1 })
 })
 
-test('a Bot on a local agent is skipped and never sent a DS Bot model', async () => {
+test('a Bot on a local agent is skipped and never sent a Jubala Bot model', async () => {
   const calls = []
   const results = await runModelChange({
     bots: [bot('claude', 'local-claude-code/default'), bot('chief', 'official/pro')],
