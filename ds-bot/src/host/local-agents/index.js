@@ -47,6 +47,9 @@ export function install(rt) {
   const customAgents = () => store().custom
   const customRouteId = () => store().custom.map(agent => customRoute(agent.id))
   const allRoutes = () => [...Object.keys(ENGINES), ...customRouteId()]
+  // The Jubala build keeps Claude Code for the user's own use: no Bot runs on it,
+  // so it is never offered and a Bot saved on it is not served.
+  const OFF_ROUTES = new Set(['local-claude-code'])
 
   // Only CLIs found on this machine get a route; the scan result feeds the page.
   const found = new Map()
@@ -55,6 +58,7 @@ export function install(rt) {
     await refreshSearchDirs()
     if (disposed) return []
     for (const route of Object.keys(ENGINES)) {
+      if (OFF_ROUTES.has(route)) continue
       const spec = ENGINES[route]
       const path = findEngineExecutable(spec, findExecutable)
       if (path === undefined) found.delete(route)
@@ -127,7 +131,7 @@ export function install(rt) {
   const usedRefs = () => [...new Set(Object.values(state.bots ?? {}).flatMap(bot => [bot.model, bot.appliedModel]).filter(Boolean))]
   // A route a Bot runs on stays registered when its CLI goes away: the turn then fails
   // with the repair card, and nothing moves the Bot to another run mode by itself.
-  const servedRoutes = () => [...new Set([...found.keys(), ...customRouteId(), ...usedRefs().map(ref => splitRef(ref)?.provider).filter(isLocalAgentRoute)])]
+  const servedRoutes = () => [...new Set([...found.keys(), ...customRouteId(), ...usedRefs().map(ref => splitRef(ref)?.provider).filter(isLocalAgentRoute)])].filter(route => !OFF_ROUTES.has(route))
   function applyRoutes() {
     if (!supported()) return
     const candidates = servedRoutes()

@@ -109,6 +109,9 @@ export function validateCustom({ name, command, args }) {
     throw new Error('Command must be a program name, an absolute path, or a ~/path')
   }
   if (clean.args.some(arg => arg.includes('\0') || /[\r\n]/.test(arg))) throw new Error('Arguments must not contain newlines')
+  // The Jubala build keeps Claude Code for the user's own use (see OFF_ROUTES in index.js),
+  // so a custom agent may not start it or an ACP wrapper around it either.
+  if (/^claude/i.test(win32.basename(clean.command))) throw new Error('Claude Code is not available to Bots in this build')
   return clean
 }
 

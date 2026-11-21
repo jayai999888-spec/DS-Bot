@@ -245,6 +245,7 @@ test('custom agent validation', () => {
   assert.throws(() => validateCustom({ name: 'X', command: 'a b' }))
   assert.throws(() => validateCustom({ name: 'X', command: 'agent; rm -rf /' }))
   assert.throws(() => validateCustom({ name: '', command: 'a' }))
+  for (const command of ['claude', '/usr/local/bin/claude-agent-acp', 'C:\\tools\\Claude.exe']) assert.throws(() => validateCustom({ name: 'X', command }), /Claude Code/)
 })
 
 test('routes and modes', () => {
