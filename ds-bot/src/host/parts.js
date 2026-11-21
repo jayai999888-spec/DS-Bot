@@ -2319,6 +2319,49 @@ export function install(rt) {
 
   // Opening an earlier part again: it becomes the current one and the part that
   // was current joins the earlier ones where it sat.
+  // Removes a part of a Bot's own chat from its list (#1905). An earlier part is already
+  // archived in DSH; a part opened while the Bot was busy is archived now, with its own
+  // earlier parts. DSH keeps archived Sessions, so nothing is lost for good. The current
+  // part and a part that is running stay.
+  async function deletePart(botId, partId) {
+    await rt.load()
+    const bot = rt.botOf(botId)
+    if (bot === undefined) throw Object.assign(new Error('Unknown Bot'), { code: 'bot/not-found' })
+    if (readOnly()) throw Object.assign(new Error(rt.readOnly()), { code: 'bot/invalid' })
+    if (partId === rt.chatOf(botId)) throw Object.assign(new Error('Open another session before deleting this one'), { code: 'bot/invalid' })
+    const busy = () => Object.assign(new Error('This session is working; wait for it to finish or stop it first'), { code: 'bot/busy' })
+    let gone
+    let archive = []
+    const earlier = (bot.segments ?? []).findIndex(segment => segment.sessionId === partId)
+    const open = (bot.openParts ?? []).findIndex(part => part.sessionId === partId)
+    const holder = (bot.openParts ?? []).find(part => (part.segments ?? []).some(segment => segment.sessionId === partId))
+    if (earlier !== -1) {
+      bot.segments.splice(earlier, 1)
+      gone = [partId]
+    } else if (open !== -1) {
+      const part = bot.openParts[open]
+      if (rt.live.get(part.sessionId)?.turn !== undefined || switches.has(part.sessionId)) throw busy()
+      bot.openParts.splice(open, 1)
+      gone = [part.sessionId, ...(part.segments ?? []).map(segment => segment.sessionId)]
+      archive = [part.sessionId]
+    } else if (holder !== undefined) {
+      holder.segments = holder.segments.filter(segment => segment.sessionId !== partId)
+      gone = [partId]
+    } else {
+      throw Object.assign(new Error('Unknown part'), { code: 'bot/not-found' })
+    }
+    for (const id of gone) {
+      rt.chatOwners.delete(id)
+      rt.pastOwners?.delete(id)
+    }
+    await rt.save()
+    for (const id of archive) {
+      await ctx.workspaceRegistry.archiveSession(id, { stopActivity: true })
+        .catch(error => rt.warn('ds-bot: a deleted part of %s was not archived: %s', bot.name, error))
+    }
+    return true
+  }
+
   async function switchPart(botId, partId) {
     await rt.load()
     const bot = rt.botOf(botId)
@@ -2336,6 +2379,14 @@ export function install(rt) {
       await rt.applyPermission(bot, partId, undefined).catch(() => {})
       await rt.save()
       return true
+    }
+    // An earlier part of a thread opened while the Bot was busy (#1905): that thread
+    // becomes current first, then the part opens as any earlier part does.
+    const holder = (bot.openParts ?? []).find(part => (part.segments ?? []).some(segment => segment.sessionId === partId))
+    if (holder !== undefined) {
+      if (rt.live.get(current)?.turn !== undefined || rt.live.get(holder.sessionId)?.turn !== undefined) throw Object.assign(new Error('The Bot is working; wait for it to finish or stop it first'), { code: 'bot/busy' })
+      focusOpenPart(bot, holder.sessionId)
+      return switchPart(botId, partId)
     }
     const segments = bot.segments ?? []
     const at = segments.findIndex(segment => segment.sessionId === partId)
@@ -2379,5 +2430,5 @@ export function install(rt) {
     return true
   }
 
-  Object.assign(rt, { recoverLostChat, clock, partsOf, partsOfThread, historyEntry, partLines, noteText, earlierPage, chatPage, taskPage, displayItems, applySteps, followFolder, followEngine, heldBack, newPart, openTaskPart, forkForegroundPart, switchPart, isSwitchingPart: id => switches.has(id), sessionTokens: session => tokensOf(session), switchJobs: () => switches.values() })
+  Object.assign(rt, { recoverLostChat, deletePart, clock, partsOf, partsOfThread, historyEntry, partLines, noteText, earlierPage, chatPage, taskPage, displayItems, applySteps, followFolder, followEngine, heldBack, newPart, openTaskPart, forkForegroundPart, switchPart, isSwitchingPart: id => switches.has(id), sessionTokens: session => tokensOf(session), switchJobs: () => switches.values() })
 }

@@ -117,6 +117,7 @@ function convertHostErrors(pairs) {
 
 // src/client/locales/ja.js
 var JA = {
+  "Delete this session": "このセッションを削除",
   "{name} could not be opened.": "{name} を開けませんでした。",
   "The conversation of {name} was gone, so it starts a new one.": "{name} の会話が見つからなかったため、新しい会話を始めます。",
   "Background work": "バックグラウンド作業",
@@ -2692,6 +2693,7 @@ var DSH_JA = {
 
 // src/client/locales/ko.js
 var KO = {
+  "Delete this session": "이 세션 삭제",
   "{name} could not be opened.": "{name}을(를) 열 수 없습니다.",
   "The conversation of {name} was gone, so it starts a new one.": "{name}의 대화가 없어져 새 대화를 시작합니다.",
   "Background work": "백그라운드 작업",
@@ -5312,6 +5314,7 @@ var DSH_KO = {
 
 // src/client/locales/es.js
 var ES = {
+  "Delete this session": "Eliminar esta sesión",
   "{name} could not be opened.": "No se pudo abrir {name}.",
   "The conversation of {name} was gone, so it starts a new one.": "La conversación de {name} ya no estaba, así que empieza una nueva.",
   "Background work": "Trabajo en segundo plano",
@@ -7932,6 +7935,7 @@ var DSH_ES = {
 
 // src/client/locales/fr.js
 var FR = {
+  "Delete this session": "Supprimer cette session",
   "{name} could not be opened.": "Impossible d’ouvrir {name}.",
   "The conversation of {name} was gone, so it starts a new one.": "La conversation de {name} n’existait plus, une nouvelle commence.",
   "Background work": "Travail en arrière-plan",
@@ -10507,6 +10511,7 @@ var DSH_FR = {
 
 // src/client/locales/de.js
 var DE = {
+  "Delete this session": "Diese Sitzung löschen",
   "{name} could not be opened.": "{name} konnte nicht geöffnet werden.",
   "The conversation of {name} was gone, so it starts a new one.": "Die Unterhaltung von {name} war nicht mehr da, daher beginnt eine neue.",
   "Background work": "Hintergrundarbeit",
@@ -14620,6 +14625,7 @@ var ZH = {
   "Show all": "显示全部",
   "in {name}": "在 {name}",
   "Click again to delete": "再点一次删除",
+  "Delete this session": "删除这个会话",
   "Delete task": "删除任务",
   "Pause task": "暂停任务",
   "Resume task": "恢复任务",
@@ -18589,8 +18595,13 @@ div:has(> nav [class*="_marks"]){display:none!important}
 .bt-agent-sessions{display:flex;flex-direction:column;border:1px solid var(--bt-line-2);border-radius:10px;overflow:hidden}
 .bt-agent-sessions-warn{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;padding:8px 10px;border:.5px solid color-mix(in srgb,var(--bt-warn) 40%,transparent);border-left:3px solid var(--bt-warn);border-radius:10px;background:color-mix(in srgb,var(--bt-warn) 13%,var(--bt-card));color:var(--bt-warn);font-size:13px;line-height:17px;font-weight:500}
 .bt-agent-sessions-warn svg{flex:none;width:15px;height:15px;margin-top:1px}
-.bt-agent-session{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:9px 12px;border:0;border-top:1px solid var(--bt-line-2);background:none;text-align:left;font-size:13px;color:var(--bt-ink);cursor:pointer}
-.bt-agent-session:first-child{border-top:0}
+.bt-agent-session-row{display:flex;align-items:stretch;border-top:1px solid var(--bt-line-2)}
+.bt-agent-session-row:first-child{border-top:0}
+.bt-agent-session{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:1 1 auto;min-width:0;width:100%;padding:9px 12px;border:0;background:none;text-align:left;font-size:13px;color:var(--bt-ink);cursor:pointer}
+.bt-agent-session-delete{flex:none;display:inline-flex;align-items:center;gap:4px;padding:0 10px;border:0;background:none;color:var(--bt-ink-3);font-size:12px;cursor:pointer;opacity:0}
+.bt-agent-session-row:hover .bt-agent-session-delete,.bt-agent-session-delete:focus-visible,.bt-agent-session-delete.is-armed{opacity:1}
+.bt-agent-session-delete:hover,.bt-agent-session-delete.is-armed{color:var(--bt-danger);background:var(--bt-hover)}
+.bt-agent-session-delete svg{width:14px;height:14px}
 .bt-agent-session:hover:not(:disabled){background:var(--bt-hover)}
 .bt-agent-session.is-current{background:var(--bt-hover);cursor:default;font-weight:600}
 .bt-agent-session-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -44774,8 +44785,18 @@ function BotSessions({ bot, part, run: run2, useSessions, actions, running }) {
   const entries2 = [
     { id: part, current: true, running: runningOf(part) },
     ...open,
-    ...(bot.parts ?? []).filter((id) => id !== part).slice().reverse().map((id) => ({ id, earlier: true }))
+    ...(bot.parts ?? []).filter((id) => id !== part).slice().reverse().map((id) => ({ id, earlier: true })),
+    ...(bot.openParts ?? []).flatMap((entry) => (entry.parts ?? []).slice().reverse()).map((id) => ({ id, earlier: true }))
   ];
+  const [armed, setArmed] = (0, import_react70.useState)(null);
+  const remove = (entry) => {
+    if (armed !== entry.id) {
+      setArmed(entry.id);
+      return;
+    }
+    setArmed(null);
+    run2(call("bot-delete-part", { botId: bot.id, sessionId: entry.id }));
+  };
   const rows2 = useSessions((list) => entries2.map((entry) => list.byId?.[entry.id]), rowsEqual);
   const total = entries2.length;
   const openPart = (entry) => {
@@ -44803,10 +44824,10 @@ function BotSessions({ bot, part, run: run2, useSessions, actions, running }) {
       const when3 = row?.updatedAt ?? row?.createdAt;
       const label = row?.title && row.title.trim() !== "" ? row.title : t("Session {number}", { number: total - index });
       const title = entry.current ? t("Current session") : entry.open && entry.running ? t("Open this running session") : entry.open ? t("Open this session") : t("Open this earlier session");
-      return (0, import_react70.createElement)(
+      const opener2 = (0, import_react70.createElement)(
         "button",
         {
-          key: entry.id,
+          key: "open",
           type: "button",
           disabled: entry.current,
           className: `bt-agent-session${entry.current ? " is-current" : ""}${entry.running ? " is-running" : ""}`,
@@ -44819,6 +44840,23 @@ function BotSessions({ bot, part, run: run2, useSessions, actions, running }) {
           { className: "bt-agent-session-meta" },
           entry.running ? (0, import_react70.createElement)("span", { className: "bt-agent-session-run", role: "status" }, t("Running")) : entry.current ? t("Current") : when3 ? new Date(when3).toLocaleString(void 0, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""
         )
+      );
+      if (entry.current || entry.running) return (0, import_react70.createElement)("div", { key: entry.id, className: "bt-agent-session-row" }, opener2);
+      const asking = armed === entry.id;
+      return (0, import_react70.createElement)(
+        "div",
+        { key: entry.id, className: "bt-agent-session-row" },
+        opener2,
+        (0, import_react70.createElement)("button", {
+          type: "button",
+          className: `bt-agent-session-delete${asking ? " is-armed" : ""}`,
+          title: asking ? t("Click again to delete") : t("Delete this session"),
+          "aria-label": asking ? t("Click again to delete") : t("Delete this session"),
+          onClick: () => remove(entry),
+          onBlur: () => {
+            if (asking) setArmed(null);
+          }
+        }, (0, import_react70.createElement)(TrashIcon), asking ? (0, import_react70.createElement)("span", null, t("Click again to delete")) : null)
       );
     }))
   );

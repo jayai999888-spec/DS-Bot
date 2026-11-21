@@ -1494,6 +1494,7 @@ const ZH = {
   'Show all': '显示全部',
   'in {name}': '在 {name}',
   'Click again to delete': '再点一次删除',
+  'Delete this session': '删除这个会话',
   'Delete task': '删除任务',
   'Pause task': '暂停任务',
   'Resume task': '恢复任务',

@@ -277,3 +277,46 @@ test('send, answer-question, and view-reply on an earlier segment of an openPart
     ['followup', 'w3'],
   ])
 })
+
+// #1905: a part can be deleted from a Bot's chat list. DSH keeps archived Sessions, so
+// a deleted part is archived, never removed for good.
+test('deleting an earlier part drops it from the list; the current part cannot be deleted', async (t) => {
+  const { home, call } = await team(t, ['w1'])
+  await call('state')
+  const current = await call('bot-delete-part', { botId: 'w1', sessionId: 'w2' })
+  assert.equal(current.ok, false)
+  assert.equal(current.error.code, 'bot/invalid')
+  const result = await call('bot-delete-part', { botId: 'w1', sessionId: 'w1' })
+  assert.equal(result.ok, true, JSON.stringify(result))
+  const writer = saved(home).bots.w1
+  assert.equal(writer.sessionId, 'w2')
+  assert.deepEqual(writer.segments, [])
+  assert.equal(writer.openParts[0].sessionId, 'w3')
+  const unknown = await call('bot-delete-part', { botId: 'w1', sessionId: 'nope' })
+  assert.equal(unknown.error.code, 'bot/not-found')
+})
+
+test('deleting an idle open part archives it and takes its earlier parts with it; a running one stays', async (t) => {
+  const { home, registry, call, rt } = await team(t)
+  await call('state')
+  rt.live.set('w3', { turn: {} })
+  const running = await call('bot-delete-part', { botId: 'w1', sessionId: 'w3' })
+  assert.equal(running.error.code, 'bot/busy')
+  rt.live.delete('w3')
+  const result = await call('bot-delete-part', { botId: 'w1', sessionId: 'w3' })
+  assert.equal(result.ok, true, JSON.stringify(result))
+  assert.equal(saved(home).bots.w1.openParts.length, 0)
+  assert.deepEqual([...registry.archivedSessionIds], ['w3'])
+  assert.equal(rt.chatOwners.has('w3'), false)
+})
+
+test('an earlier part of an open thread opens: its thread comes forward first', async (t) => {
+  const { home, call } = await team(t, ['w1', 'w4'])
+  await call('state')
+  const result = await call('bot-open-part', { botId: 'w1', sessionId: 'w4' })
+  assert.equal(result.ok, true, JSON.stringify(result))
+  const writer = saved(home).bots.w1
+  assert.equal(writer.sessionId, 'w4')
+  assert.deepEqual(writer.segments.map(segment => segment.sessionId), ['w3'])
+  assert.equal(writer.openParts[0].sessionId, 'w2')
+})

@@ -1,6 +1,7 @@
 // German (de) localization for Jubala Bot client and DSH settings namespaces.
 
 export const DE = {
+  "Delete this session": "Diese Sitzung löschen",
   "{name} could not be opened.": "{name} konnte nicht geöffnet werden.",
   "The conversation of {name} was gone, so it starts a new one.": "Die Unterhaltung von {name} war nicht mehr da, daher beginnt eine neue.",
   'Background work': 'Hintergrundarbeit',

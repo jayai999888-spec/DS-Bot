@@ -1,7 +1,7 @@
 import { createElement as h, Fragment, useEffect, useRef, useState } from 'react'
 import { isMainOf } from './sources.js'
 import { HEADER, currentPart, runStatsOf, stripHeader, usageOf } from './text.js'
-import { AlertIcon, PlusIcon, ShareIcon, CloseIcon, ChevronLeftIcon, GearIcon } from './icons.js'
+import { AlertIcon, PlusIcon, ShareIcon, CloseIcon, ChevronLeftIcon, GearIcon, TrashIcon } from './icons.js'
 import { botState, BotMark, BotAvatar } from './mark.js'
 import { call } from './api.js'
 import { GlobeIcon, Favicon, PanelMenu, menuItemFor } from './browser-pane.js'
@@ -244,11 +244,21 @@ function BotSessions({ bot, part, run, useSessions, actions, running }) {
   // Two sessions running at once means two model calls: shown only while a background
   // part really runs, above the list rather than as a quiet footnote.
   const backgroundRunning = open.some(entry => entry.running)
+  // The earlier parts of the open threads too: a thread that moved aside takes its
+  // earlier parts with it, and they would vanish from the list (#1905).
   const entries = [
     { id: part, current: true, running: runningOf(part) },
     ...open,
     ...(bot.parts ?? []).filter(id => id !== part).slice().reverse().map(id => ({ id, earlier: true })),
+    ...(bot.openParts ?? []).flatMap(entry => (entry.parts ?? []).slice().reverse()).map(id => ({ id, earlier: true })),
   ]
+  // Deleting asks for a second click on the same row, as the Bot menu does.
+  const [armed, setArmed] = useState(null)
+  const remove = (entry) => {
+    if (armed !== entry.id) { setArmed(entry.id); return }
+    setArmed(null)
+    run(call('bot-delete-part', { botId: bot.id, sessionId: entry.id }))
+  }
   const rows = useSessions(list => entries.map(entry => list.byId?.[entry.id]), rowsEqual)
   const total = entries.length
   const openPart = (entry) => {
@@ -270,8 +280,8 @@ function BotSessions({ bot, part, run, useSessions, actions, running }) {
       const when = row?.updatedAt ?? row?.createdAt
       const label = row?.title && row.title.trim() !== '' ? row.title : t('Session {number}', { number: total - index })
       const title = entry.current ? t('Current session') : entry.open && entry.running ? t('Open this running session') : entry.open ? t('Open this session') : t('Open this earlier session')
-      return h('button', {
-        key: entry.id, type: 'button', disabled: entry.current,
+      const opener = h('button', {
+        key: 'open', type: 'button', disabled: entry.current,
         className: `bt-agent-session${entry.current ? ' is-current' : ''}${entry.running ? ' is-running' : ''}`,
         title, onClick: openPart(entry),
       },
@@ -280,6 +290,15 @@ function BotSessions({ bot, part, run, useSessions, actions, running }) {
           entry.running ? h('span', { className: 'bt-agent-session-run', role: 'status' }, t('Running'))
             : entry.current ? t('Current')
               : when ? new Date(when).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''))
+      if (entry.current || entry.running) return h('div', { key: entry.id, className: 'bt-agent-session-row' }, opener)
+      const asking = armed === entry.id
+      return h('div', { key: entry.id, className: 'bt-agent-session-row' }, opener,
+        h('button', {
+          type: 'button', className: `bt-agent-session-delete${asking ? ' is-armed' : ''}`,
+          title: asking ? t('Click again to delete') : t('Delete this session'),
+          'aria-label': asking ? t('Click again to delete') : t('Delete this session'),
+          onClick: () => remove(entry), onBlur: () => { if (asking) setArmed(null) },
+        }, h(TrashIcon), asking ? h('span', null, t('Click again to delete')) : null))
     })))
 }
 const rowsEqual = (a, b) => a.length === b.length && a.every((row, index) => row?.title === b[index]?.title && row?.updatedAt === b[index]?.updatedAt)

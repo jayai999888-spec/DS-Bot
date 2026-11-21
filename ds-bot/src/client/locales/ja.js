@@ -1,6 +1,7 @@
 // Japanese (ja) localization for Jubala Bot client and DSH settings namespaces.
 
 export const JA = {
+  "Delete this session": "このセッションを削除",
   "{name} could not be opened.": "{name} を開けませんでした。",
   "The conversation of {name} was gone, so it starts a new one.": "{name} の会話が見つからなかったため、新しい会話を始めます。",
   "Background work": "バックグラウンド作業",

@@ -1,6 +1,7 @@
 // French (fr) localization for Jubala Bot client and DSH settings namespaces.
 
 export const FR = {
+  "Delete this session": "Supprimer cette session",
   "{name} could not be opened.": "Impossible d’ouvrir {name}.",
   "The conversation of {name} was gone, so it starts a new one.": "La conversation de {name} n’existait plus, une nouvelle commence.",
   "Background work": "Travail en arrière-plan",
