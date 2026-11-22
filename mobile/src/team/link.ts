@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppState } from 'react-native'
 import type { RpcClient } from '../../../link/src/index.ts'
 import { callBot, callBotState, openLink, type TeamState } from '../connection.ts'
-import { ensureUnlock } from './gate.ts'
+import { ensureUnlock } from './gate'
 import { createNoticeCursor, type NoticeCursorAnswer } from './notices.ts'
 import { OPTIMISTIC, optimistic, withWrites, type Write } from './optimistic.ts'
 import { t } from '../ui/i18n.ts'
@@ -14,6 +14,7 @@ const RETRY_MS = 2_000
 // Writes that settle pending items without always bumping state.revision.
 const PENDING_MUTATING = new Set([
   'approval-answer',
+  'learning-answer',
   'browser-give-back',
   'browser-takeover',
   'browser-stop',
@@ -212,7 +213,7 @@ export function useTeamLink(computer: SavedComputer, identity: PhoneIdentity) {
         activeClient = client
         clientRef.current = client
         setLinked(true)
-        // The handshake: its api is null when the computer's DS Bot is too old for
+        // The handshake: its api is null when the computer's Jubala Bot is too old for
         // this app. The team read goes out with it, not after it: each is a round
         // trip through the relay.
         void poll()
@@ -221,7 +222,7 @@ export function useTeamLink(computer: SavedComputer, identity: PhoneIdentity) {
         if (helloResult === null || helloResult.api === null) {
           if (activeClient === client) activeClient = undefined
           if (clientRef.current === client) clientRef.current = undefined
-          setError(t('Update DS Bot on the computer to use this phone.'))
+          setError(t('Update Jubala Bot on the computer to use this phone.'))
           setLinked(false)
           void client.close()
           connecting = false
@@ -307,7 +308,7 @@ export function useTeamLink(computer: SavedComputer, identity: PhoneIdentity) {
 export function errorText(error: unknown): string {
   const code = (error as { code?: unknown })?.code
   if (rejected(error)) return t('The computer did not accept this phone. Show a new QR code on the computer and scan it again.')
-  if (code === 'HOST_OFFLINE') return t('The computer is not connected to the Server. Check that DS Bot is open and phone access is on.')
+  if (code === 'HOST_OFFLINE') return t('The computer is not connected to the Server. Check that Jubala Bot is open and phone access is on.')
   if (code === 'SERVER_UNREACHABLE') return t('Could not reach the Server. Check the network. If the computer\'s Server address changed, pair again under Computers.')
   return t(error instanceof Error ? error.message : String(error))
 }

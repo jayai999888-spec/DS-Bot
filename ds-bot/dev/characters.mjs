@@ -1,4 +1,4 @@
-// Source of DS Bot's characters. Each one is a small 3D model made of
+// Source of Jubala Bot's characters. Each one is a small 3D model made of
 // signed-distance primitives (spheres, ellipsoids, round cones, a torus, extrusions, and
 // the first mascots' design outlines inflated into soft slabs), seen from one fixed
 // three-quarter view and traced into flat layers in a 100-unit box: the body, decals,
@@ -238,7 +238,25 @@ const decal = (region2, fill, opacity = 1) => ({ region: p => region2(p[0], p[1]
 const WAVE_HEART = 'M50 78C38 70 22 59 20 45C18.5 35 25 27 34 27C41 27 46.5 31.5 50 37.5C53.5 31 59.5 26.5 66.5 27C75.5 27.5 81.5 35.5 80 45.5C78 59.5 62 70.5 50 78Z'
 
 // The first mascots: their original outlines, inflated into soft 3D bodies.
+const ORANGE_STEM = capsule([0, 0.56, 0], [0.03, 0.86, 0], 0.055)
+const ORANGE_LEAF = ellipsoid([0.25, 0.8, 0.04], [0.26, 0.1, 0.05], 26)
 const MASCOTS = {
+  // The little orange of the 橘巴拉 IP (app/brand): a squat round body, a stem and one leaf,
+  // dot eyes, an open smile and pink cheeks.
+  orange: {
+    label: 'Little Orange',
+    sdf: smin(0.05, ellipsoid([0, -0.1, 0], [0.88, 0.76, 0.82]), ORANGE_STEM, ORANGE_LEAF),
+    eyes: [[-0.36, 0.02], [0.15, 0.02]],
+    eyeBox: [10, 12.5],
+    paints: [
+      { region: p => ORANGE_STEM(p) - 0.02, fill: '#7A4A1C', opacity: 1 },
+      { region: p => ORANGE_LEAF(p) - 0.02, fill: '#3FA34D', opacity: 1 },
+      decal((x, y) => Math.max(circle2(-0.11, -0.2, 0.19)(x, y), y + 0.2), '#7A2414'),
+      decal((x, y) => Math.max(circle2(-0.11, -0.2, 0.19)(x, y), circle2(-0.11, -0.42, 0.13)(x, y)), '#FF7A7A'),
+      decal(circle2(-0.6, -0.2, 0.12), '#FF5A7A', 0.55),
+      decal(circle2(0.36, -0.2, 0.12), '#FF5A7A', 0.55),
+    ],
+  },
   whale: {
     label: 'Whale',
     sdf: smin(0.14,
@@ -358,8 +376,8 @@ const GEOMETRIC = {
   },
 }
 
-// Picker order: the mascots lead, the star second.
-const ORDER = ['whale', 'star', 'moon', 'wave', 'squircle', 'zed', 'hex']
+// Picker order: the mascots lead, the orange first (the team's first Main Bot), the star after the whale.
+const ORDER = ['orange', 'whale', 'star', 'moon', 'wave', 'squircle', 'zed', 'hex']
 const MODELS = { ...Object.fromEntries(ORDER.map(id => [id, MASCOTS[id]])), ...GEOMETRIC }
 
 function contours(field) {
@@ -536,6 +554,8 @@ function build(model) {
     return `M${f(grid[0][0] / 10)} ${f(grid[0][1] / 10)}l${steps.map(([dx, dy]) => `${num(dx)}${num(dy)}`).join('').trim()}z`
   }).join('')
   const eyeSize = model.eye ?? 1
+  // `eyeBox` is the capsule's face-on width and height; round dots are nearly square.
+  const [eyeW, eyeH] = model.eyeBox ?? [10, 23]
   const eyes = model.eyes.map(([x, y]) => {
     const { p, n } = surfaceAt(model.sdf, x, y)
     const u = norm(cross([0, 1, 0], n))
@@ -544,7 +564,7 @@ function build(model) {
     const [ex, ey] = place([wp[0], wp[1]])
     const vs = [wv[0], -wv[1]]
     const tilt = (Math.atan2(vs[0], -vs[1]) * 180) / Math.PI
-    return [ex, ey, 10 * eyeSize * Math.hypot(wu[0], wu[1]), 23 * eyeSize * Math.hypot(...vs), tilt].map(value => +value.toFixed(1))
+    return [ex, ey, eyeW * eyeSize * Math.hypot(wu[0], wu[1]), eyeH * eyeSize * Math.hypot(...vs), tilt].map(value => +value.toFixed(1))
   })
   return {
     ...(model.label ? { label: model.label } : {}),
@@ -564,7 +584,7 @@ console.log(`export const CHARACTERS = {\n${block}\n}`)
 const out = process.argv.indexOf('--preview')
 if (out > 0) {
   const colors = ['#A27952', '#FF3E51', '#FF781C', '#FFAF38', '#00C972', '#1CC3B0', '#2A92FE', '#A97EFE', '#FF5EB1', '#959595']
-  const INK = { whale: '#4D6BFE', moon: '#141416', zed: '#2D2D2D', wave: '#EC2F6B', star: '#0AA8D6', squircle: '#FF6900', hex: '#082DFF' }
+  const INK = { orange: '#F39A1E', whale: '#4D6BFE', moon: '#141416', zed: '#2D2D2D', wave: '#EC2F6B', star: '#0AA8D6', squircle: '#FF6900', hex: '#082DFF' }
   const INK_DARK = { moon: '#F1F2F4', zed: '#D6D6DA' }
   let serial = 0
   const mark = (c, color, size) => {

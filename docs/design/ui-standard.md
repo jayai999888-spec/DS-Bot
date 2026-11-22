@@ -41,7 +41,7 @@
 
 | 主题 | 浅色 bg / text / accent | 深色 bg / text / accent |
 |---|---|---|
-| DeepSeek（默认） | `#fcfcfc` / `#141414` / `#4d6bfe` | `#141414` / `#f2f2f2` / `#5b7bff` |
+| Jubala（默认，原 DeepSeek 主题；存着 `deepseek` 的设置自动迁过来） | `#fcfcfc` / `#141414` / `#ee8414` | `#141414` / `#f2f2f2` / `#f5a623` |
 | Mono | `#ffffff` / `#0d0d0d` / `#0d0d0d` | `#0f0f0f` / `#f4f4f4` / `#f4f4f4` |
 | Paper | `#faf9f5` / `#1f1e1b` / `#d97757` | `#1f1e1b` / `#f3f0e8` / `#e08a6d` |
 | Moonlight | `#f7f9fc` / `#121826` / `#1e86ff` | `#0b1020` / `#e8edf7` / `#4f9dff` |
@@ -88,8 +88,9 @@ Bot 形象用的颜色（`inks.js`），每种都有浅色、深色两个值：
 
 - 形象可选 12 色：black、brown、red、orange、yellow、green、cyan、blue、violet、magenta、gray，加一个渐变 aurora。
 - 强调色预设 7 色：deepseek、charcoal、graphite、rose、sky、tangerine、cobalt。
+- 品牌橘 mandarin（浅色 `#F39A1E`，深色 `#F5A623`）：只给第一个主 Bot 和插件自己的标志用，不在形象和强调色的选项里。
 - 新 Bot 没选颜色时，从去掉 black、gray、brown 和渐变后的颜色里，按 Bot id 确定地取一个。
-- 第一个主 Bot 固定是 deepseek 蓝的鲸鱼。
+- 第一个主 Bot 是 mandarin 橘色的小橘子（`orange`），默认叫「小橘」，角色「团队总管」。小橘子之前建的团队，第一个主 Bot 保留它的鲸鱼。
 
 Bot 名字、提及用同一个颜色写字；纯黑读起来像标题，所以写字时改用灰色。
 
@@ -181,7 +182,7 @@ Bot 名字、提及用同一个颜色写字；纯黑读起来像标题，所以�
 | 记忆对话框 | 宽 `min(680px, 100vw - 48px)`，高 `min(760px, …)` |
 | 右侧面板 | 详情 320px；浏览器默认 520px，可拖动，最小 360px，对话列至少保留 420px |
 | 左侧栏 | 和右侧面板一样不被挤窄。拖右边缘调宽度，264–420px；拖到 176px 以下松手，吸附成 88px 头像窄栏（头像 44px），从窄栏往外拖回到完整栏。左上角的开关（和快捷键）整列收起、再次点击恢复。窗口变窄时先收起右侧面板（放得下时自动回来），再把左侧栏收成头像窄栏；窄时打开面板，左侧栏先收成窄栏让位，仍放不下才盖住对话。Windows、macOS、网页都一样。桌面应用最小窗口宽 508px（窄栏 + 420） |
-| 气泡 | Bot 气泡最宽 `min(var(--bt-msg-w) × 100%, 100% - 82px)`，用户气泡最宽 `var(--bt-msg-w) × 100%`；`--bt-msg-w` 是设置里的气泡宽度（50%–100%，默认 80%） |
+| 气泡 | Bot 气泡最宽 `min(var(--bt-msg-w) × 100%, 100% - 82px)`；无悬停设备（`@media (hover:none)`）的工具栏放在消息下方，不预留 82px，只按宽度设置计算（≤640px 的手机此前已由窄屏断点去掉预留）。用户气泡最宽 `var(--bt-msg-w) × 100%`；`--bt-msg-w` 是设置里的气泡宽度（50%–100%，默认 80%） |
 | 输入框卡片 | 最宽 `min(992px, 100%)` |
 | 主 Bot 卡片 | 宽 95px |
 
@@ -260,9 +261,9 @@ Bot 名字、提及用同一个颜色写字；纯黑读起来像标题，所以�
 
 ### 8.1 形象
 
-- 20 个原创形象，用 `dev/characters.mjs` 生成：每个是一个小 3D 模型，从固定的三分之四视角描成平面层（身体、贴花、背光阴影、受光高光），放在 100 单位的画布里。
+- 21 个原创形象，用 `dev/characters.mjs` 生成：每个是一个小 3D 模型，从固定的三分之四视角描成平面层（身体、贴花、背光阴影、受光高光），放在 100 单位的画布里。
 - 眼睛是从所有层上挖掉的洞，所以能透出背后的颜色。眼睛的位置和倾斜随表面变化，近眼比远眼宽。
-- 形象列表：whale、star、moon、wave、squircle、zed、hex、gumdrop、peanut、saucer、bunny、kitty、beacon、plus、magnet、acorn、pebbles、cushion、ring、gem。
+- 形象列表：orange、whale、star、moon、wave、squircle、zed、hex、gumdrop、peanut、saucer、bunny、kitty、beacon、plus、magnet、acorn、pebbles、cushion、ring、gem。
 - 必须：新形象从生成器加，不手改 `characters.js` 里的数据；不能用任何厂商标志做贴花。
 - 用户也可以上传照片代替形象（圆形裁切）。
 

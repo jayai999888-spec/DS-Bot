@@ -369,6 +369,7 @@ test('IM runtime forwards captionless video and notifies Bot when >20MB Telegram
   writeFileSync(join(home, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['a'],
+    orangeStored: true,
     bots: { a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 } },
     rooms: {},
     agents: {},

@@ -72,6 +72,21 @@ test('a failed state write rejects and leaves the saved file unchanged', async (
   assert.deepEqual(fs.readFileSync(statePath), original)
 })
 
+test('model selection witnesses survive a saved store reload', async (t) => {
+  const first = runtime(t)
+  await first.rt.load()
+  const selections = { s1: { provider: 'deepseek', model: 'v4', reasoningEffort: 'high' } }
+  first.rt.state.sessionModelSelections = selections
+  await first.rt.save()
+  await first.dispose()
+  const cleanups = []
+  const second = { ...first.rt, ctx: { effect: execute => cleanups.push(execute()) } }
+  t.after(async () => { for (const cleanup of cleanups) await cleanup() })
+  install(second)
+  await second.load()
+  assert.deepEqual(second.state.sessionModelSelections, selections)
+})
+
 test('a failed migration write warns but load() still resolves', async (t) => {
   const { rt, statePath, warnings } = runtime(t, { version: 1, mainBotId: 'chief', bots: { chief: { id: 'chief', name: 'Chief' } } })
   // The migrated team's first write fails: a directory takes the temp file's path.
@@ -139,7 +154,7 @@ test('a state from a newer version remains untouched', async (t) => {
   const original = JSON.stringify({ version: 999, revision: 77, recoveryMarker: 'keep' })
   const { rt, statePath } = runtime(t, original)
   await rt.load()
-  assert.match(rt.readOnly(), /saved by a newer DS Bot; update DS Bot/)
+  assert.match(rt.readOnly(), /saved by a newer Jubala Bot; update Jubala Bot/)
   rt.state.prefs.marker = 'not saved'
   await rt.save()
   assert.equal(fs.readFileSync(statePath, 'utf8'), original)
@@ -319,7 +334,7 @@ test('a save writes the unsaved change when the lock went away but the file did 
   }
 })
 
-test('a save writes nothing after adopting a file from a newer DS Bot', async (t) => {
+test('a save writes nothing after adopting a file from a newer Jubala Bot', async (t) => {
   const { rt, home, statePath } = runtime(t)
   await rt.load()
   rt.state.prefs.marker = 'ours'
@@ -329,7 +344,7 @@ test('a save writes nothing after adopting a file from a newer DS Bot', async (t
   fs.rmSync(join(home, 'state.lock'))
   rt.state.prefs.after = 'not saved'
   await rt.save()
-  assert.match(rt.readOnly(), /saved by a newer DS Bot/)
+  assert.match(rt.readOnly(), /saved by a newer Jubala Bot/)
   assert.equal(fs.readFileSync(statePath, 'utf8'), future)
   // The outside edit was still kept aside before it was adopted.
   const backups = fs.readdirSync(home).filter(name => name.startsWith('state.json.replaced-'))
@@ -562,6 +577,7 @@ test('findBot unquotes a Bot ref before matching the name', async (t) => {
   const { rt } = runtime(t, {
     version: 1,
     mainBotIds: [],
+    orangeStored: true,
     bots: {
       a1: { id: 'a1', name: 'Ada' },
       s2: { id: 's2', name: 'Sun Tzu' },
@@ -583,6 +599,7 @@ test('indexSessions normalizes missing ids, empty sessionId, switched segments, 
   const { rt } = runtime(t, {
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: {
       main: { id: 'main', name: 'Chief', main: true },
       'empty-sid': { id: 'empty-sid', name: 'Empty', sessionId: '' },

@@ -24,7 +24,7 @@ test('a build that fails on its own is not retried', () => {
   assert.equal(gatewayFailure('  ⨯ primary runtime download: 404 https://example.invalid/a.tar.gz'), undefined)
   assert.equal(gatewayFailure('This Node runs on arm64, so npm installed arm64 native modules, and an x64 app with them would not start.'), undefined)
   // A path or a size that contains 504 is not an answer.
-  assert.equal(gatewayFailure('  • building        target=zip arch=x64 file=dist-pack/DS-Bot-0.3.504-mac-x64.zip'), undefined)
+  assert.equal(gatewayFailure('  • building        target=zip arch=x64 file=dist-pack/Jubala-Bot-0.3.504-mac-x64.zip'), undefined)
 })
 
 test('only the error that ended the build counts, not an attempt retried before it', () => {

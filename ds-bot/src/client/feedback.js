@@ -38,7 +38,7 @@ function entrySummary(entry) {
   return entry.text
 }
 
-const SOURCES = { turn: 'Model call', host: 'DS Bot', api: 'DS Bot', browser: 'This window' }
+const SOURCES = { turn: 'Model call', host: 'Jubala Bot', api: 'Jubala Bot', browser: 'This window' }
 
 // Where the new issue opens; `go(url)` tells whether it did.
 const issueWindow = reserveWindow
@@ -100,19 +100,19 @@ export function FeedbackPage({ actions, run, Section, Row }) {
         h('button', { type: 'button', className: 'bt-soft bt-soft-sm', onClick: () => setPreview(!preview), 'aria-expanded': preview }, preview ? t('Hide') : t('Show')),
         h('button', { type: 'button', className: 'bt-soft bt-soft-sm', onClick: copyReport }, t('Copy'))),
       preview ? h('div', { className: 'bt-set-row bt-fb-preview' }, h('pre', { tabIndex: 0, 'aria-label': t('Diagnostics') }, report?.markdown || t('Loading…'))) : null,
-      h(Row, { label: t('GitHub issue'), hint: t('Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.') },
+      h(Row, { label: t('GitHub issue'), hint: t('Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.') },
         h('button', { type: 'button', className: 'bt-fb-primary', onClick: openIssue }, t('Report on GitHub')))),
     note ? h('div', { key: 'note', className: 'bt-note bt-fb-note', role: 'status' },
       note,
       issueLink ? [' ', h('a', { key: 'link', href: issueLink, target: '_blank', rel: 'noopener noreferrer' }, t('Open the issue'))] : null) : null,
     h(Section, { key: 'errors', title: report ? t('Recent errors · {count}', { count: total }) : t('Recent errors') },
       shown.length === 0
-        ? h(Row, { label: t('No errors recorded.'), hint: t('Failed model calls and DS Bot problems show here, newest first.') })
+        ? h(Row, { label: t('No errors recorded.'), hint: t('Failed model calls and Jubala Bot problems show here, newest first.') })
         : shown.map((entry, index) => h('div', { key: `${entry.time}-${index}`, className: 'bt-set-row bt-fb-entry', title: entry.text },
             h('span', { className: 'bt-fb-dot', 'data-level': entry.level, 'aria-hidden': true }),
             h('div', { className: 'bt-set-copy' },
               h('span', { className: 'bt-fb-text' }, entrySummary(entry)),
-              h('span', { className: 'bt-set-hint' }, [whenText(entry.time), entry.bot, entry.where, t(SOURCES[entry.source] ?? 'DS Bot')].filter(Boolean).join(' · '))),
+              h('span', { className: 'bt-set-hint' }, [whenText(entry.time), entry.bot, entry.where, t(SOURCES[entry.source] ?? 'Jubala Bot')].filter(Boolean).join(' · '))),
             entry.code ? h('span', { className: 'bt-tag bt-fb-code' }, entry.status ? `${entry.code} ${entry.status}` : entry.code) : null)),
       h(Row, { label: t('Error log'), hint: t('Kept on this computer across restarts, up to about 1 MB.') },
         h('button', { type: 'button', className: 'bt-soft bt-soft-sm', onClick: downloadLog }, t('Download')),
@@ -126,18 +126,34 @@ const TOAST_MS = 6000
 export function ErrorToast({ useUi, actions }) {
   const toast = useUi(state => state.toast)
   const [leaving, setLeaving] = useState(false)
+  const [paused, setPaused] = useState(false)
   useEffect(() => {
     if (!toast) return undefined
     setLeaving(false)
-    const fade = setTimeout(() => setLeaving(true), TOAST_MS)
-    const gone = setTimeout(() => actions.dismissToast(toast.token), TOAST_MS + 200)
-    return () => { clearTimeout(fade); clearTimeout(gone) }
+    setPaused(false)
+    return undefined
   }, [toast?.token])
+  useEffect(() => {
+    if (!toast || paused || leaving) return undefined
+    const fade = setTimeout(() => setLeaving(true), TOAST_MS)
+    return () => clearTimeout(fade)
+  }, [toast?.token, paused, leaving])
+  useEffect(() => {
+    if (!toast || !leaving) return undefined
+    const gone = setTimeout(() => actions.dismissToast(toast.token), 190)
+    return () => clearTimeout(gone)
+  }, [toast?.token, leaving])
   if (!toast) return null
-  return h('div', { className: 'bt-toast', role: 'alert', 'data-leaving': leaving || undefined },
+  return h('div', {
+    className: 'bt-toast', role: 'alert', 'data-leaving': leaving || undefined,
+    onMouseEnter: () => setPaused(true),
+    onMouseLeave: () => setPaused(false),
+    onFocus: () => setPaused(true),
+    onBlur: (event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false) },
+  },
     h('span', { className: 'bt-toast-text' }, toast.text),
     h('button', { type: 'button', className: 'bt-toast-link', onClick: () => { actions.dismissToast(toast.token); actions.openSettings('feedback') } }, t('Details')),
-    h('button', { type: 'button', className: 'bt-icon-btn bt-toast-close', 'aria-label': t('Dismiss'), onClick: () => actions.dismissToast(toast.token) }, h(CloseIcon)))
+    h('button', { type: 'button', className: 'bt-icon-btn bt-toast-close', 'aria-label': t('Dismiss'), onClick: () => setLeaving(true) }, h(CloseIcon)))
 }
 
 export const FEEDBACK_CSS = `
@@ -151,8 +167,8 @@ export const FEEDBACK_CSS = `
 .bt-fb-primary:active{filter:brightness(.94)}
 .bt-fb-note{margin:-8px 4px 0}
 .bt-fb-entry{cursor:default;align-items:flex-start}
-.bt-fb-dot{flex:none;width:6px;height:6px;border-radius:50%;margin-top:6px;background:var(--bt-danger,#e02135)}
-.bt-fb-dot[data-level=warn]{background:#e3a008}
+.bt-fb-dot{flex:none;width:6px;height:6px;border-radius:50%;corner-shape:round;margin-top:6px;background:var(--bt-danger,#e02135)}
+.bt-fb-dot[data-level=warn]{background:var(--bt-warn)}
 .bt-fb-text{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
 .bt-fb-code{flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px}
 .bt-event-error{color:var(--bt-danger,#e02135)}
@@ -160,7 +176,7 @@ export const FEEDBACK_CSS = `
 .bt-toast{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .bt-toast[data-leaving]{opacity:0;transform:translate(-50%,6px) scale(.98);filter:blur(3px);transition:opacity .18s ease-in,transform .18s ease-in,filter .18s ease-in}
 .bt-toast-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-.bt-toast-text::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bt-danger,#e02135);margin:0 8px 1px 0}
+.bt-toast-text::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;corner-shape:round;background:var(--bt-danger,#e02135);margin:0 8px 1px 0}
 .bt-toast-link{flex:none;border:0;background:none;color:var(--bt-ink-2);font:inherit;font-size:12px;cursor:pointer;padding:4px 6px;border-radius:6px}
 .bt-toast-link:hover{background:var(--bt-hover);color:var(--bt-ink)}
 .bt-toast-close{flex:none}

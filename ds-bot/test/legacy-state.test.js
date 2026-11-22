@@ -64,6 +64,7 @@ test('a team saved with a current theme keeps it', async (t) => {
 const teamWithColors = () => ({
   ...savedTeam({}),
   mainBotIds: ['m1'],
+  orangeStored: true,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', lab: 'deepseek', instructions: '', createdAt: 1, color: 'kimi' },
     b2: { id: 'b2', sessionId: 'b2', name: 'Writer', role: 'Writer', lab: 'deepseek', instructions: '', createdAt: 2, color: 'violet' },

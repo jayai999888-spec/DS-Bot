@@ -13,6 +13,7 @@ const BAD = ['__proto__', 'constructor', 'prototype', 'toString', 'hasOwnPropert
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   whaleStored: true,
   bots: {

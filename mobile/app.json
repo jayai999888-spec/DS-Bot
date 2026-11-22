@@ -1,13 +1,22 @@
 {
   "expo": {
-    "name": "DS Bot",
+    "name": "Jubala Bot",
     "slug": "dsbot",
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "name": "DS Bot",
+      "shortName": "DS Bot",
+      "themeColor": "#fcfcfc",
+      "favicon": "./assets/icon.png"
+    },
+    "experiments": { "baseUrl": "/web" },
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.github.fei2411.dsbot",
+      "bundleIdentifier": "io.github.jayai999888.jubalabot",
       "infoPlist": {
         "CFBundleLocalizations": ["en", "zh-Hans"],
         "ITSAppUsesNonExemptEncryption": false
@@ -15,13 +24,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#eef1f7",
+        "backgroundColor": "#FFF1DC",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "io.github.fei2411.dsbot",
+      "package": "io.github.jayai999888.jubalabot",
       "permissions": [
         "android.permission.POST_NOTIFICATIONS"
       ]
@@ -32,7 +41,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "DS Bot uses the camera to scan the pairing code that your computer shows.",
+          "cameraPermission": "Jubala Bot uses the camera to scan the pairing code that your computer shows.",
           "microphonePermission": false,
           "recordAudioAndroid": false
         }

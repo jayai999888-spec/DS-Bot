@@ -20,13 +20,13 @@ if (startPage !== undefined) {
   let ready = false
   contextBridge.exposeInMainWorld('dsBotApp', {
     // The team view has mounted: the start window hands over to this one. With it, where the
-    // Main Bot's avatar is drawn, for the start window's whale to land on (start-window §8).
+    // Main Bot's avatar is drawn, for the start window's orange to land on (start-window §8).
     ready: (place) => {
       if (ready) return
       ready = true
       ipcRenderer.send('ds-bot:ready', placeOf(place))
     },
-    // The start window hands its whale over at the top of its jump (start-window.mjs): `run`
+    // The start window hands its orange over at the top of its jump (start-window.mjs): `run`
     // draws it where it is on this page, and once that is painted the main process cross-fades
     // the two windows.
     onHandoff: (run) => {
@@ -38,7 +38,7 @@ if (startPage !== undefined) {
         try { run(from) } finally { requestAnimationFrame(() => { requestAnimationFrame(() => { ipcRenderer.send('ds-bot:handoff-ready') }) }) }
       })
     },
-    // DS Bot's settings show and move the app's data location through this.
+    // Jubala Bot's settings show and move the app's data location through this.
     dataLocation: () => ipcRenderer.invoke('ds-bot:data-location'),
     moveData: (workspace) => ipcRenderer.invoke('ds-bot:move-data', typeof workspace === 'string' ? workspace : undefined),
     teamWorkspaceChanged: (path) => { ipcRenderer.send('ds-bot:team-workspace', String(path)) },
@@ -588,7 +588,7 @@ function startBridge() {
   const listeners = new Set()
   let last
   const tell = (listener, state) => {
-    try { listener(state) } catch (error) { console.error('DS Bot: a start state listener failed', error) }
+    try { listener(state) } catch (error) { console.error('Jubala Bot: a start state listener failed', error) }
   }
   ipcRenderer.on('ds-bot:start-state', (_event, state) => {
     last = state
@@ -610,13 +610,13 @@ function browserBridge() {
   const viewListeners = new Set()
   ipcRenderer.on('ds-bot:browser-view-changed', (_event, change) => {
     for (const listener of [...viewListeners]) {
-      try { listener(change) } catch (error) { console.error('DS Bot: a browser view listener failed', error) }
+      try { listener(change) } catch (error) { console.error('Jubala Bot: a browser view listener failed', error) }
     }
   })
   ipcRenderer.on('ds-bot:browser-open-requested', (_event, request) => {
     if (typeof request?.lease !== 'string' || typeof request.url !== 'string') return
     for (const listener of [...(listeners.get(request.lease) ?? [])]) {
-      try { listener(request.url) } catch (error) { console.error('DS Bot: a browser link handler failed', error) }
+      try { listener(request.url) } catch (error) { console.error('Jubala Bot: a browser link handler failed', error) }
     }
   })
   return {
@@ -635,12 +635,15 @@ function browserBridge() {
       hold: (botId, held) => ipcRenderer.invoke('ds-bot:browser-view-hold', String(botId), held === true),
       subscribe(listener) { viewListeners.add(listener); return () => viewListeners.delete(listener) },
     },
-    // Cookie imports, only in the app: sources and a two-step pick/harvest → preview → apply.
+    // Cookie imports, only in the app: sources and a two-step pick/harvest/paste → preview → apply.
     importSources: () => ipcRenderer.invoke('ds-bot:browser-import-sources'),
+    importProbe: (source) => ipcRenderer.invoke('ds-bot:browser-import-probe', String(source)),
     importPick: () => ipcRenderer.invoke('ds-bot:browser-import-pick'),
-    importLive: (source, close) => ipcRenderer.invoke('ds-bot:browser-import-live', String(source), close === true),
-    importApply: (key, pending) => ipcRenderer.invoke('ds-bot:browser-import-apply', String(key), String(pending)),
-    importCancel: (pending) => ipcRenderer.invoke('ds-bot:browser-import-cancel', String(pending)),
+    importPaste: (text, defaultUrl) => ipcRenderer.invoke('ds-bot:browser-import-paste', String(text), typeof defaultUrl === 'string' ? defaultUrl : undefined),
+    importLaunch: (source) => ipcRenderer.invoke('ds-bot:browser-import-launch', String(source)),
+    importLive: (source, close, requestId) => ipcRenderer.invoke('ds-bot:browser-import-live', String(source), close === true, typeof requestId === 'string' ? requestId : undefined),
+    importApply: (key, pending, options) => ipcRenderer.invoke('ds-bot:browser-import-apply', String(key), String(pending), options && typeof options === 'object' ? options : undefined),
+    importCancel: (pending) => ipcRenderer.invoke('ds-bot:browser-import-cancel', typeof pending === 'string' ? pending : ''),
     onOpenRequested(lease, listener) {
       const id = String(lease)
       let set = listeners.get(id)
@@ -658,7 +661,7 @@ function updatesBridge() {
   const listeners = new Set()
   ipcRenderer.on('ds-bot:app-update-changed', (_event, state) => {
     for (const listener of [...listeners]) {
-      try { listener(state) } catch (error) { console.error('DS Bot: an update state handler failed', error) }
+      try { listener(state) } catch (error) { console.error('Jubala Bot: an update state handler failed', error) }
     }
   })
   return {

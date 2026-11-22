@@ -9,6 +9,7 @@ const server = await startRelayServer({
   port: Number(env.PORT ?? 8787),
   host: env.HOST ?? '0.0.0.0',
   dataFile: env.DSBOT_LINK_DATA,
+  webDir: env.DSBOT_LINK_WEB_DIR,
   trustProxy: env.DSBOT_LINK_TRUST_PROXY === '1',
   maxSockets: number('DSBOT_LINK_MAX_SOCKETS'),
   maxLinks: number('DSBOT_LINK_MAX_LINKS'),
@@ -17,7 +18,7 @@ const server = await startRelayServer({
   maxBytesPerHour: mbPerHour === undefined ? undefined : mbPerHour * 1024 * 1024,
   deviceTtlMs: ttlDays === undefined ? undefined : ttlDays * 86_400_000,
 })
-console.log(`DS Bot link Server: ${server.url}`)
+console.log(`Jubala Bot link Server: ${server.url}`)
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.once(signal, () => { void server.close().then(() => process.exit(0)) })
 }

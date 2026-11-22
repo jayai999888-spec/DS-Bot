@@ -33,8 +33,8 @@ export class ClaudeEngine {
     return session.running === true
   }
 
-  steer(session, text) {
-    return session.prompt([{ type: 'text', text }])
+  steer(session, input) {
+    return session.steer(input)
   }
 
   cancel(session) {
@@ -105,7 +105,7 @@ class ClaudeSession {
       args.push('--mcp-config', JSON.stringify({
         mcpServers: { dsbot: { type: 'http', url: mcp.url, headers: { Authorization: `Bearer ${mcp.token}` } } },
       }))
-      // DS Bot's own team tools need no approval, as for a model-backed Bot:
+      // Jubala Bot's own team tools need no approval, as for a model-backed Bot:
       // toolsFor() already narrowed what this Bot may call.
       args.push('--allowedTools', 'mcp__dsbot')
     }
@@ -256,8 +256,8 @@ class ClaudeSession {
     return Promise.resolve()
   }
 
-  async steer(thread, input) {
-    this.prompt(Array.isArray(input) ? input : [{ type: 'text', text: input }])
+  steer(input) {
+    return this.prompt(Array.isArray(input) ? input : [{ type: 'text', text: input }])
   }
 
   // `/compact` in stream-json runs the CLI's own compaction and ends with a result.

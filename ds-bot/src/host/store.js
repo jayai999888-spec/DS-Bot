@@ -8,6 +8,7 @@ import { LEGACY_THEMES, MAX_EXCHANGES, ROOM_MODES, SECTION_COLORS, SECTION_NAME_
 import { replaceFile } from './files.js'
 import { homeLock } from './home-lock.js'
 import { currentColor, headOf, normalize, unquote } from './text.js'
+import { isActiveTask } from './threads.js'
 import { AMBIGUOUS_OLD_ROUTES, legacyRoute } from './local-agents/engines.js'
 
 // A table read that sees only the keys the table holds itself. Ids that come from
@@ -63,7 +64,7 @@ export function install(rt) {
     }
   }
   const readOnly = () => {
-    if (stuck !== undefined) return `The Bot team file ${statePath} could not be read (${stuck}). DS Bot does not change it; fix or move the file and reload.`
+    if (stuck !== undefined) return `The Bot team file ${statePath} could not be read (${stuck}). Jubala Bot does not change it; fix or move the file and reload.`
     if (holder === undefined) return undefined
     const where = holder.pid ? `pid ${holder.pid}${holder.host ? ` on ${holder.host}` : ''}` : 'unknown process'
     return `The Bot team in ${home} is open in another dsh (Web or Desktop, ${where}). This window shows the team but cannot change it; close the other one and reload.`
@@ -105,7 +106,7 @@ export function install(rt) {
       stuck = undefined
       return parsed
     }
-    stuck = 'saved by a newer DS Bot; update DS Bot'
+    stuck = 'saved by a newer Jubala Bot; update Jubala Bot'
     return undefined
   }
 
@@ -195,7 +196,8 @@ export function install(rt) {
       }
     }
     // Teams from before the whale was stored at setup: their first Bot, while still a
-    // Main Bot, gets it once wherever it has no look of its own. After that the whale is
+    // Main Bot, gets it once wherever it has no look of its own. (New teams start with the
+    // little orange instead; these older teams keep the whale they were shown.) After that the whale is
     // an ordinary look the user can change, and it never passes to another Bot.
     if (state.whaleStored !== true) {
       const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)
@@ -205,6 +207,31 @@ export function install(rt) {
       }
       state.whaleStored = true
       if (first !== undefined) migrated = true
+    }
+    // Teams from before the 橘巴拉 brand: their first Bot, while still a Main Bot, trades
+    // each old default it still has (Chief, Chief of Staff, the whale, the DeepSeek ink)
+    // for the new one, once. Anything the user changed stays as it is.
+    if (state.orangeStored !== true) {
+      const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)
+      if (first !== undefined && state.mainBotIds.includes(first.id)) {
+        if (first.name === 'Chief') first.name = '小橘'
+        if (first.role === 'Chief of Staff') first.role = '团队总管'
+        if (first.avatar?.shape === 'whale' && !first.avatar.image) first.avatar = { ...first.avatar, shape: 'orange' }
+        if (first.color === 'deepseek') first.color = 'mandarin'
+      }
+      state.orangeStored = true
+      if (first !== undefined) migrated = true
+    }
+    // The step above renamed the Bot but not its chat's Session, which kept the title Chief.
+    // The little orange's chat takes its name once.
+    const retitled = []
+    if (state.chatTitleStored !== true) {
+      const first = Object.values(state.bots).reduce((best, bot) => (best === undefined || (bot.createdAt ?? 0) < (best.createdAt ?? 0) ? bot : best), undefined)
+      if (first?.name === '小橘' && state.mainBotIds.includes(first.id)) {
+        retitled.push(first)
+        state.chatTitleStored = true
+        migrated = true
+      }
     }
     if (Object.hasOwn(LEGACY_THEMES, state.prefs.theme ?? '')) {
       state.prefs.theme = LEGACY_THEMES[state.prefs.theme]
@@ -287,23 +314,27 @@ export function install(rt) {
     const stale = Object.values(state.rooms).filter(room => !room.named && room.name !== rt.autoRoomName(room.members))
     for (const room of stale) room.name = rt.autoRoomName(room.members)
     indexSessions()
-    return { migrated: migrated || stale.length > 0, stale }
+    return { migrated: migrated || stale.length > 0, stale, retitled }
   }
 
   const hasLoaded = () => storeReady
+  const notifyStoreSync = () => {
+    rt.onStoreSync?.()
+    rt.syncDeepseekTools?.()
+  }
   const syncReadOnly = () => {
     if (storeReady && adopting === undefined && (stuck !== undefined || holder !== undefined) && stamp() !== seen) {
       adopt(readFileState())
-      rt.onStoreSync?.()
+      notifyStoreSync()
     }
   }
 
   const load = () => loaded ??= (async () => {
     claimLock()
     if (holder !== undefined) warn('ds-bot: %s', readOnly())
-    const { migrated, stale } = adopt(readFileState())
+    const { migrated, stale, retitled } = adopt(readFileState())
     storeReady = true
-    rt.onStoreSync?.()
+    notifyStoreSync()
     if (holder !== undefined) return
     if (migrated && stuck === undefined) {
       // A failed write must not poison `loaded`: the migrated state stays in
@@ -316,6 +347,7 @@ export function install(rt) {
     }
     // Not awaited: renaming a session must not hold up the first roster read.
     for (const room of stale) void rt.retitleRoom(room)
+    for (const bot of retitled) void rt.retitleChat?.(bot)
   })()
 
   // An outside edit of state.json while this host held the lock, found at a
@@ -336,6 +368,7 @@ export function install(rt) {
         }
       }
       adopt(readFileState())
+      notifyStoreSync()
     })
     writing = run.catch(() => {})
     const tracked = run.finally(() => { if (adopting === tracked) adopting = undefined })
@@ -363,7 +396,7 @@ export function install(rt) {
         warn('ds-bot: the other dsh has closed; this one now saves the Bot team')
         warnedReadOnly = false
         adopt(readFileState())
-        rt.onStoreSync?.()
+        notifyStoreSync()
         return
       }
     } else if (!lockBroken && !lock.owns()) {
@@ -374,18 +407,18 @@ export function install(rt) {
       if (lockBroken) return
       if (holder === undefined) {
         await reclaimHeld()
-        rt.onStoreSync?.()
+        notifyStoreSync()
         return
       }
       warn('ds-bot: %s', readOnly())
     }
     if (adopting !== undefined) {
       await adopting
-      rt.onStoreSync?.()
+      notifyStoreSync()
       return
     }
     if ((stuck !== undefined || holder !== undefined) && stamp() !== seen) adopt(readFileState())
-    rt.onStoreSync?.()
+    notifyStoreSync()
   }
 
   const warnReadOnly = () => {
@@ -420,7 +453,7 @@ export function install(rt) {
     if (!writable()) return required ? Promise.reject(new Error(`This host cannot save the Bot team: ${readOnly()}`)) : writing
     const run = writing.then(async () => {
       // Re-check writability once the queued write runs: an adopt queued before
-      // it may have made this host read-only (e.g. a file a newer DS Bot wrote).
+      // it may have made this host read-only (e.g. a file a newer Jubala Bot wrote).
       if (stuck !== undefined || holder !== undefined) {
         if (required) throw new Error(`This host cannot save the Bot team: ${readOnly()}`)
         warnReadOnly()
@@ -498,6 +531,8 @@ export function install(rt) {
   // archived and stay readable.
   /** @type {Map<string, string>} */
   const chatOwners = new Map()
+  /** @type {Map<string, {botId:string, taskId:string}>} */
+  const taskOwners = new Map()
   /** @type {Map<string, {botId:string, roomId:string}>} */
   const groupOwners = new Map()
   /** @type {Map<string, string>} */
@@ -532,6 +567,7 @@ export function install(rt) {
   }
   const indexSessions = () => {
     chatOwners.clear()
+    taskOwners.clear()
     groupOwners.clear()
     roomOwners.clear()
     pastOwners.clear()
@@ -555,6 +591,22 @@ export function install(rt) {
         const partSid = sessionIdOf(part?.sessionId)
         if (partSid !== undefined) chatOwners.set(partSid, botId)
         indexPast(part?.segments, { botId })
+      }
+      // Background tasks keep their own stable records separate from openParts. Only
+      // active tasks stay in chatOwners/taskOwners; settled tasks move to pastOwners
+      // so folder/engine/model sweeps do not wake them again.
+      for (const task of bot.tasks ?? []) {
+        const taskSid = sessionIdOf(task?.sessionId)
+        const roomMeta = typeof task?.roomId === 'string' && task.roomId !== '' ? { roomId: task.roomId } : {}
+        if (taskSid !== undefined) {
+          if (isActiveTask(task)) {
+            chatOwners.set(taskSid, botId)
+            taskOwners.set(taskSid, { botId, taskId: task.id, ...roomMeta })
+          } else {
+            pastOwners.set(taskSid, { botId, ...roomMeta })
+          }
+        }
+        indexPast(task?.segments, { botId, ...roomMeta })
       }
     }
     for (const [id, room] of Object.entries(state.rooms)) {
@@ -642,7 +694,7 @@ export function install(rt) {
   Object.assign(rt, {
     state, load, save, refresh, readOnly, hasLoaded, syncReadOnly, own, onSaved, closeCard,
     botOf, roomOf, isMain, chatOf, sessionOfRoom, selfOf, isBotSession,
-    chatOwners, groupOwners, roomOwners, pastOwners,
+    chatOwners, taskOwners, groupOwners, roomOwners, pastOwners,
     groupSessionsOf, dropGroupSession, retireGroupSession, findBot, findRooms, isAdminOf,
   })
 }

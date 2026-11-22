@@ -3,17 +3,19 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
+import { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { createRuntime } from '../index.js'
 import { fakeContext } from './fake-ctx.js'
 
 // DSH asks for an explicit range before a request that would not fit, and a model switch
-// is one of those. A Bot conversation is condensed by DS Bot itself, so the range goes
-// through DS Bot's checkpoint instead of being refused: a refusal there ended the switch
+// is one of those. A Bot conversation is condensed by Jubala Bot itself, so the range goes
+// through Jubala Bot's checkpoint instead of being refused: a refusal there ended the switch
 // with MODEL_SWITCH_COMPACTION_FAILED and the Bot stayed on the model it had.
 
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', instructions: '', createdAt: 1 },
@@ -27,7 +29,9 @@ const TEAM = {
   questions: {},
 }
 
-function start({ summarize = true, outlet = false, stream } = {}) {
+const meter = { estimateMessage: message => TokenMeter.prototype.estimateMessage(message) }
+
+function start({ summarize = true, outlet = false, stream, messages = [{ role: 'user', content: [{ type: 'text', text: 'Earlier work. '.repeat(2000) }] }] } = {}) {
   const home = mkdtempSync(join(tmpdir(), 'ds-bot-compaction-'))
   writeFileSync(join(home, 'state.json'), JSON.stringify(TEAM))
   const bench = { regions: [], nows: [], summarised: 0, checkpoints: [] }
@@ -35,15 +39,15 @@ function start({ summarize = true, outlet = false, stream } = {}) {
     async compactIfNeeded() { return null },
     async compactNow(target, signal, commandId) { bench.nows.push([target?.session?.id, commandId]) },
     // `outlet` is compaction-basic's own shape: the range is condensed through the
-    // engine's summarize, which is the hook DS Bot wraps.
+    // engine's summarize, which is the hook Jubala Bot wraps.
     async compactRegion(start, end, agent, signal) {
       bench.regions.push([start, end, agent?.session?.id])
-      if (outlet) bench.checkpoints.push(await this.summarize({ messages: [] }, agent, signal))
+      if (outlet) bench.checkpoints.push(await this.summarize({ messages }, agent, signal))
     },
   }
   if (summarize) compaction.summarize = () => { bench.summarised += 1; return { summary: [] } }
   const ctx = fakeContext({
-    services: { compaction, tokenMeter: { measure: () => ({ totalTokens: 10 }) } },
+    services: { compaction, tokenMeter: { ...meter, measure: () => ({ totalTokens: 10 }) } },
   })
   Object.assign(ctx, {
     llm: {
@@ -92,6 +96,111 @@ test('a model switch compacts a Bot conversation instead of refusing the range',
   await compaction.compactRegion(3, 9, agentOf('b2'), signal)
   assert.deepEqual(bench.regions, [[3, 9, 'b2']])
 })
+
+test('a checkpoint reads past ten pages to keep the latest initiating request', async (t) => {
+  const { ctx, bench, compaction, adoptFor, agentOf, stop } = start({ outlet: true, stream: () => { throw new Error('offline') } })
+  t.after(stop)
+  const history = Array.from({ length: 2202 }, (_, seq) => ({
+    seq, time: 1,
+    ...(seq === 0 || seq === 1
+      ? { type: 'user/message', data: { source: { kind: 'user' }, content: [{ type: 'text', text: seq === 1 ? 'Keep the initiating request' : 'Older request' }] } }
+      : { type: 'assistant/message', data: { message: { content: [{ type: 'text', text: 'Working' }] } } }),
+  }))
+  let pages = 0
+  ctx.sessionController.resolveAgent = async () => ({ agent: { id: 'b2', session: { seq: history.length } } })
+  ctx.sessionController.page = async ({ beforeSeq, maxMessages }) => {
+    pages += 1
+    const end = beforeSeq ?? history.length
+    const start = Math.max(0, end - maxMessages)
+    return { records: history.slice(start, end).map(event => ({ event })), hasMore: start > 0 }
+  }
+  adoptFor('b2')
+  await compaction.compactRegion(0, 1, agentOf('b2'), new AbortController().signal)
+  const text = bench.checkpoints[0].summary[0].text
+  assert.match(text, /Keep the initiating request/)
+  assert.match(text, /Older messages are not shown here/)
+  assert.doesNotMatch(text, /User: Older request/)
+  assert.ok(pages > 10)
+})
+
+for (const size of [3000, 600, 480]) {
+  test(`a switch checkpoint fits a ${size}-character range even without a summary model`, async (t) => {
+    const messages = [
+      { role: 'system', content: [{ type: 'text', text: 'System instructions. '.repeat(2000) }] },
+      { role: 'user', content: [{ type: 'text', text: 'x'.repeat(size) }] },
+    ]
+    const { bench, compaction, adoptFor, agentOf, stop } = start({ outlet: true, messages })
+    t.after(stop)
+    adoptFor('b2')
+    await compaction.compactRegion(1, 2, agentOf('b2'), new AbortController().signal)
+    const summary = bench.checkpoints[0].summary
+    const framed = meter.estimateMessage({ role: 'user', content: [
+      { type: 'text', text: ' '.repeat(340) }, ...summary, { type: 'text', text: '</compacted-summary>' },
+    ] })
+    assert.ok(framed < meter.estimateMessage(messages[1]), `${framed} framed tokens must be smaller than ${meter.estimateMessage(messages[1])}`)
+  })
+}
+
+for (const summary of ['Progress recorded.', 'Long summary. '.repeat(1000), '']) {
+  test(`a switch bounds kept messages and ${summary.length}-character model output`, async (t) => {
+    const messages = [{ role: 'user', content: [{ type: 'text', text: 'Work. '.repeat(400) }] }]
+    const { ctx, bench, compaction, adoptFor, agentOf, stop } = start({
+      outlet: true, messages,
+      stream: async function* () {
+        yield { type: 'block-start', index: 0, blockType: 'text' }
+        yield { type: 'text-delta', index: 0, text: summary }
+        yield { type: 'block-end', index: 0, block: { type: 'text', text: summary } }
+        yield { type: 'finish', reason: { kind: 'stop' } }
+      },
+    })
+    t.after(stop)
+    ctx.sessionController.page = async () => ({ records: [{ event: {
+      seq: 1, time: 1, type: 'user/message',
+      data: { source: { kind: 'user' }, content: [{ type: 'text', text: 'Keep this request. '.repeat(200) }] },
+    } }], hasMore: false })
+    adoptFor('b2')
+    await compaction.compactRegion(1, 2, agentOf('b2'), new AbortController().signal)
+    const text = bench.checkpoints[0].summary[0].text
+    assert.ok(meter.estimateMessage({ role: 'user', content: [{ type: 'text', text }] }) + 112 < meter.estimateMessage(messages[0]))
+    assert.doesNotMatch(text, /Keep this request/)
+    if (summary === 'Progress recorded.') assert.match(text, /Progress recorded\./)
+  })
+}
+
+for (const type of ['image', 'file']) {
+  for (const routeTokens of [180, 2000]) {
+    test(`a switch uses the selected ${type} node's ${routeTokens} route-priced tokens`, async (t) => {
+      const summary = 'Important progress. '.repeat(100)
+      const attachment = {
+        attachmentId: 'a'.repeat(64), bytes: 1000,
+        name: 'attachment'.repeat(routeTokens === 180 ? 1000 : 1),
+        ...(type === 'image' ? { mediaType: 'image/png', width: 100, height: 100 } : {}),
+      }
+      const messages = [{ role: 'user', content: [{ type, attachment }] }]
+      const { ctx, bench, compaction, adoptFor, agentOf, stop } = start({
+        outlet: true, messages,
+        stream: async function* () {
+          yield { type: 'block-start', index: 0, blockType: 'text' }
+          yield { type: 'text-delta', index: 0, text: summary }
+          yield { type: 'block-end', index: 0, block: { type: 'text', text: summary } }
+          yield { type: 'finish', reason: { kind: 'stop' } }
+        },
+      })
+      t.after(stop)
+      ctx.get('tokenMeter').measure = () => ({ totalTokens: 10000 + routeTokens, nodes: [
+        { seq: 0, tokens: 5000 }, { seq: 3, tokens: routeTokens }, { seq: 9, tokens: 0 }, { seq: 10, tokens: 5000 },
+      ] })
+      adoptFor('b2')
+      await compaction.compactRegion(3, 9, agentOf('b2'), new AbortController().signal)
+      const text = bench.checkpoints[0].summary[0].text
+      const framed = meter.estimateMessage({ role: 'user', content: [
+        { type: 'text', text: ' '.repeat(340) }, { type: 'text', text }, { type: 'text', text: '</compacted-summary>' },
+      ] })
+      assert.ok(framed < routeTokens, `${framed} framed tokens must be smaller than ${routeTokens} route-priced tokens`)
+      if (routeTokens === 2000) assert.ok(text.includes(summary.trim()), 'retain the summary when route pricing leaves enough room')
+    })
+  }
+}
 
 test('a Session outside the team keeps the backend compaction', async (t) => {
   const { bench, compaction, adoptFor, agentOf, stop } = start()

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { runInNewContext } from 'node:vm'
 import { build } from 'esbuild'
@@ -53,8 +54,14 @@ runInNewContext(outputFiles[0].text, {
   module, exports: module.exports,
   require: name => (name === 'react' ? react : {}),
 })
-const { ProviderRow } = module.exports
+const { ProviderRow, shownProviders } = module.exports
 const settle = () => new Promise(resolve => setImmediate(resolve))
+
+test('provider styles are included in the sheets shared by Bot mode and Agent-mode Settings (#1546)', () => {
+  const client = readFileSync(new URL('../src/client/index.js', import.meta.url), 'utf8')
+  const sheets = client.match(/const SHELL_SHEETS = \[([\s\S]*?)\n  \]/)?.[1] ?? ''
+  assert.match(sheets, /\bPROVIDERS_CSS\b/, 'exporting provider CSS is not enough: both surfaces must install it')
+})
 
 // ModelDraft is a plain function without hooks; expand it so its buttons are visible
 // without running the whole React hook tree a second time.
@@ -276,4 +283,16 @@ test('fallback after reordering follows the configured default, not the old effe
   assert.equal(fallbacksFor(saved, draft, roster).switching[0].target.ref, 'relay/b')
   roster.profileDefaultModel = 'relay/a'
   assert.equal(fallbacksFor(saved, draft, roster).switching[0].target.name, 'Renamed A')
+})
+
+test('the DeepSeek API route stays off the list until it has a key or models', () => {
+  const account = { id: 'deepseek-account', key: null, models: [{ id: 'flash' }] }
+  const bare = { id: 'deepseek-official', key: { configured: false, writable: true }, models: [] }
+  assert.deepEqual(shownProviders([bare, account]).map(p => p.id), ['deepseek-account'])
+  const keyed = { ...bare, key: { configured: true, writable: true } }
+  assert.deepEqual(shownProviders([keyed, account]).map(p => p.id), ['deepseek-official', 'deepseek-account'])
+  const failing = { ...bare, error: 'offline' }
+  assert.deepEqual(shownProviders([failing]).map(p => p.id), ['deepseek-official'])
+  const other = { id: 'zai-coding-cn', key: { configured: false, writable: true }, models: [] }
+  assert.deepEqual(shownProviders([other]).map(p => p.id), ['zai-coding-cn'])
 })

@@ -12,6 +12,7 @@ import { isProtectedApp } from '../src/host/computer/index.js'
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', instructions: '', createdAt: 1 },
@@ -111,7 +112,7 @@ test('protected apps match by id, name and executable', () => {
     { id: 'com.deepseek.harness.computer-use.dev' },
     { id: 'com.apple.systempreferences' },
     { id: 'com.apple.keychainaccess' },
-    { name: 'DS Bot' },
+    { name: 'Jubala Bot' },
     { name: 'DSH Computer Use' },
     { name: 'DSH Computer Use Dev' },
     { name: 'DeepSeek Harness' },
@@ -387,7 +388,7 @@ const maskingAgent = (ctx, id, denied) => ({
   },
 })
 
-test('a plain Session keeps DSH\'s own computer use while the DS Bot switch is off (#1101)', async (t) => {
+test('a plain Session keeps DSH\'s own computer use while the Jubala Bot switch is off (#1101)', async (t) => {
   const { ctx, home, rt } = setup()
   t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
   const denied = []
@@ -417,7 +418,7 @@ test('with DSH\'s own provider in place Bots are refused and a plain Session is 
   assert.equal((await call('w1', 'cua', { method: 'getState', params: {} })).kind, 'deny')
 })
 
-test('a plain Session is refused on the provider DS Bot mounted', async (t) => {
+test('a plain Session is refused on the provider Jubala Bot mounted', async (t) => {
   const { ctx, home, rt } = setup()
   t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
   const services = { loader: { import: async name => ({ name }) }, agents: { list: () => [] } }
@@ -706,7 +707,7 @@ test('computer_handoff: the hold answers done, skip and takeover', async (t) => 
   assert.match(reply.message, /gave the computer back|handed/)
 })
 
-test('a cua call DS Bot never decided asks by card instead of saying revoked', async (t) => {
+test('a cua call Jubala Bot never decided asks by card instead of saying revoked', async (t) => {
   const { ctx, home, rt } = setup()
   t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
   await rt.load()
@@ -715,7 +716,7 @@ test('a cua call DS Bot never decided asks by card instead of saying revoked', a
   const gate = ctx.listeners.get('tools/pre-execute').find(fn => fn.name === 'computerGate')
   const track = ctx.listeners.get('tools/execute').find(fn => fn.name === 'computerTrack')
   const allow = async () => 'allowed'
-  // DSH's saved decision let getApp through; DS Bot's post-getApp consent asks
+  // DSH's saved decision let getApp through; Jubala Bot's post-getApp consent asks
   // by the same card before the model ever sees the handle.
   const got = track({ name: 'cua', arguments: { method: 'getApp', params: { selector: 'Notes' } }, agent: { id: 'w1' }, callId: 'g1' },
     async () => ({ isError: false, value: { appHandle: 'h1', pid: 9, authorization: { id: 'com.apple.Notes', name: 'Notes' } } }))
@@ -1302,6 +1303,37 @@ test('cua-driver keeps the title-only window record', async (t) => {
   assert.equal(await pending, 'allowed')
 })
 
+test('a group-session computer app ask tags roomId, yields the room turn, and settles in place (#1623)', async (t) => {
+  const { ctx, home, rt } = setup()
+  t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
+  const yielded = []
+  rt.groupOwners = new Map([['g1-w1', { roomId: 'r1', botId: 'w1' }]])
+  rt.selfOf = id => (id === 'g1-w1' ? 'w1' : id)
+  rt.isBotSession = id => id === 'w1' || id === 'g1-w1'
+  rt.yieldRoomTurn = id => yielded.push(id)
+  await rt.load()
+  await rt.computerEndpoint('set-enabled', { enabled: true })
+  await rt.computerEndpoint('set-level', { botId: 'w1', level: 'background' })
+  const consent = ctx.listeners.get('user-questions/request').find(fn => fn.name === 'computerConsent')
+  const pending = consent({
+    agent: { id: 'g1-w1', session: { id: 'g1-w1' } },
+    questions: [{ id: 'cua-app-access', intent: { subject: { name: 'Notes' } } }],
+  }, async () => ({ answers: [] }))
+  await new Promise(resolve => setImmediate(resolve))
+  const asks = Object.values(rt.computerLive().asks)
+  assert.equal(asks.length, 1)
+  assert.equal(asks[0].roomId, 'r1')
+  assert.equal(asks[0].botId, 'w1')
+  assert.equal(asks[0].appName, 'Notes')
+  assert.equal(typeof asks[0].at, 'number')
+  assert.deepEqual(yielded, ['g1-w1'])
+  assert.equal(rt.waitsForApproval('g1-w1'), true)
+  await rt.computerEndpoint('app-answer', { id: asks[0].id, answer: 'once' })
+  const result = await pending
+  assert.deepEqual(result, { answers: [{ id: 'cua-app-access', selected: ['Allow for this session'] }] })
+  assert.equal(Object.keys(rt.computerLive().asks).length, 0)
+})
+
 test('cua-driver keeps a numeric element token', async (t) => {
   const { ctx, home, rt } = setup()
   t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
@@ -1321,4 +1353,54 @@ test('cua-driver keeps a numeric element token', async (t) => {
   assert.equal(ask.appName, 'Notes')
   await rt.computerEndpoint('app-answer', { id: ask.id, answer: 'once' })
   assert.equal(await pending, 'allowed')
+})
+
+test('cancelApprovals denies pending group app asks, pre-aborted signals do not leak, and concurrent asks keep waitingFor until all settle (#1623)', async (t) => {
+  const { ctx, home, rt } = setup()
+  t.after(async () => { await ctx.dispose(); rmSync(home, { recursive: true, force: true, maxRetries: 5 }) })
+  const yielded = []
+  rt.groupOwners = new Map([
+    ['g1-w1', { roomId: 'r1', botId: 'w1' }],
+    ['g2-w1', { roomId: 'r2', botId: 'w1' }],
+  ])
+  rt.selfOf = id => (['g1-w1', 'g2-w1'].includes(id) ? 'w1' : id)
+  rt.isBotSession = id => ['w1', 'g1-w1', 'g2-w1'].includes(id)
+  rt.yieldRoomTurn = id => yielded.push(id)
+  await rt.load()
+  await rt.computerEndpoint('set-enabled', { enabled: true })
+  await rt.computerEndpoint('set-level', { botId: 'w1', level: 'background' })
+  const consent = ctx.listeners.get('user-questions/request').find(fn => fn.name === 'computerConsent')
+
+  // Pre-aborted signal denies immediately without creating a pending ask or yielding.
+  const aborted = new AbortController()
+  aborted.abort()
+  const preAborted = await consent({
+    agent: { id: 'g1-w1', session: { id: 'g1-w1' } },
+    signal: aborted.signal,
+    questions: [{ id: 'cua-app-access', intent: { subject: { name: 'Notes' } } }],
+  }, async () => ({ answers: [] }))
+  assert.deepEqual(preAborted, { answers: [{ id: 'cua-app-access', selected: ['Deny'] }] })
+  assert.equal(Object.keys(rt.computerLive().asks).length, 0)
+  assert.deepEqual(yielded, [])
+
+  // Two concurrent asks on the same Bot across two groups: cancelling one leaves the other waiting.
+  const p1 = consent({
+    agent: { id: 'g1-w1', session: { id: 'g1-w1' } },
+    questions: [{ id: 'cua-app-access', intent: { subject: { name: 'Notes' } } }],
+  }, async () => ({ answers: [] }))
+  const p2 = consent({
+    agent: { id: 'g2-w1', session: { id: 'g2-w1' } },
+    questions: [{ id: 'cua-app-access', intent: { subject: { name: 'Safari' } } }],
+  }, async () => ({ answers: [] }))
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(Object.keys(rt.computerLive().asks).length, 2)
+  rt.cancelApprovals('g1-w1')
+  assert.deepEqual(await p1, { answers: [{ id: 'cua-app-access', selected: ['Deny'] }] })
+  assert.equal(rt.waitsForApproval('g1-w1'), false)
+  assert.equal(rt.waitsForApproval('g2-w1'), true)
+  assert.equal(rt.computerLive().bots.w1?.waitingFor, 'app-access')
+  const remaining = Object.values(rt.computerLive().asks)[0]
+  await rt.computerEndpoint('app-answer', { id: remaining.id, answer: 'once' })
+  assert.deepEqual(await p2, { answers: [{ id: 'cua-app-access', selected: ['Allow for this session'] }] })
+  assert.equal(rt.computerLive().bots.w1?.waitingFor, undefined)
 })

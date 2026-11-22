@@ -185,7 +185,7 @@ export function install(rt) {
   }
 
   const abandoned = botId => disposing || dropped.has(botId) || rt.botOf(botId) === undefined
-  const stopError = (botId) => new Error(disposing && !dropped.has(botId) && rt.botOf(botId) !== undefined ? 'DS Bot is stopping.' : 'Unknown Bot')
+  const stopError = (botId) => new Error(disposing && !dropped.has(botId) && rt.botOf(botId) !== undefined ? 'Jubala Bot is stopping.' : 'Unknown Bot')
 
   // Wait until every targeted flight has left. A call still inside resolveAgent
   // has no `done` yet; yielding lets it notice disposal and drop the slot.
@@ -390,15 +390,8 @@ export function install(rt) {
     if (sideDir !== undefined && writes()) await rm(botFile(botId), { force: true }).catch(error => rt.warn('ds-bot: side chats of %s not removed: %s', botId, error))
   }
 
-  // Channel can be installed without the roster (the thinking route test). The
-  // full runtime always has deleteBot, and that is the path that must drop chats.
-  if (typeof rt.deleteBot === 'function') {
-    const originalDelete = rt.deleteBot.bind(rt)
-    rt.deleteBot = async (id) => {
-      if (rt.botOf(id) !== undefined && !rt.isMain(id)) await dropBot(id)
-      return originalDelete(id)
-    }
-  }
+  // Channel can be installed without the roster (the thinking route test).
+  rt.onBotDelete?.(dropBot)
 
   const sideJoin = id => flights.get(id)?.done ?? Promise.resolve()
 

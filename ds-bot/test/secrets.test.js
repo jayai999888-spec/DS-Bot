@@ -73,6 +73,7 @@ test('a short key (4 to 7 characters) is replaced only where it stands alone', (
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   bots: {
     m1: { id: 'm1', sessionId: 'm1', name: 'Chief', role: 'Chief of Staff', lab: 'deepseek', instructions: '', createdAt: 1 },
@@ -187,7 +188,7 @@ test('a card saves a key the Bot never sees, and the shell gets it', async (t) =
   const live = bench.contributors.filter(entry => entry.live)
   assert.equal(live.length, 1)
   assert.deepEqual(Object.keys(live[0].variables), ['DSH_SECRET_DEMO_TOKEN'])
-  assert.equal(live[0].variables.DSH_SECRET_DEMO_TOKEN.description, 'DS Bot secret DEMO_TOKEN: 测试')
+  assert.equal(live[0].variables.DSH_SECRET_DEMO_TOKEN.description, 'Jubala Bot secret DEMO_TOKEN: 测试')
 
   // Asking again only names the variable.
   const again = await bench.tool('request_secret', { name: 'DEMO_TOKEN', purpose: 'x' }, 'b2')
@@ -384,7 +385,7 @@ test('a secrets file that cannot be read blocks every write instead of being ove
   const file = join(home, 'secrets.json')
   const denied = await bench.call('secret-set', { name: 'TEST_TOKEN', value: '12345678' })
   assert.equal(denied.ok, false)
-  assert.match(denied.error.message, /secrets\.json could not be read \(EISDIR\)\. DS Bot does not change it/)
+  assert.match(denied.error.message, /secrets\.json could not be read \(EISDIR\)\. Jubala Bot does not change it/)
   assert.ok(statSync(file).isDirectory())
   // While it stays unreadable, nothing is written; once it is gone, saving works.
   rmSync(file, { recursive: true })
@@ -428,6 +429,7 @@ test('real Cordis ShellEnvRegistry resolves secrets after restart and reload acr
   writeFileSync(join(team, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: {
       main: { id: 'main', name: 'Chief', main: true },
       'empty-sid': { id: 'empty-sid', name: 'Empty', sessionId: '' },
@@ -500,6 +502,7 @@ test('read-only host with secrets loaded before store.load does not touch files 
   writeFileSync(join(team, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['main'],
+    orangeStored: true,
     bots: { main: { id: 'main', name: 'Chief', main: true } },
     rooms: {},
   }))

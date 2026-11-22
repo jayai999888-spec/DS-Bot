@@ -95,7 +95,7 @@ test('settled reasoning joins the interaction only after its live stream ends', 
   assert.equal(live.props['data-text-interaction-source'], undefined)
 })
 
-// This bundle has the text projection of a DSH before 0.2.1-alpha.3: DS Bot draws the
+// This bundle has the text projection of a DSH before 0.2.1-alpha.3: Jubala Bot draws the
 // text and marks it. On a later DSH the host's content factory draws and marks it
 // (user-message.test.js).
 test('sent and steering user messages each have one text source', () => {

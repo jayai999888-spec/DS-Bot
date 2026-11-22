@@ -1,8 +1,8 @@
-// The settings shell: DS Bot holds `sidebar.settings`, the seat DSH's ui-settings-general
+// The settings shell: Jubala Bot holds `sidebar.settings`, the seat DSH's ui-settings-general
 // fills elsewhere (the bundle patch turns that row off). Holding the seat means declaring
 // its child slots, and only the declaring entry may render them, so DSH's own settings
 // pages (`settings.section`), their nav icons, header actions, onboarding steps and General
-// rows all draw inside DS Bot's settings dialog. This module also takes over what that
+// rows all draw inside Jubala Bot's settings dialog. This module also takes over what that
 // shell did besides: the sidebar-foot row with the connection and Desktop update status,
 // the onboarding coordinator, the Settings shortcut, the Host release prompt, the
 // configuration-file action and the code work view switch.
@@ -11,13 +11,15 @@ import { createPortal } from 'react-dom'
 import {
   Button, ConnectionIndicator, Modal, Tooltip,
   IconDownloadOutlineRegular, IconLoadingOutlineRegular,
-} from '@deepseek-ai/dsh-client-ui-primitives'
+} from './dsh-primitives.js'
 import { SettingsDialog } from './settings.js'
 import { Switch } from './bot-settings.js'
 import { NotificationsRow } from './notifications.js'
 import { GearIcon } from './icons.js'
 import { useLinger } from './motion.js'
 import { t } from './i18n.js'
+import { createConnectionFeedback } from './connection-feedback.js'
+import { settingsPreferences } from './settings-preferences.js'
 
 // The child slots of the seat, as ui-settings declares their types.
 export const SETTINGS_CHILDREN = {
@@ -37,8 +39,6 @@ export const SETTINGS_CHILDREN = {
 const SKIPPED_STEPS = new Set(['welcome-notice'])
 
 const DIALOG_EXIT_MS = 160
-const RECOVERY_CONFIRMATION_MS = 2000
-const CONNECTING_MIN_VISIBLE_MS = 800
 const BUSY_PHASES = new Set(['checking', 'downloading', 'verifying', 'installing'])
 
 export function snapshotStore(initial) {
@@ -126,38 +126,15 @@ export function pickStep({ steps, requested, active, completed }) {
   return active ? steps.find(step => !completed.has(step.id)) : undefined
 }
 
-// Connection status with the shell's timings: a reconnect shows at least 800ms, and the
-// recovery note stays 2s once it can be seen.
 function useConnectionView(state) {
-  const [recovered, setRecovered] = useState(false)
-  const [holdConnecting, setHoldConnecting] = useState(false)
-  const previous = useRef(state)
-  const connectingAt = useRef(undefined)
+  const [view, setView] = useState()
+  const feedback = useRef()
+  if (feedback.current === undefined) feedback.current = createConnectionFeedback(setView)
   useLayoutEffect(() => {
-    const before = previous.current
-    previous.current = state
-    if (state !== 'connected') { setRecovered(false); return }
-    if (before === 'disconnected' || before === 'connecting') setRecovered(true)
+    feedback.current.update(state)
+    return () => feedback.current.suspend()
   }, [state])
-  useLayoutEffect(() => {
-    if (!recovered || holdConnecting) return undefined
-    const timer = setTimeout(() => setRecovered(false), RECOVERY_CONFIRMATION_MS)
-    return () => clearTimeout(timer)
-  }, [recovered, holdConnecting])
-  useLayoutEffect(() => {
-    if (state === 'connecting') { connectingAt.current = Date.now(); return undefined }
-    const shownAt = connectingAt.current
-    if (shownAt === undefined) return undefined
-    connectingAt.current = undefined
-    const remaining = CONNECTING_MIN_VISIBLE_MS - (Date.now() - shownAt)
-    if (remaining <= 0) return undefined
-    setHoldConnecting(true)
-    const timer = setTimeout(() => setHoldConnecting(false), remaining)
-    return () => { clearTimeout(timer); setHoldConnecting(false) }
-  }, [state])
-  if (state === 'connecting' || holdConnecting) return 'connecting'
-  if (state === 'disconnected') return 'disconnected'
-  return recovered ? 'recovered' : undefined
+  return view
 }
 
 const FAILURES = {
@@ -215,7 +192,7 @@ export function DesktopUpdateBadge({ useDesktopUpdate, useConnectionState }) {
   return h(Tooltip, { label: copy.detail, side: 'right' }, h('span', { role: 'img', 'aria-label': copy.label, className: 'bt-dsh-update-badge' }))
 }
 
-// The trigger's own content where no Bot surface puts the whale there (Agent mode).
+// The trigger's own content where no Bot surface puts the orange there (Agent mode).
 export function TriggerContent({ wide }) {
   return h(Fragment, null, h(GearIcon), wide ? h('span', { className: 'bt-settings-trigger-label' }, t('Settings')) : null)
 }
@@ -226,6 +203,7 @@ export function SettingsShell(props) {
     useSections, useGeneralItems, useOnboardingSteps, useOnboardingRequest,
     useConnectionState, useDesktopUpdate, useSettingsShortcut,
     reconnect, openDesktopUpdate, openOnboarding, finishOnboarding, holdSeat,
+    preferences,
   } = props
   const settings = useUi(state => state.settings)
   const roster = useRoster(value => value)
@@ -284,7 +262,7 @@ export function SettingsShell(props) {
       wide ? h(DesktopUpdatePill, { view: update, hidden: indicator !== undefined && !installing, onOpen: openDesktopUpdate }) : null),
     kept ? createPortal(h(SettingsDialog, {
       page: kept.page, id: kept.id, roster, actions, useUpdate, leaving,
-      dsh: { sections, items, renderSlot },
+      dsh: { sections, items, renderSlot, preferences },
     }), document.body) : null,
     step !== undefined ? renderSlot('settings.onboarding', {
       stepId: step.id, explicit: requested !== undefined, complete: () => complete(step.id),
@@ -292,7 +270,7 @@ export function SettingsShell(props) {
     }, { only: step.id }) : null)
 }
 
-// Where one of DSH's section ids opens in DS Bot's Settings.
+// Where one of DSH's section ids opens in Jubala Bot's Settings.
 export function settingsPlace(id) {
   if (id === 'general') return ['general']
   if (id === 'models') return ['models']
@@ -416,7 +394,7 @@ export function seatHold(held) {
   }
 }
 
-// Registers the seat and its companions. `face` is DS Bot's own injected face; the
+// Registers the seat and its companions. `face` is Jubala Bot's own injected face; the
 // returned `openOnboarding` reaches a registered onboarding step by id.
 export function installSettingsShell(ctx, { face, actions, ui, held }) {
   const slots = ctx.slots
@@ -443,6 +421,7 @@ export function installSettingsShell(ctx, { face, actions, ui, held }) {
     const base = face()
     return {
       ...base,
+      preferences: settingsPreferences(ctx),
       reconnect: () => ctx.get('connection')?.reconnect(),
       openDesktopUpdate: () => update.open(),
       openOnboarding,
@@ -458,14 +437,14 @@ export function installSettingsShell(ctx, { face, actions, ui, held }) {
   const disposers = [
     () => update.dispose(),
     // A profile that turned DSH's shell back on keeps it: the seat's child slots are then
-    // declared already, and DS Bot's dialog stays on its own pages.
+    // declared already, and Jubala Bot's dialog stays on its own pages.
     // SettingsShell holds the seat itself while it is mounted (`holdSeat`).
     slots.inject('sidebar.settings', () => {
       let off
       try {
         off = slots.register({ name: 'sidebar.settings', inject: shellFace, children: SETTINGS_CHILDREN }, SettingsShell)
       } catch (error) {
-        console.warn('[ds-bot] DSH settings shell is on; DS Bot settings show its own pages only', error)
+        console.warn('[ds-bot] DSH settings shell is on; Jubala Bot settings show its own pages only', error)
         return () => {}
       }
       const trigger = slots.inject('settings.trigger', () => slots.register({ name: 'settings.trigger' }, TriggerContent))

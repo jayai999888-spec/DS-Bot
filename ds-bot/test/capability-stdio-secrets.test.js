@@ -15,6 +15,7 @@ const FIXTURE = fileURLToPath(new URL('./fixtures/echo-argv-env.mjs', import.met
 const team = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', capabilities: [], createdAt: 1 },
     worker: { id: 'worker', sessionId: 'worker', name: 'Worker', capabilities: [], createdAt: 2 },

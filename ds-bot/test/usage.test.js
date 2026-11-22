@@ -53,6 +53,7 @@ function start(home, { listedExtra, logsExtra, subagentsExtra, background = fals
   if (fresh) writeFileSync(join(home, 'state.json'), JSON.stringify({
     version: 1,
     mainBotIds: ['b1'],
+    orangeStored: true,
     revision: 1,
     bots: {
       b1: { id: 'b1', sessionId: 's-b1', segments: [{ sessionId: 'b1', endedAt: LONG_AGO }], name: 'Chief', instructions: '', createdAt: 1, ...(background ? { openParts: [{ sessionId: 's-bg2', segments: [{ sessionId: 's-bg1', endedAt: LONG_AGO }] }] } : {}) },

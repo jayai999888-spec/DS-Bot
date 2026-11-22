@@ -16,6 +16,7 @@ let rt
 const TEAM = {
   version: 1,
   mainBotIds: ['a'],
+  orangeStored: true,
   workspaceId: 'w1',
   bots: {
     a: { id: 'a', name: 'Chief', role: 'Boss', sessionId: 'a', createdAt: 1 },
@@ -78,7 +79,7 @@ async function start({ fail = {}, services = {}, home: reuse, state: seed = TEAM
       const nextTurn = [...saved[sessionId]?.nextTurn ?? []]
       agents.set(sessionId, {
         id: sessionId,
-        session: { id: sessionId, header: { cwd: cwds.get(sessionId) ?? team }, requestHeader: () => undefined, deriveMessages: () => [] },
+        session: { id: sessionId, seq: 0, header: { cwd: cwds.get(sessionId) ?? team }, requestHeader: () => undefined, deriveMessages: () => [] },
         ctx: { tools: { register: () => () => {} } },
         calls,
         status: 'idle',
@@ -186,7 +187,7 @@ const until = async (check, ms = 3000) => {
 
 const text = message => message.content.map(block => block.text ?? '').join('\n')
 const inboxTexts = agent => [...agent.inbox.nextStep, ...agent.inbox.nextTurn].map(text)
-const PAUSE = 'DS Bot paused your turn for a context check. Go on with it now from where you stopped.'
+const PAUSE = 'Jubala Bot paused your turn for a context check. Go on with it now from where you stopped.'
 const said = (id, body, exchangeId) => ({ id, role: 'user', content: [{ type: 'text', text: body }], source: { kind: 'user', ...(exchangeId ? { exchangeId } : {}) } })
 // A folder outside the team workspace asks for approval once; then the move is allowed.
 const services = {

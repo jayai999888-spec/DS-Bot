@@ -35,7 +35,9 @@ runInNewContext(bundle.outputFiles[0].text, {
     return react
   },
 })
-const { FOLD_AT, FOLD_HUGE, foldPreview, foldView, stripLongNote, useFold } = module.exports
+const { FOLD_AT, FOLD_HUGE, foldView, stripLongNote, useFold } = module.exports
+// The text a folded message shows before it is opened; null when it does not fold.
+const foldPreview = (...args) => foldView(...args)?.head ?? null
 const render = (text, options) => { at = 0; return useFold(text, options) }
 const fresh = () => { slots = [] }
 const buttons = node => (node === null || typeof node !== 'object' ? [] : [...(node.type === 'button' ? [node] : []), ...node.children.flatMap(buttons)])
@@ -157,7 +159,7 @@ test('a folded preview also yields the whole code block it cut', () => {
   assert.equal(view.head, `Here:\n\`\`\`\n${lines(8)}\n\`\`\``)
   assert.equal(view.code, inner)
   // The markdown before the block, and the part of the block the preview keeps:
-  // the half block is drawn by DS Bot, so the host's copy control never sees it.
+  // the half block is drawn by Jubala Bot, so the host's copy control never sees it.
   assert.equal(view.prose, 'Here:')
   assert.equal(view.codeHead, lines(8))
   // A block that never closes yields to the end of the text.

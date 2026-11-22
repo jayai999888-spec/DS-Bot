@@ -68,7 +68,7 @@ export function createComputerCursor({ BrowserWindow, screen, platform, ownPid =
       if (!seen) { destroy(botId); return }
       const held = overlay(botId)
       const page = cursorHtml({ color: event.color, avatar: event.avatar, ripple: event.ripple === true })
-      try { held.win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(page)}`) } catch (error) { log.warn(`DS Bot: the cursor did not load: ${error instanceof Error ? error.message : String(error)}`) }
+      try { held.win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(page)}`) } catch (error) { log.warn(`Jubala Bot: the cursor did not load: ${error instanceof Error ? error.message : String(error)}`) }
       try { held.win.setBounds({ x: Math.round(event.x - TIP.x), y: Math.round(event.y - TIP.y), width: SIZE, height: SIZE }) } catch {}
       try { if (!held.win.isVisible?.()) held.win.showInactive?.() } catch {}
       clearTimeout(held.fadeAt)
@@ -85,8 +85,8 @@ export function createComputerCursor({ BrowserWindow, screen, platform, ownPid =
 
 // The arrow and avatar page. The arrow's tip lands on the reported point; the
 // ring ripple replays on every click-type event; .fade dims the whole page out.
-export function cursorHtml({ color = '#4d6bfe', avatar, ripple = false } = {}) {
-  const safeColor = /^#[0-9a-fA-F]{3,8}$/.test(String(color)) ? color : '#4d6bfe'
+export function cursorHtml({ color = '#ee8414', avatar, ripple = false } = {}) {
+  const safeColor = /^#[0-9a-fA-F]{3,8}$/.test(String(color)) ? color : '#ee8414'
   const safeAvatar = typeof avatar === 'string' && /^data:image\/(png|jpeg|webp|svg\+xml);base64,[a-zA-Z0-9+/=]+$/.test(avatar) && avatar.length <= 12000 ? avatar : undefined
   const face = safeAvatar !== undefined
     ? `<img class="ava" src="${safeAvatar}" alt="">`
@@ -136,9 +136,9 @@ export function createPointChecker({ platform, ownPid = process.pid, spawn = rea
           if (line === 'y' || line === 'n') { pending?.resolve(line === 'y'); pending = null }
         }
       })
-      child.on('error', (error) => { log.warn(`DS Bot: the point checker failed: ${error instanceof Error ? error.message : String(error)}`); pending?.resolve(false); pending = null })
+      child.on('error', (error) => { log.warn(`Jubala Bot: the point checker failed: ${error instanceof Error ? error.message : String(error)}`); pending?.resolve(false); pending = null })
       child.on('exit', () => { child = null; pending?.resolve(false); pending = null })
-    } catch (error) { log.warn(`DS Bot: the point checker did not start: ${error instanceof Error ? error.message : String(error)}`); child = null }
+    } catch (error) { log.warn(`Jubala Bot: the point checker did not start: ${error instanceof Error ? error.message : String(error)}`); child = null }
     return child
   }
   const check = (x, y, pid) => {
