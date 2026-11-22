@@ -64,6 +64,7 @@ test('apply registers listeners and effects in a fixed order', (t) => {
     'on system-prompt/assemble',
     'on llm/stream',
     'on session/event',
+    'effect ds-bot: deepseek services',
     'effect ds-bot: chat index',
     'effect ds-bot: group rounds',
     'effect ds-bot: group step lines',
@@ -95,6 +96,9 @@ test('apply registers listeners and effects in a fixed order', (t) => {
     'on workspace/session-activity',
     'on agent/status',
     'on llm/stream',
+    'on session/event',
+    // bot-tasks.js: approval status bridge and turn/end task settlement.
+    'effect ds-bot: bot-tasks approval bridge',
     'on session/event',
     // changes.js: the announced workspace/changes turn, remembered for the group row.
     'on session/event',
@@ -157,12 +161,13 @@ test('the client channel answers from the saved state', async (t) => {
     questions: {},
   })
   t.after(stop)
-  // A team saved before the whale was stored gets it on its first Main Bot when loaded.
+  // A team saved before the whale was stored gets it on its first Main Bot when loaded, and a team
+  // from before the 橘巴拉 brand trades the old defaults (Chief, the whale, DeepSeek ink) for the new ones.
   // A team saved with labs keeps the model each Bot last ran on and loses the lab.
   const loaded = (await call('state')).value
   const [chief, writer] = ['m1', 'b2'].map(id => loaded.bots.find(bot => bot.id === id))
   assert.deepEqual(loaded.mainBotIds, ['m1'])
-  assert.deepEqual([chief.model, chief.color, chief.avatar?.shape], ['ollama/deepseek-v4.1-flash', 'deepseek', 'whale'])
+  assert.deepEqual([chief.name, chief.role, chief.model, chief.color, chief.avatar?.shape], ['小橘', '团队总管', 'ollama/deepseek-v4.1-flash', 'mandarin', 'orange'])
   assert.deepEqual([writer.role, writer.model, writer.color, writer.avatar, writer.instructions], ['写作', undefined, undefined, undefined, 'Kimi-style long reads'])
   const saved = (await call('state')).value.bots
   assert.equal(saved.some(bot => 'lab' in bot), false)
@@ -288,7 +293,7 @@ test('a custom agent keeps the local agents adapter live after install', async (
 })
 
 // Local-agent routes have their own prefix (#1059): a Bot on DSH's own OpenCode
-// provider stays there, and DS Bot never registers a name another provider has.
+// provider stays there, and Jubala Bot never registers a name another provider has.
 test('a Bot on DSH\'s opencode provider is not taken for a local agent', async (t) => {
   const bot = { id: 'b1', name: 'Zen', model: 'opencode/glm-5', appliedModel: 'opencode/glm-5' }
   const { ctx, stop, rt } = start({ version: 1, bots: { b1: bot }, localAgents: { custom: [], sessions: {} } })
@@ -297,7 +302,7 @@ test('a Bot on DSH\'s opencode provider is not taken for a local agent', async (
   assert.equal(rt.state.bots.b1.model, 'opencode/glm-5')
   assert.equal(rt.isLocalAgentRef('opencode/glm-5'), false)
   const routes = (ctx.adapters ?? []).flatMap(entry => entry.routes)
-  assert.ok(!routes.includes('opencode'), 'DS Bot does not register the name DSH\'s provider uses')
+  assert.ok(!routes.includes('opencode'), 'Jubala Bot does not register the name DSH\'s provider uses')
 })
 
 test('a Bot saved on an old local-agent route moves to the prefixed one', async (t) => {

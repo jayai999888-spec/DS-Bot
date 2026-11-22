@@ -1,4 +1,4 @@
-// A local agent Bot's context, the way every other Bot's is handled: DS Bot reads how
+// A local agent Bot's context, the way every other Bot's is handled: Jubala Bot reads how
 // full the CLI session is from what the CLI reports, the steward decides past the
 // check line or after the CLI condensed on its own, the CLI condenses on request and
 // writes the handoff note, and the part moves on.
@@ -58,7 +58,7 @@ test('Codex 0.166, as recorded: the last request is the context, its usage count
 const user = (id, text) => ({ id, role: 'user', content: [{ type: 'text', text }], source: { kind: 'user' } })
 const system = (id, text) => ({ id, role: 'system', content: [{ type: 'text', text }], source: { kind: 'system-prompt' } })
 
-function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engines = [] } = {}) {
+function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engines = [], windows = {} } = {}) {
   const file = FIXTURE(kind === 'acp' ? 'fake-acp.mjs' : 'fake-codex.mjs')
   return new LocalAgentAdapter({
     rt: { warn: () => {} },
@@ -75,6 +75,8 @@ function makeAdapter({ kind = 'acp', args = [], records = {}, usage = [], engine
     saveRecord: (sessionId, record) => { records[sessionId] = record },
     patchRecord: (sessionId, patch) => { if (records[sessionId]) Object.assign(records[sessionId], patch) },
     recordUsage: entry => usage.push(entry),
+    savedWindow: (route, model) => windows[`${route}/${model}`],
+    saveWindow: (route, model, size) => { windows[`${route}/${model}`] = size },
     presetFor: () => 'workspace-write',
     cwdFor: async () => mkdtempSync(join(tmpdir(), 'dsb-cwd-')),
     probeCwd: () => mkdtempSync(join(tmpdir(), 'dsb-probe-')),
@@ -661,4 +663,60 @@ test('Antigravity 1.5.9, as recorded: models with per-model thinking levels, con
     outputTokens: 137,
     cacheReadTokens: 8112,
   })
+})
+
+// The model card's share is what the Session used over the window resolveModel reports:
+// the loop stamps that figure into request/context and the contextPressure view hands it
+// to `text.js`'s runStatsOf. Every local route answered DEFAULT_CONTEXT_WINDOW there, so a
+// CLI that reports 1M -- antigravity-acp-1.5.9.json has 1048576 in every usage_update --
+// read "Context 100%" from 200K up, with 200.0K on hover (#1823).
+test('the window a CLI reports is the one its model card shows', async (t) => {
+  const adapter = makeAdapter()
+  t.after(() => adapter.dispose())
+  // Before the CLI says anything, the fallback stands.
+  assert.equal((await adapter.resolveModel('local-acp-fake', 'default')).context.contextWindow, 200_000)
+  await turn(adapter, 's1', [user('m1', 'hello grow:100000')])
+  assert.equal(adapter.contextOf('s1').size, 262_000)
+  assert.equal((await adapter.resolveModel('local-acp-fake', 'default')).context.contextWindow, 262_000)
+  // A route serves more than one model and the window is the model's: one the CLI has
+  // not reported for keeps the fallback instead of inheriting its neighbour's size.
+  adapter.live.get('s1').model = 'another-model'
+  assert.equal((await adapter.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 200_000)
+})
+
+// A Session that was reopened on another model still carries the size it saved (the
+// Session's own figure, which the parts module reads), but that figure must not become
+// the new model's window. Usage-only reports are real -- claude.js sends the size
+// optionally, and a turn that only spends tokens reports `used` alone -- so the old
+// size used to be published under the new model's key: 262,000 for a model whose
+// ceiling nobody had reported.
+test('a usage-only report does not hand the previous model\'s window to the new one', async (t) => {
+  const adapter = makeAdapter()
+  t.after(() => adapter.dispose())
+  await turn(adapter, 's1', [user('m1', 'hello grow:100000')])
+  assert.equal(adapter.contextOf('s1').size, 262_000)
+  const live = adapter.live.get('s1')
+  live.model = 'another-model'
+  adapter.observe(live, { type: 'context', used: 5_000 })
+  // The Session keeps the size it saved, so its own percentage still reads it.
+  assert.deepEqual(adapter.contextOf('s1'), { used: 5_000, size: 262_000, compactions: 0 })
+  // The model card still shows the fallback: nothing reported a window for it.
+  assert.equal((await adapter.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 200_000)
+  // A report that does carry a size is still the model's window.
+  adapter.observe(live, { type: 'context', used: 5_100, size: 475_000 })
+  assert.equal((await adapter.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 475_000)
+})
+
+// The window lived only in memory, so after a restart every local model card read 200K
+// again until the CLI answered once more (#1896).
+test('the window a CLI reported is still its model card\'s after a restart', async (t) => {
+  const windows = {}
+  const first = makeAdapter({ windows })
+  await turn(first, 's1', [user('m1', 'hello grow:100000')])
+  first.dispose()
+  assert.deepEqual(windows, { 'local-acp-fake/default': 262_000 })
+  const second = makeAdapter({ windows })
+  t.after(() => second.dispose())
+  assert.equal((await second.resolveModel('local-acp-fake', 'default')).context.contextWindow, 262_000)
+  assert.equal((await second.resolveModel('local-acp-fake', 'another-model')).context.contextWindow, 200_000)
 })

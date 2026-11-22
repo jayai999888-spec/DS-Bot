@@ -48,7 +48,7 @@ use the host port from `ports:` when opening it. The token is a fresh
 process credential on every start. It exchanges itself for a signed cookie
 (valid 30 days), whose key persists in `/data`, so later restarts keep the
 browser logged in. Bookmark the root URL without `?token=…`. The first time
-the team opens, DS Bot creates a Main Bot called Chief.
+the team opens, 橘巴拉Bot creates a Main Bot called 小橘.
 
 An alternative for users who prefer `.env` is still available in `docker/`:
 

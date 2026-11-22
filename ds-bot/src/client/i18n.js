@@ -185,6 +185,7 @@ const ZH = {
   Edit: '编辑',
   'Click again to delete.': '再点一次删除。',
   Ready: '就绪',
+  'Not ready': '未就绪',
   'Needs approval': '需要批准',
   'No items': '没有项目',
   'Save an MCP server or skill first.': '请先保存 MCP 服务或技能。',
@@ -217,7 +218,7 @@ const ZH = {
   'Switch to classic Agent mode': '切换到经典 Agent 模式',
   'Bot mode': 'Bot 模式',
   'Switch': '切换',
-  'Back to DS Bot': '返回 DS Bot',
+  'Back to Jubala Bot': '返回 橘巴拉Bot',
   '{model} is not available anymore. Pick another model for me.': '{model} 已经不可用了。给我换一个模型吧。',
   "Hi, I'm {name}. I don't have a model yet. How do you want to set one up?": '你好，我是 {name}。我还没有可用的模型。你想怎么配置？',
   "Hi, I'm {name}. Pick a model for me first. You can change it later in my details.": '你好，我是 {name}。先给我选一个模型吧，以后可以在我的详情里换。',
@@ -235,7 +236,7 @@ const ZH = {
   'Add a provider': '添加服务商',
   'Needs an API key': '需要 API key',
   'Key set': '已设置 key',
-  'Key set outside DS Bot': 'key 在 DS Bot 之外设置',
+  'Key set outside Jubala Bot': 'key 在 橘巴拉Bot 之外设置',
   'No models': '没有模型',
   '{count} models': '{count} 个模型',
   'Refresh models': '刷新模型列表',
@@ -252,7 +253,7 @@ const ZH = {
   'Local agent, not affected: {names}': '本地 Agent，不受影响：{names}',
   // What a Bot runs on
   'Runs on': '运行方式',
-  'DS Bot model': 'DS Bot 模型',
+  'Jubala Bot model': '橘巴拉Bot 模型',
   'Local agent': '本地 Agent',
   'CLI default': 'CLI 默认',
   'Signed in': '已登录',
@@ -260,7 +261,7 @@ const ZH = {
   'Sign-in unknown': '登录状态未知',
   'Looking for agent CLIs…': '正在查找 Agent CLI…',
   'Reading models…': '正在读取模型…',
-  "Answers with a model served by DS Bot, with DS Bot's tools.": '用 DS Bot 里的模型回答，用 DS Bot 的工具。',
+  "Answers with a model served by Jubala Bot, with Jubala Bot's tools.": '用 橘巴拉Bot 里的模型回答，用 橘巴拉Bot 的工具。',
   'Answers through this CLI on your computer, with its own tools and sign-in.': '通过这台电脑上的 CLI 回答，用它自己的工具和登录。',
   'Change what {name} runs on?': '更换 {name} 的运行方式？',
   'Its own chat starts a new part with a handoff before the next turn.': '下一轮开始前，它的私聊会开新的一段并做好交接。',
@@ -295,7 +296,7 @@ const ZH = {
   'Current session': '当前会话',
   'This page could not be shown.': '这个页面无法显示。',
   'Current': '当前',
-  'This key comes from outside DS Bot, such as an environment variable, and cannot be changed here.': '这个 key 来自 DS Bot 之外（例如环境变量），这里改不了。',
+  'This key comes from outside Jubala Bot, such as an environment variable, and cannot be changed here.': '这个 key 来自 橘巴拉Bot 之外（例如环境变量），这里改不了。',
   'and {count} more': '还有 {count} 个',
   'Remove {name}? Bots on its models need another model.': '删除 {name}？用它的模型的 Bot 要换一个模型。',
   'Remove provider': '删除服务商',
@@ -367,7 +368,7 @@ const ZH = {
   'HTTP status': 'HTTP 状态码',
   'Request ID': '请求 ID',
   'Provider message': '原文',
-  'DS Bot': 'DS Bot',
+  'Jubala Bot': '橘巴拉Bot',
 
   // Header
   'Message {name}': '给 {name} 发消息',
@@ -417,7 +418,7 @@ const ZH = {
   'Browser access': '浏览器权限',
   'A Bot can read the page you have open: its title, address and visible text. By default it cannot click, type, scroll or open pages.': 'Bot 可以读取你打开的页面：标题、地址和可见文字。默认不能点击、输入、滚动或打开页面。',
   'How to enable interactive browsing': '如何开启交互式浏览',
-  'In this DSH profile, set browserPlugin to refs, script or task, then restart DS Bot.': '在这个 DSH profile 里把 browserPlugin 设为 refs、script 或 task，然后重启 DS Bot。',
+  'In this DSH profile, set browserPlugin to refs, script or task, then restart Jubala Bot.': '在这个 DSH profile 里把 browserPlugin 设为 refs、script 或 task，然后重启 橘巴拉Bot。',
   'With an interactive plugin, Bots browse, click and fill in forms. Posting, uploading, downloading and deleting ask you first unless you allow them here. Payments are always yours: the Bot hands the page to you.': '启用交互插件后，Bot 可以浏览、点击和填写表单。发布、上传、下载和删除会先征求你的同意，除非你在这里预先允许。付款始终由你自己完成：Bot 会把页面交给你。',
   'These grants apply only after an interactive browser plugin is enabled.': '这些授权只在启用交互式浏览器插件后生效。',
   'Allowed actions': '已允许的操作',
@@ -471,7 +472,7 @@ const ZH = {
   'Name after members': '按成员命名',
   'Rename {name}': '重命名 {name}',
   Rename: '重命名',
-  'The browser is in DSH Desktop and the DS Bot app.': '浏览器在 DSH 桌面版和 DS Bot 应用里。',
+  'The browser is in DSH Desktop and the Jubala Bot app.': '浏览器在 DSH 桌面版和 橘巴拉Bot 应用里。',
   'New tab': '新标签页',
   'Close tab': '关闭标签页',
   'Open {title}': '打开 {title}',
@@ -517,6 +518,37 @@ const ZH = {
   'That file is too large to be a cookie export.': '这个文件太大了，不像是 cookie 导出文件。',
   'That file could not be read.': '这个文件读不了。',
   'This browser encrypts its cookies so only it can read them. Export them to a file first, then import that file.': '这个浏览器把 cookie 加密了，只有它自己能读。先把 cookie 导出成文件，再导入那个文件。',
+  'Keychain access was cancelled. Click Allow when macOS asks to read your browser cookies.': '钥匙串访问被取消了。macOS 询问读取浏览器 cookie 时请点「允许」。',
+  'Remote debugging permission was declined in the browser. Try again and click Allow.': '浏览器拒绝了远程调试授权。请重试并在弹窗里点「允许」。',
+  'Timed out waiting for you to click Allow in the browser.': '等待你在浏览器里点「允许」超时了。',
+  'Another browser profile is active. Switch to the chosen profile window in your browser, then try again.': '当前激活的是另一个浏览器配置。请先在浏览器里切到所选配置的窗口，再重试。',
+  'Import from browser': '从浏览器导入',
+  'Last used': '上次使用',
+  'Browser profile': '浏览器配置',
+  'Paste cookies or cURL…': '粘贴 cookie 或 cURL…',
+  'JSON, cURL, header': 'JSON、cURL、请求头',
+  'Connect to {name}': '连接到 {name}',
+  '{name} protects its cookies on Windows. Enable its built-in remote debugging switch once — no extension needed.': '{name} 在 Windows 上对 cookie 做了保护。打开它自带的远程调试开关一次即可，无需安装扩展。',
+  '1. Open this address in {name}:': '1. 在 {name} 中打开这个地址：',
+  '2. Turn on “Allow remote debugging for this browser instance”, then click Allow when {name} prompts.': '2. 打开「Allow remote debugging for this browser instance」开关，{name} 弹窗时点「允许」。',
+  'Remote debugging detected — ready to import.': '已检测到远程调试，可以导入了。',
+  'Open {name}': '打开 {name}',
+  'Connect and import': '连接并导入',
+  'Paste cookies or cURL': '粘贴 cookie 或 cURL',
+  'Paste Cookie-Editor JSON, Netscape cookies.txt, Copy as cURL, or a Cookie header…': '粘贴 Cookie-Editor JSON、Netscape cookies.txt、Copy as cURL 或 Cookie 请求头…',
+  'Site URL (only needed for plain Cookie headers)': '网站地址（仅粘贴纯 Cookie 请求头时需要）',
+  'Reading…': '读取中…',
+  '{count} storage entries': '{count} 条本地存储',
+  'All sites ({count})': '全部网站 ({count})',
+  'This site ({host})': '当前网站 ({host})',
+  'Filter sites…': '筛选网站…',
+  storage: '含存储',
+  'Keep session logins after app restart': '重启应用后保持会话登录',
+  'Reading {name}…': '正在读取 {name}…',
+  'If {name} or your system asks for permission, click Allow.': '如果 {name} 或系统弹出权限提示，请点「允许」。',
+  'Imported storage for {count} sites': '已导入 {count} 个网站的本地存储',
+  '{count} sites storage': '{count} 个网站本地存储',
+  'page reloaded': '页面已刷新',
   '{count}': '{count} 个',
 
   // Bot settings
@@ -618,13 +650,16 @@ const ZH = {
   'Model for {name}': '{name} 的模型',
   'No models are set up in DeepSeek Harness yet.': 'DeepSeek Harness 里还没有设置模型。',
   'Models and providers…': '模型和服务商…',
+  'Search models': '搜索模型',
+  'Search models…': '搜索模型…',
+  'No matching models.': '没有匹配的模型。',
   Models: '模型',
   'Harness default': 'Harness 默认',
   Saving: '保存中',
   'Manage models': '管理模型',
 
   // Shapes
-  Whale: '鲸鱼', Star: '星星', Moon: '月亮', Wave: '声波', Squircle: '圆角方', Bull: '牛角', Blossom: '花朵',
+  'Little Orange': '小橘子', Whale: '鲸鱼', Star: '星星', Moon: '月亮', Wave: '声波', Squircle: '圆角方', Bull: '牛角', Blossom: '花朵',
   Gumdrop: '软糖', Peanut: '花生', Bubbles: '泡泡', Saucer: '飞碟', Sprout: '嫩芽', Bunny: '兔子',
   Kitty: '小猫', Beacon: '灯塔', Plus: '加号', Magnet: '磁铁', Acorn: '橡果', Pebbles: '石子', Cushion: '靠垫',
   Ring: '圆环', Gem: '宝石',
@@ -635,7 +670,7 @@ const ZH = {
   Graphite: '石墨', Rose: '玫瑰', Sky: '天蓝', Tangerine: '橘', Cobalt: '钴蓝',
 
   // Themes
-  DeepSeek: 'DeepSeek', Mono: '黑白', Paper: '纸张', Moonlight: '月光',
+  DeepSeek: 'DeepSeek', Jubala: '橘巴拉', Mono: '黑白', Paper: '纸张', Moonlight: '月光',
 
   // Settings dialog
   General: '通用',
@@ -656,6 +691,8 @@ const ZH = {
   'Text width': '正文宽度',
   'Show thinking': '显示思考过程',
   'Enter sends message': '回车发送消息',
+  'Background work': '后台工作',
+  'Background commands after (seconds)': '命令转后台（秒）',
   'Bring up related memory': '自动带上相关记忆',
   'Group memory size': '群记忆容量',
   'Bot memory size': 'Bot 记忆容量',
@@ -671,7 +708,7 @@ const ZH = {
   'No group chats yet.': '还没有群聊。',
   'A group chat lets several Bots work on one thing with you.': '在群聊里，几个 Bot 和你一起做一件事。',
   'Back to group chats': '返回群聊列表',
-  'DS Bot settings': 'DS Bot 设置',
+  'Jubala Bot settings': '橘巴拉Bot 设置',
   'Settings pages': '设置页面',
   'Advanced settings': '高级设置',
   'Back to models': '返回模型',
@@ -715,21 +752,43 @@ const ZH = {
   'Back to Bots': '返回 Bot 列表',
   'Close settings': '关闭设置',
 
+  // DeepSeek services
+  'DeepSeek services': 'DeepSeek 服务',
+  'DeepSeek API': 'DeepSeek API',
+  'DeepSeek Web Search API': 'DeepSeek 联网搜索 API',
+  'Find it in Plugins → Web search.': '在 插件 → 网页搜索 里设置。',
+  'Image and document reading': '图片与文档识别',
+  'Use DeepSeek to read images and documents': '用 DeepSeek 识别图片和文档',
+  'Bots upload selected files to DeepSeek for text recognition; local Office editing is unchanged.': 'Bot 会把选中的文件上传给 DeepSeek 做文字识别；本地 Office 编辑流程不变。',
+  'Text to speech': '文字转语音',
+  'Read replies aloud': '朗读回复',
+  System: '系统',
+  Voice: '声音',
+  'Speech recognition': '语音识别',
+  'Dictation provider': '听写提供方',
+  'Use DeepSeek for dictation': '用 DeepSeek 听写',
+  'In use': '使用中',
+
   // Phone
   Phone: '手机',
   'Off. Phones cannot reach this computer.': '已关闭。手机连不上这台电脑。',
-  'On. Paired phones can use DS Bot here.': '已开启。配对过的手机可以用这台电脑上的 DS Bot。',
+  'On. Paired phones can use Jubala Bot here.': '已开启。配对过的手机可以用这台电脑上的 橘巴拉Bot。',
   'Cannot reach the Server. Trying again…': '连不上服务器，正在重试…',
   'Phone access': '手机访问',
   'Beta': '测试版',
   'Phone app': '手机 App',
   'Android beta': 'Android 测试版',
   Server: '服务器',
-  'The Relay Server that passes encrypted messages between your phone and this computer. It cannot read them.': '在手机和这台电脑之间转发加密消息的中转服务器。它读不到消息内容。',
+  'The Server forwards encrypted messages. Browser access also trusts the page it serves.': '服务器转发加密消息。浏览器访问还需要信任服务器提供的网页。',
+  'The browser runs the page the Server sends. Only use a Server you trust.': '浏览器运行服务器发来的网页。请只使用你信任的服务器。',
   'Pair a phone': '配对手机',
-  'Scan this code with the DS Bot app on your phone.': '用手机上的 DS Bot App 扫这个码。',
+  'Scan this code with the Jubala Bot app on your phone.': '用手机上的 橘巴拉Bot App 扫这个码。',
   'The code works once. It stops working in {count} min.': '这个码只能用一次，{count} 分钟后失效。',
   'Show a QR code': '显示二维码',
+  'Open in a browser': '在浏览器中打开',
+  'Web browser': '网页浏览器',
+  'Copy browser link': '复制浏览器链接',
+  'Clipboard is not available': '剪贴板不可用',
   'Your phone scans it once. After that it connects by itself.': '手机扫一次就行，以后会自动连接。',
   'Turn on phone access first': '请先打开手机访问',
   Phones: '手机',
@@ -745,7 +804,7 @@ const ZH = {
   'Unmute notifications': '取消静音',
   Notifications: '通知',
   'Tell me when a Bot answers while I am looking elsewhere.': 'Bot 在你没看着时回复，提醒我。',
-  'System notifications are turned off for DS Bot. Unread marks still show them.': 'DS Bot 的系统通知已被关闭，仍会用未读标记提示。',
+  'System notifications are turned off for Jubala Bot. Unread marks still show them.': '橘巴拉Bot 的系统通知已被关闭，仍会用未读标记提示。',
   'Rename Bot': '重命名 Bot',
   'Group settings': '群设置',
   'Shared to-do': '共享待办',
@@ -761,6 +820,9 @@ const ZH = {
   'Add DSH Agent': '添加 DSH Agent',
   'Remove DSH Agent': '移除 DSH Agent',
   'New session': '新会话',
+  'Start a new session for {name} in this group': '为 {name} 在本群开始新会话',
+  Started: '已开始',
+  'Started a new session for {name} in this group': '已为 {name} 在本群开始新会话',
   Archive: '归档',
   'Session actions': '会话操作',
   Plugins: '插件',
@@ -771,14 +833,14 @@ const ZH = {
   '{n} d': '{n} 天',
 
   // Plugin updates
-  'DS Bot {version} is available': 'DS Bot {version} 可以更新',
-  'Updating DS Bot…': '正在更新 DS Bot…',
-  'DS Bot {version} is installed. Restart DSH to use it.': 'DS Bot {version} 已安装，重启 DSH 后生效',
-  'DS Bot {version} is installed.': 'DS Bot {version} 已安装。',
-  'DS Bot update': 'DS Bot 更新',
-  'DS Bot {version}': 'DS Bot {version}',
+  'Jubala Bot {version} is available': '橘巴拉Bot {version} 可以更新',
+  'Updating Jubala Bot…': '正在更新 橘巴拉Bot…',
+  'Jubala Bot {version} is installed. Restart DSH to use it.': '橘巴拉Bot {version} 已安装，重启 DSH 后生效',
+  'Jubala Bot {version} is installed.': '橘巴拉Bot {version} 已安装。',
+  'Jubala Bot update': '橘巴拉Bot 更新',
+  'Jubala Bot {version}': '橘巴拉Bot {version}',
   'Update installed': '更新已安装',
-  'Restart DSH to start using DS Bot {version}.': '重启 DSH 后开始使用 DS Bot {version}。',
+  'Restart DSH to start using Jubala Bot {version}.': '重启 DSH 后开始使用 橘巴拉Bot {version}。',
   'You have {version}.': '当前版本 {version}。',
   'The update did not finish: {reason}': '更新没有完成：{reason}',
   "What's new": '更新说明',
@@ -788,7 +850,7 @@ const ZH = {
   'DSH update': 'DSH 更新',
   'DSH {version}': 'DSH {version}',
   'Restart DSH to start using DSH {version}.': '重启 DSH 后开始使用 DSH {version}。',
-  'Update DS Bot {version} first.': '先更新 DS Bot {version}。',
+  'Update Jubala Bot {version} first.': '先更新 橘巴拉Bot {version}。',
   'Open updates': '打开更新',
 
   // Command palette
@@ -832,7 +894,7 @@ const ZH = {
   'Yesterday {time}': '昨天 {time}',
   'Ran for {duration}': '本次用时 {duration}',
   "No background work detected": "未检测到后台任务",
-  "DS Bot has no recorded tool call or active background task for this reply.": "DS Bot 未记录到这条回复的工具调用或正在运行的后台任务。",
+  "Jubala Bot has no recorded tool call or active background task for this reply.": "橘巴拉Bot 未记录到这条回复的工具调用或正在运行的后台任务。",
   'File not found: {path}': '文件不存在：{path}',
   '{tokens} tok · Cache hit {hit}%': '{tokens} tok · 缓存命中 {hit}%',
   '1 turn': '1 轮',
@@ -1077,7 +1139,7 @@ const ZH = {
   'Repeat the passphrase': '再输一次口令',
   'The passphrases do not match.': '两次输入的口令不一致。',
   'Turn on encryption': '开启加密',
-  'Keys are stored encrypted. They stay decrypted in memory while DS Bot runs.': '密钥加密存放；DS Bot 运行期间解密后的值只在内存里。',
+  'Keys are stored encrypted. They stay decrypted in memory while Jubala Bot runs.': '密钥加密存放；橘巴拉Bot 运行期间解密后的值只在内存里。',
   'Turn off encryption': '关闭加密',
   'Secrets are locked': '密钥已锁定',
   'Passphrase': '口令',
@@ -1210,6 +1272,8 @@ const ZH = {
   'Downloading the speech model… {pct}%': '正在下载语音模型… {pct}%',
   "Couldn't prepare voice input": '语音输入准备失败',
   'That was too long to recognize': '这段太长了，识别不了',
+  "Couldn't read the reply": '回复朗读失败',
+  "Couldn't reach the speech service": '语音识别服务不可用',
 
   // Usage page
   '24 hours': '24 小时',
@@ -1307,11 +1371,11 @@ const ZH = {
   'Compared with the {count} days before': '与再往前 {count} 天相比',
   '{share}% of all usage from {span}': '占 {span} 全部用量的 {share}%',
   // About
-  'About DS Bot': '关于 DS Bot',
+  'About Jubala Bot': '关于 橘巴拉Bot',
   'Version {version}': '版本 {version}',
-  'Star DS Bot on GitHub': '在 GitHub 上给 DS Bot 点 Star',
+  'Star Jubala Bot on GitHub': '在 GitHub 上给 橘巴拉Bot 点 Star',
   '{count} stars': '{count} 个 Star',
-  'If DS Bot helps you, a star on GitHub helps more people find it.': '如果 DS Bot 对你有用，欢迎在 GitHub 上点个 Star，让更多人看到它。',
+  'If Jubala Bot helps you, a star on GitHub helps more people find it.': '如果 橘巴拉Bot 对你有用，欢迎在 GitHub 上点个 Star，让更多人看到它。',
   Updates: '更新',
   'Check for updates': '检查更新',
   'Checking…': '正在检查…',
@@ -1326,7 +1390,7 @@ const ZH = {
   '{version} is available': '{version} 已发布',
   'Installed from a local folder; update it there.': '从本地文件夹安装，请在那里更新。',
   'Updates are not offered for this install.': '这种安装方式不提供更新。',
-  'Updates come with the DS Bot app.': '随 DS Bot 应用一起更新。',
+  'Updates come with the Jubala Bot app.': '随 橘巴拉Bot 应用一起更新。',
   Links: '链接',
   'Source code': '源代码',
   'Release notes': '发布说明',
@@ -1342,7 +1406,7 @@ const ZH = {
   Show: '查看',
   Hide: '收起',
   'GitHub issue': 'GitHub issue',
-  'Opens a new issue in the DS Bot repository with all of this filled in. Nothing is sent until you submit it there.': '在 DS Bot 仓库新建一个 issue，并填好以上内容。你在 GitHub 上提交之前，什么都不会发出。',
+  'Opens a new issue in the Jubala Bot repository with all of this filled in. Nothing is sent until you submit it there.': '在 橘巴拉Bot 仓库新建一个 issue，并填好以上内容。你在 GitHub 上提交之前，什么都不会发出。',
   'Report on GitHub': '在 GitHub 上报告',
   'Copied the diagnostics.': '已复制诊断信息。',
   'Could not copy. Select the text below and copy it.': '无法复制。请选中下面的文字手动复制。',
@@ -1354,7 +1418,7 @@ const ZH = {
   'Recent errors': '最近的错误',
   'Recent errors · {count}': '最近的错误 · {count}',
   'No errors recorded.': '没有错误记录。',
-  'Failed model calls and DS Bot problems show here, newest first.': '模型调用失败和 DS Bot 的问题会显示在这里，最新的在前。',
+  'Failed model calls and Jubala Bot problems show here, newest first.': '模型调用失败和 橘巴拉Bot 的问题会显示在这里，最新的在前。',
   'Model call': '模型调用',
   'This window': '这个窗口',
   'Error log': '错误日志',
@@ -1394,6 +1458,8 @@ const ZH = {
   // A Session that is still landing
   'Opening…': '正在打开…',
   'Still opening…': '还在打开…',
+  '{name} could not be opened.': '{name} 打不开。',
+  'The conversation of {name} was gone, so it starts a new one.': '{name} 原来的会话已经不在了，已为它新开一个会话。',
   'Add files': '添加文件',
   'Reference a chat': '引用对话',
   'Chat with {name}': '与 {name} 的对话',
@@ -1428,7 +1494,10 @@ const ZH = {
   'Show all': '显示全部',
   'in {name}': '在 {name}',
   'Click again to delete': '再点一次删除',
+  'Delete this session': '删除这个会话',
   'Delete task': '删除任务',
+  'Pause task': '暂停任务',
+  'Resume task': '恢复任务',
   Once: '一次',
   'Every week': '每周',
   Repeat: '重复',
@@ -1501,6 +1570,11 @@ const ZH = {
   'Open {host}': '打开 {host}',
   'Client ID': 'Client ID',
   'Client secret (optional)': 'Client secret(可选)',
+  'In OAuth & Permissions at {app}, add this redirect URL:': '在 {app} 的 OAuth & Permissions 里添加这个重定向地址：',
+  'In the app settings, add this redirect URL:': '在应用设置里添加这个重定向地址：',
+  'Turn on the MCP features and scopes the app needs.': '打开应用需要的 MCP 功能和权限范围。',
+  'Copy the Client ID and Client Secret here.': '再把 Client ID 和 Client Secret 填到这里。',
+  'Open app settings': '打开应用设置',
   'Continue': '继续',
   '{name} key': '{name} 密钥',
   '{name} token': '{name} 令牌',
@@ -1653,7 +1727,7 @@ const ZH = {
 const HOST_ERRORS = [
   [/^Could not reach the mail server at (.+)\. Check the server address\.$/, '连不上邮件服务器 $1，请检查服务器地址。'],
   [/^Model (.+) is not available\. Available: (.*)$/, '模型 $1 不可用。可用的：$2'],
-  [/^The API key for (.+) is set outside DS Bot and cannot be changed here$/, '$1 的 API key 是在 DS Bot 之外设置的，这里改不了'],
+  [/^The API key for (.+) is set outside Jubala Bot and cannot be changed here$/, '$1 的 API key 是在 橘巴拉Bot 之外设置的，这里改不了'],
   [/^(.+) takes no API key here$/, '$1 不能在这里填 API key'],
   [/^(.+) is already set up$/, '$1 已经设置过了'],
   [/^DSH offers no provider (.+)$/, 'DSH 没有服务商 $1'],
@@ -1696,6 +1770,12 @@ const HOST_ERRORS = [
   [/^(.+) is in or around the folder of (.+), a private Bot, so (.+) cannot work there$/, '$1 在隐私 Bot「$2」的文件夹内或外层，$3 不能在这里工作'],
   [/^(.+) is in or around the folder of (.+), a private Bot, so a group cannot work there$/, '$1 在隐私 Bot「$2」的文件夹内或外层，群聊不能在这里工作'],
   [/^(.+) is in or around the folder of (.+), a private Bot, so it cannot be the team workspace$/, '$1 在隐私 Bot「$2」的文件夹内或外层，不能作为总工作区'],
+  // DeepSeek services: host status reasons, shown where the capability is not ready.
+  [/^The DeepSeek API key \((.+)\) is not set$/, 'DeepSeek API key（$1）还没设置'],
+  [/^This DSH has no speech-to-text service \(voice input is not mounted\)$/, '这个 DSH 没有语音识别服务（语音输入插件未挂载）'],
+  [/^The speech provider is registering$/, '语音识别提供方正在注册'],
+  [/^This DSH has no credential store\.$/, '这个 DSH 没有凭据存储'],
+  [/^Jubala Bot cannot tell the DeepSeek key from another server's: [\s\S]*$/, 'Jubala Bot 无法区分 DeepSeek key 和其它服务器的 key，这些服务保持关闭。'],
   // Memory changes the memory panel asked for; the whole message is matched.
   [/^This looks like a key, token, or password[\s\S]*$/, '看起来像密钥、令牌或密码，记忆不会保存这类内容'],
   [/^An entry holds at most (\d+) characters; this one has (\d+)\.[\s\S]*$/, '一条记忆最多 $1 个字符，这条有 $2 个'],
@@ -1737,6 +1817,10 @@ const HOST_ZH = {
   'A group chat needs at least two Bots': '群聊至少要两个 Bot',
   'The admin must be a member of the group': '管理员必须是群成员',
   'Unknown group chat': '找不到这个群聊',
+  'Not a member of that group': '这个 Bot 不在这个群聊里',
+  'This Bot has no session in this group yet': '这个 Bot 在本群还没有会话',
+  'The Bot is working; wait for it to finish or stop it first': '这个 Bot 正在工作中，请等它完成或先停止它',
+  'The new session did not start; the Bot stays in its current one': '新会话没有开始，这个 Bot 还在当前会话里',
   'No Bot is left in this group chat': '这个群聊里已经没有 Bot 了',
   'That group chat has been deleted': '这个群聊已经删除了',
   'Hand the admin role to another member instead of leaving the group without one': '请把管理员交给其他成员，不要让群聊没有管理员',
@@ -1767,21 +1851,21 @@ const HOST_ZH = {
   'This side chat is no longer here.': '这个侧边对话已经不在了。',
   'This side question is no longer here.': '这个侧边提问已经不在了。',
   'This Bot has not called a model yet. Send a normal message first.': '这个 Bot 还没有调用过模型，请先正常发一条消息。',
-  'DS Bot restarted before this answer finished.': 'DS Bot 在回答完成前重启了。',
+  'Jubala Bot restarted before this answer finished.': '橘巴拉Bot 在回答完成前重启了。',
   'The model called a tool again after being told not to, so this aside was not answered.': '模型在被要求不要调用工具之后又调用了工具，所以这次没有回答。',
   'The model wrote nothing.': '模型没有写任何内容。',
   'Nothing to ask': '没有要问的内容',
   'Nothing to open': '没有要打开的内容',
   'Nothing to cancel': '没有要取消的内容',
   'Nothing to close': '没有要关闭的内容',
-  'DS Bot is still loading this chat.': 'DS Bot 还在加载这个对话。',
+  'Jubala Bot is still loading this chat.': '橘巴拉Bot 还在加载这个对话。',
   'This message is no longer kept': '这条消息已经不再保留',
   'No file named': '没有指定文件',
   'This file cannot be read here': '这个文件在这里读不了',
   'That wait is no longer open': '这个等待已经结束了',
   'Nothing to send': '没有要发送的内容',
   'This view is no longer open': '这个视图已经关闭了',
-  'This is not a photo DS Bot can send': '这不是 DS Bot 能发送的照片',
+  'This is not a photo Jubala Bot can send': '这不是 橘巴拉Bot 能发送的照片',
   'A photo did not arrive. Send it again.': '有张照片没传到，请重新发送。',
   'Nothing to delete': '没有要删除的内容',
   'Bot browsers are off on this host': '这台主机关闭了 Bot 浏览器',
@@ -1864,7 +1948,7 @@ const HOST_ZH = {
   'The Bot that learned this skill is gone': '学到这个技能的 Bot 已经不在了',
   'System permissions are not available here': '当前环境不支持系统权限设置',
   'This host keeps no Bot data folder, so it has no avatar library.': '这台主机没有保存 Bot 数据文件夹，因此没有头像库。',
-  'DS Bot is shutting down': 'DS Bot 正在关闭',
+  'Jubala Bot is shutting down': '橘巴拉Bot 正在关闭',
   // Computer use
   'Computer use': '电脑操控',
   'Computer': '电脑',
@@ -2001,35 +2085,60 @@ export function installLocale(locale) {
     pushOff(locale.register(NAMESPACE, langId, dict))
   }
 
-  // Register DSH settings/common namespace translations only after each owning DSH plugin registers its namespace.
+  // Jubala Bot fills locales that other plugins' namespaces lack. Each supplement is tied to
+  // the owner dictionary it was made from, so it leaves when that owner unloads or
+  // re-registers. DSH has no lower-priority registration, so an owner's own locale
+  // registered while the supplement stands still collides with it.
+  const supplements = new Map()
+  const supplementKey = (ns, langId) => `${ns}\0${langId.toLowerCase()}`
+  const dropSupplement = (key) => {
+    const entry = supplements.get(key)
+    if (!entry) return
+    supplements.delete(key)
+    entry.off()
+  }
+  const supplement = (ns, langId, source, make) => {
+    const key = supplementKey(ns, langId)
+    if (supplements.has(key) || locale.dicts.get(ns)?.has(langId.toLowerCase())) return
+    try {
+      const off = locale.register(ns, langId, make())
+      if (typeof off === 'function') supplements.set(key, { ns, source, off })
+    } catch { /* already registered */ }
+  }
+
   let syncing = false
   let disposed = false
   const syncDshNamespaces = () => {
     if (disposed || syncing || !(locale.dicts instanceof Map)) return
     syncing = true
     try {
+      for (const [key, entry] of supplements) {
+        const map = locale.dicts.get(entry.ns)
+        if (![...(map?.values() ?? [])].includes(entry.source)) dropSupplement(key)
+      }
       for (const [langId, namespaces] of Object.entries(DSH_LOCALE_PACKS)) {
         for (const [ns, dict] of Object.entries(namespaces ?? {})) {
           const map = locale.dicts.get(ns)
-          if (!map || map.has(langId.toLowerCase())) continue
-          try { pushOff(locale.register(ns, langId, dict)) } catch { /* already registered */ }
+          const source = map?.get('en') ?? map?.get('zh')
+          if (source) supplement(ns, langId, source, () => dict)
         }
       }
       for (const [ns, map] of locale.dicts.entries()) {
-        if (ns === NAMESPACE || map.has('zh-tw')) continue
         const zhDict = map.get('zh')
-        if (zhDict) {
-          try { pushOff(locale.register(ns, 'zh-TW', convertDict(zhDict))) } catch { /* ignore */ }
-        }
+        if (ns !== NAMESPACE && zhDict) supplement(ns, 'zh-TW', zhDict, () => convertDict(zhDict))
       }
     } finally {
       syncing = false
     }
   }
+
   syncDshNamespaces()
   if (typeof locale.subscribe === 'function') {
     pushOff(locale.subscribe(syncDshNamespaces))
   }
+  offs.push(() => {
+    for (const key of supplements.keys()) dropSupplement(key)
+  })
 
   const origResolveText = typeof locale.resolveText === 'function' ? locale.resolveText.bind(locale) : null
   if (origResolveText) {

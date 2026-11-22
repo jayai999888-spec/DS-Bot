@@ -4,7 +4,7 @@ import { contrastRatio, MIN_SKIN_ALPHA, over, parseColor, readSkinSurfaceVars, s
 import { themeVars } from '../src/client/themes.js'
 import { THEMES } from './skin-themes.js'
 
-// public#1507: a third-party skin's glass sliders write DSH's background tokens; DS Bot's
+// public#1507: a third-party skin's glass sliders write DSH's background tokens; Jubala Bot's
 // own surfaces use the theme colors. These tests keep the bridge honest: nothing changes
 // while the tokens are opaque, a translucent token reaches exactly the surfaces named, the
 // alpha floor holds, and the theme's text keeps its contrast over the wallpaper behind.
@@ -22,7 +22,7 @@ test('theme colors parse as hex, short hex and rgba, and anything else is unread
 
 test('an opaque token changes nothing, and each translucent token moves its own surfaces', () => {
   const colors = { main: '#fcfcfc', sidebar: '#f7f7f7', card: '#ffffff' }
-  // DS Bot writes these tokens itself when it applies a theme: solid, so the theme stays.
+  // Jubala Bot writes these tokens itself when it applies a theme: solid, so the theme stays.
   assert.deepEqual(skinSurfaceVars({ main: '#fcfcfc', sidebar: '#f7f7f7', colors }), {})
   assert.deepEqual(skinSurfaceVars({ main: 'rgb(20,20,20)', sidebar: 'rgb(27,27,27)', colors }), {})
   // The canvas token reaches the pane, the cards and the composer glass.
@@ -60,7 +60,7 @@ test('every theme keeps its text contrast at the alpha floor over a white, black
 })
 
 test('the theme surfaces ask for the skin variables and keep the theme color as the fallback', () => {
-  const light = THEMES.deepseek.light
+  const light = THEMES.jubala.light
   const vars = themeVars(light, false)
   assert.equal(vars['--bt-main'], `var(--bt-skin-main, ${light.bg})`)
   assert.equal(vars['--bt-sidebar'], `var(--bt-skin-sidebar, ${light.sidebar})`)
@@ -75,7 +75,7 @@ test('the bridge writes the body properties while a token is translucent and rem
     body: { style: { values: new Map(), setProperty(name, value) { this.values.set(name, value) }, removeProperty(name) { this.values.delete(name) } }, hasAttribute: () => false },
     defaultView: { getComputedStyle: () => ({ getPropertyValue: name => tokens[name] ?? '' }) },
   })
-  const theme = THEMES.deepseek
+  const theme = THEMES.jubala
   // A translucent canvas and sidebar from a skin.
   const doc = makeDoc({ '--dsw-alias-bg-base': 'rgba(252,252,252,0.4)', '--dsw-specific-sidebar-fill': 'rgba(247,247,247,0.4)' })
   const bridge = writeSkinSurfaceVars(doc, () => readSkinSurfaceVars(doc, theme))
@@ -139,7 +139,7 @@ test('applying the same values again does not touch the page', () => {
     },
     defaultView: { getComputedStyle: () => ({ getPropertyValue: name => tokens[name] ?? '' }) },
   }
-  const bridge = writeSkinSurfaceVars(doc, () => readSkinSurfaceVars(doc, THEMES.deepseek))
+  const bridge = writeSkinSurfaceVars(doc, () => readSkinSurfaceVars(doc, THEMES.jubala))
   bridge.apply()
   assert.ok(writes > 0, 'the first apply writes the variables')
   const first = writes

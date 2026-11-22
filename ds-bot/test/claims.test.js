@@ -46,14 +46,14 @@ test('a linked file is missing only when not on disk, with no 3-file truncation 
   ])
 })
 
-test('encoded links in folders with spaces (such as ~/DS Bot) resolve cleanly after absoluteLinks', (t) => {
+test('encoded links in folders with spaces (such as ~/Jubala Bot) resolve cleanly after absoluteLinks', (t) => {
   const base = mkdtempSync(join(tmpdir(), 'ds-bot-space-'))
   t.after(() => rmSync(base, { recursive: true, force: true }))
-  const workspace = join(base, 'DS Bot')
+  const workspace = join(base, 'Jubala Bot')
   mkdirSync(join(workspace, 'out'), { recursive: true })
   writeFileSync(join(workspace, 'out', 'Quarter 1 (final).md'), '# Report')
   const rewritten = absoluteLinks('已生成 [报告](<./out/Quarter 1 (final).md#L1>)。', workspace)
-  assert.match(rewritten, /DS%20Bot/)
+  assert.match(rewritten, /Jubala%20Bot/)
   assert.deepEqual(missingFileRefs(rewritten, workspace), [])
 })
 

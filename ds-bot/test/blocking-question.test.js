@@ -15,6 +15,7 @@ const DELEGATION_REFUSAL = 'Bots do not start subagents, teammates or workflows.
 const team = () => ({
   version: 1,
   mainBotIds: ['chief'],
+  orangeStored: true,
   bots: {
     chief: { id: 'chief', sessionId: 'chief', name: 'Chief', role: 'Lead', instructions: '', createdAt: 1 },
     writer: { id: 'writer', sessionId: 'writer', name: 'Writer', role: 'Write', instructions: '', createdAt: 2 },
@@ -289,7 +290,7 @@ test('Bot Sessions filter the hidden tools and their guidance out of the prompt 
   for (const id of ['chief', 'room-writer', 'plain']) await agentFor(id)
   const filters = scopedListeners.filter(record => record.event === 'system-prompt/assemble')
   // Bot Sessions get the hidden-tools filter and the computer-use filter. The room's own
-  // Session and a plain Agent get neither while DS Bot has mounted no provider.
+  // Session and a plain Agent get neither while Jubala Bot has mounted no provider.
   assert.deepEqual(filters.map(record => record.sessionId), ['chief', 'chief', 'room-writer', 'room-writer'])
   // Resolving the same Agent again adds no listener.
   await rt.resolveAgent('chief')

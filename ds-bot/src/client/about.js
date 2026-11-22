@@ -1,4 +1,4 @@
-// Settings → About DS Bot: the version, updates for DS Bot and DSH, and the links to
+// Settings → About Jubala Bot: the version, updates for Jubala Bot and DSH, and the links to
 // the repository. The sidebar's cloud button shows the same update state.
 import { createElement as h, useEffect, useState } from 'react'
 import { GitHubMark } from './connector-marks.js'
@@ -16,12 +16,12 @@ const CHEER_MS = 1800
 const starCount = count => new Intl.NumberFormat(dateLocale(), { notation: 'compact', maximumFractionDigits: 1 }).format(count)
 
 function botHint(update) {
-  if (update.phase === 'installing') return t('Updating DS Bot…')
-  if (update.phase === 'installed') return t('Restart DSH to start using DS Bot {version}.', { version: update.installed ?? update.latest })
-  if (update.phase === 'updated') return t('DS Bot {version} is installed.', { version: update.installed ?? update.latest })
+  if (update.phase === 'installing') return t('Updating Jubala Bot…')
+  if (update.phase === 'installed') return t('Restart DSH to start using Jubala Bot {version}.', { version: update.installed ?? update.latest })
+  if (update.phase === 'updated') return t('Jubala Bot {version} is installed.', { version: update.installed ?? update.latest })
   if (update.phase === 'failed') return t('The update did not finish: {reason}', { reason: hostText(update.error ?? '') })
-  if (update.available) return t('DS Bot {version} is available', { version: update.latest })
-  if (update.source === 'app') return t('Updates come with the DS Bot app.')
+  if (update.available) return t('Jubala Bot {version} is available', { version: update.latest })
+  if (update.source === 'app') return t('Updates come with the Jubala Bot app.')
   if (update.enabled === false) return t('Update checks are off.')
   if (update.source === 'path') return t('Installed from a local folder; update it there.')
   if (!update.checkedAt) return null
@@ -30,7 +30,7 @@ function botHint(update) {
   return `${update.latest ? t('Up to date') : t('Could not check for updates.')} · ${checked}`
 }
 
-// The DS Bot row in the desktop app shows the app's own update state, kept as ownApp on
+// The Jubala Bot row in the desktop app shows the app's own update state, kept as ownApp on
 // the update value. Anything that is not a state object (DSH Desktop, DSH Web, an
 // unpackaged app) leaves the row with today's "comes with the app" text.
 export function ownAppRow(ownApp) {
@@ -51,7 +51,7 @@ function dshHint(dsh, shown) {
   if (dsh.phase === 'installing') return t('Updating DSH…')
   if (dsh.phase === 'installed') return t('Restart DSH to start using DSH {version}.', { version: dsh.installed ?? dsh.verified })
   if (dsh.phase === 'failed') return t('The update did not finish: {reason}', { reason: hostText(dsh.error ?? '') })
-  if (dsh.available === false && dsh.blockedBy) return t('Update DS Bot {version} first.', { version: dsh.blockedBy })
+  if (dsh.available === false && dsh.blockedBy) return t('Update Jubala Bot {version} first.', { version: dsh.blockedBy })
   if (shown) return t('DSH {version} is available', { version: dsh.verified })
   return t('Version {version}', { version: dsh.current })
 }
@@ -67,7 +67,7 @@ export function AboutPage({ useUpdate, actions, run, Section, Row }) {
     actions.repoStars().then((count) => { if (live && Number.isInteger(count)) setStars(count) }, () => {})
     return () => { live = false }
   }, [])
-  // The whale hops when the page opens, after a check, and when an update is in.
+  // The orange hops when the page opens, after a check, and when an update is in.
   const [cheer, setCheer] = useState(true)
   useEffect(() => {
     if (!cheer) return undefined
@@ -112,17 +112,17 @@ export function AboutPage({ useUpdate, actions, run, Section, Row }) {
     h('div', { key: 'hero', className: 'bt-about-hero' },
       h('span', { className: 'bt-about-mark' }, h(BotMark, { look: MAIN_LOOK, bot: { id: 'about' }, size: 52, state: markState, live: true, gaze: true, pokeable: true })),
       h('div', { className: 'bt-about-copy' },
-        h('span', { className: 'bt-about-name' }, 'DS Bot'),
+        h('span', { className: 'bt-about-name' }, t('Jubala Bot')),
         update.current ? h('span', { className: 'bt-about-version' }, t('Version {version}', { version: update.current })) : null),
       repo ? h('a', {
-        className: 'bt-star', href: repo, target: '_blank', rel: 'noopener noreferrer', title: t('Star DS Bot on GitHub'),
-        'aria-label': stars === null ? t('Star DS Bot on GitHub') : `${t('Star DS Bot on GitHub')} · ${t('{count} stars', { count: stars })}`,
+        className: 'bt-star', href: repo, target: '_blank', rel: 'noopener noreferrer', title: t('Star Jubala Bot on GitHub'),
+        'aria-label': stars === null ? t('Star Jubala Bot on GitHub') : `${t('Star Jubala Bot on GitHub')} · ${t('{count} stars', { count: stars })}`,
       },
       h('span', { className: 'bt-star-main' }, h('span', { className: 'bt-star-icon' }, h(StarLineIcon)), 'Star'),
       stars === null ? null : h('span', { className: 'bt-star-count' }, starCount(stars))) : null),
-    repo ? h('p', { key: 'ask', className: 'bt-about-ask' }, t('If DS Bot helps you, a star on GitHub helps more people find it.')) : null,
+    repo ? h('p', { key: 'ask', className: 'bt-about-ask' }, t('If Jubala Bot helps you, a star on GitHub helps more people find it.')) : null,
     h(Section, { key: 'updates', title: t('Updates') },
-      h(Row, { label: 'DS Bot', hint: ownRow?.hint ?? botHint(update) }, botControl, update.available && update.notesUrl ? h('a', linkProps(update.notesUrl), t("What's new")) : null),
+      h(Row, { label: t('Jubala Bot'), hint: ownRow?.hint ?? botHint(update) }, botControl, update.available && update.notesUrl ? h('a', linkProps(update.notesUrl), t("What's new")) : null),
       dsh?.current ? h(Row, { label: 'DeepSeek Harness', hint: dshHint(dsh, dshShown) }, dshControl) : null),
     h(Section, { key: 'links', title: t('Links') },
       repo ? h(Row, { label: t('Source code'), hint: repo.replace(/^https:\/\//, '') }, h('a', linkProps(repo), h(GitHubMark), t('Open'))) : null,
@@ -143,12 +143,12 @@ body:not([data-bt-motion=quiet]) .bt-about-mark:hover .bt-mark[data-live][data-s
 .bt-about-version{font-size:12px;line-height:16px;color:var(--bt-ink-2);font-variant-numeric:tabular-nums}
 .bt-about-ask{margin:-10px 4px 0;font-size:12px;line-height:16px;color:var(--bt-ink-3)}
 .bt-star{flex:none;display:inline-flex;align-items:stretch;height:30px;border-radius:999px;border:1px solid var(--bt-line-2,var(--bt-line));overflow:hidden;color:var(--bt-ink);text-decoration:none;font-size:12px;line-height:28px;transition:transform .12s ease,border-color .15s ease}
-.bt-star:hover{border-color:color-mix(in srgb,#e3a008 55%,var(--bt-line))}
+.bt-star:hover{border-color:color-mix(in srgb,var(--bt-star) 55%,var(--bt-line))}
 .bt-star:active{transform:scale(.96)}
 .bt-star-main{display:inline-flex;align-items:center;gap:6px;padding:0 12px 0 10px;background:var(--bt-hover);font-weight:500}
 .bt-star-icon{display:inline-flex;color:var(--bt-ink-2);transition:color .15s ease}
 .bt-star-icon path{transition:fill .15s ease}
-.bt-star:hover .bt-star-icon{color:#e3a008;animation:bt-star-pop ${SPRING_POP.duration}ms ${SPRING_POP.easing}}
+.bt-star:hover .bt-star-icon{color:var(--bt-star);animation:bt-star-pop ${SPRING_POP.duration}ms ${SPRING_POP.easing}}
 .bt-star:hover .bt-star-icon path{fill:currentColor}
 .bt-star-count{display:inline-flex;align-items:center;padding:0 11px;border-left:1px solid var(--bt-line-2,var(--bt-line));color:var(--bt-ink-2);font-variant-numeric:tabular-nums;animation:bt-star-count-in ${SPRING_POP.duration}ms ${SPRING_POP.easing},bt-veil-in .2s ease-out}
 @keyframes bt-star-pop{from{scale:.6;rotate:-30deg}}

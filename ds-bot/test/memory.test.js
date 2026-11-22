@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import fs, { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
+import { syncBuiltinESMExports } from 'node:module'
 import { hostname, tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -98,6 +99,7 @@ test('the panel shows a summary as headings over paragraphs', () => {
 const TEAM = {
   version: 1,
   mainBotIds: ['m1'],
+  orangeStored: true,
   revision: 1,
   whaleStored: true,
   bots: {
@@ -1012,7 +1014,7 @@ test('a memory file that cannot be read is left alone, and the section says so',
   t.after(() => stop())
   // A directory reads as EISDIR on every platform; no chmod games needed.
   mkdirSync(join(home, 'memory', 'bots', 'b2', 'MEMORY.md'), { recursive: true })
-  await assert.rejects(tool('bot_remember', { text: 'Likes tea' }, 'b2'), /Memory file .*MEMORY\.md could not be read \(EISDIR\)\. DS Bot leaves it as it is/)
+  await assert.rejects(tool('bot_remember', { text: 'Likes tea' }, 'b2'), /Memory file .*MEMORY\.md could not be read \(EISDIR\)\. Jubala Bot leaves it as it is/)
   assert.deepEqual(readdirSync(join(home, 'memory', 'bots', 'b2')), ['MEMORY.md'])
   // The prompt shows the failure instead of looking empty, and nothing is frozen.
   assert.match(section('b2'), /\(this memory could not be read: EISDIR\)/)
@@ -2099,6 +2101,41 @@ test('a turn brings up matching topic entries once, as data, and only from what 
   assert.equal(await recallOf(ctx, 'b2', 'small pull requests please'), undefined)
   await call('set-prefs', { memoryAutoRecall: false })
   assert.equal(await recallOf(ctx, 'b2', '这次发版前要做什么检查'), undefined)
+})
+
+test('recall reads a topic again only once its file has changed', async (t) => {
+  const { ctx, tool, section, home, stop } = start()
+  t.after(() => stop())
+  await tool('bot_remember', { text: '发版前先跑真机检查', topic: 'release' }, 'b2')
+  await tool('bot_remember', { text: '午饭吃面', topic: 'food' }, 'b2')
+  section('b2')
+  const asked = '这次发版前要做什么检查'
+  assert.match(textOf(await recallOf(ctx, 'b2', asked)), /发版前先跑真机检查/)
+  const memory = join(home, 'memory')
+  const reads = []
+  const realRead = fs.readFileSync
+  fs.readFileSync = (path, ...rest) => {
+    if (String(path).startsWith(memory) && String(path).endsWith('.md')) reads.push(String(path))
+    return realRead(path, ...rest)
+  }
+  syncBuiltinESMExports()
+  t.after(() => {
+    fs.readFileSync = realRead
+    syncBuiltinESMExports()
+  })
+  assert.match(textOf(await recallOf(ctx, 'b2', asked)), /发版前先跑真机检查/)
+  assert.deepEqual(reads, [])
+  // An edit by hand, even one of the same length, and a removal are seen on the next step.
+  const release = join(memory, 'bots', 'b2', 'release.md')
+  const before = realRead(release, 'utf8')
+  writeFileSync(release, before.replace('先跑真机', '先跑模拟'))
+  assert.equal(realRead(release, 'utf8').length, before.length)
+  const edited = textOf(await recallOf(ctx, 'b2', asked))
+  assert.match(edited, /发版前先跑模拟检查/)
+  assert.doesNotMatch(edited, /真机/)
+  assert.deepEqual(reads, [release])
+  unlinkSync(release)
+  assert.equal(await recallOf(ctx, 'b2', asked), undefined)
 })
 
 test('bot_recall puts the entry that matches best first', () => {

@@ -41,7 +41,7 @@ test('Retry after a failed turn asks the host to resume the Bot, with nothing bu
   assert.equal(pulls(), 1)
 })
 
-test('openModels opens DS Bot settings on the Models page and closes the menus', () => {
+test('openModels opens Jubala Bot settings on the Models page and closes the menus', () => {
   const { actions, ui } = bench()
   actions.openModels()
   assert.deepEqual(ui.getSnapshot().settings, { page: 'models', id: null })
@@ -56,4 +56,21 @@ test('the details status line asks the host for one Bot\'s current part', async 
   assert.deepEqual(sent, [['run-stats', { botId: 'chief' }]])
   // A read: it does not pull the whole team again.
   assert.equal(pulls(), 0)
+})
+
+test('computerAppAnswer refreshes team state and approval island stays mutually exclusive with goal panels (#1623)', async () => {
+  const { actions, sent, ui, pulls } = bench()
+  await actions.computerAppAnswer('ask-1', 'once')
+  assert.deepEqual(sent, [['computer-app-answer', { id: 'ask-1', answer: 'once' }]])
+  assert.equal(pulls(), 1)
+  actions.composeGoal('r1')
+  assert.equal(ui.getSnapshot().goalCompose, 'r1')
+  assert.equal(ui.getSnapshot().approvalOpen, null)
+  actions.toggleApproval('r1')
+  assert.equal(ui.getSnapshot().approvalOpen, 'r1')
+  assert.equal(ui.getSnapshot().goalOpen, null)
+  assert.equal(ui.getSnapshot().goalCompose, null)
+  actions.toggleGoal('r1')
+  assert.equal(ui.getSnapshot().goalOpen, 'r1')
+  assert.equal(ui.getSnapshot().approvalOpen, null)
 })

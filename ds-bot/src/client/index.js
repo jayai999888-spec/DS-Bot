@@ -13,6 +13,7 @@ import { installSettingsShell, SETTINGS_SHELL_CSS } from './settings-shell.js'
 import { frameLayout, readSidebar, writeSidebar, toggledPref, DSH_NARROW } from './frame-layout.js'
 import { installFrameWatch } from './frame-watch.js'
 import { HeaderPill } from './header.js'
+import { watchAgentTerminals } from './agent-terminals.js'
 import { ComposerPlus, ComposerVoice, menuIcons } from './composer.js'
 import { CHATS_SOURCE, atSources } from './at-menu.js'
 import { BtwDock, BtwTurnTail } from './btw.js'
@@ -36,7 +37,7 @@ import { SECRET_CSS, SecretDock } from './secret-card.js'
 import { ConnectorDock, MailDock, CONNECTOR_CSS } from './connectors.js'
 import { CONNECTORS_PAGE_CSS } from './connectors-page.js'
 import { PROVIDERS_CSS } from './providers-page.js'
-import { LearningDock, LearningTurnTail, LEARNING_CSS } from './learning-card.js'
+import { LearningDock, LearningTurnTail, PendingLearning, LEARNING_CSS } from './learning-card.js'
 import { MODEL_CSS, ModelChoiceDock, DeepSeekSignIn } from './model-menu.js'
 import { ReadOnlyDock, READ_ONLY_CSS } from './read-only-dock.js'
 import { BOT_SETTINGS_CSS } from './bot-settings.js'
@@ -72,6 +73,7 @@ import { needsIdleSample, pollDelay } from './polling.js'
 import { installMotionRest } from './motion-rest.js'
 import { agentSessionToReuse, singleFlight } from './agent-new.js'
 import { TextSelectionAction, ANNOTATION_CSS } from './text-annotation.js'
+import { installAgentForks } from './agent-fork.js'
 
 export const inject = ['sessions', 'uiWorkspace', 'uiConversation', 'slots', 'theme', 'layout']
 
@@ -91,7 +93,7 @@ export function apply(ctx) {
   let seenAt = seenStore.read()
   // `details` is the panel's subject (a Session id); `view` picks details or the
   // subject Bot's browser inside it.
-  const ui = createSource({ details: null, view: 'details', readOnlyPart: null, renaming: false, tab: null, side: null, newChat: null, exchange: null, menu: null, voice: null, palette: null, quote: null, paste: {}, pendingOpen: null, settings: null, memory: null, toast: null, signIn: null, renameAgent: null, unread: unreadStore.read(), reactions: reactionStore.read(), visits: {}, panelYield: false, leftDrawer: false, bootFailed: false, goalCompose: null, goalOpen: null })
+  const ui = createSource({ details: null, view: 'details', readOnlyPart: null, renaming: false, tab: null, side: null, newChat: null, exchange: null, menu: null, voice: null, palette: null, quote: null, paste: {}, pendingOpen: null, settings: null, memory: null, toast: null, signIn: null, renameAgent: null, unread: unreadStore.read(), reactions: reactionStore.read(), visits: {}, panelYield: false, leftDrawer: false, bootFailed: false, goalCompose: null, goalOpen: null, approvalOpen: null })
   // The left column's kept preference, and the frame geometry the layout rules
   // in frame-layout.js read: the window and the shell's collapsed track come from
   // installFrameWatch, the open column's width is the user's own.
@@ -102,7 +104,7 @@ export function apply(ctx) {
   // style so the shell's own interface returns. `plain` stays false until a Bot-mode
   // view hosts a plain session, which drops only the conversation replacements.
   const surface = createSource({ mode: readMode(), plain: false })
-  // Whether DS Bot holds the settings seat; Overlays draws the Settings dialog while it does not.
+  // Whether Jubala Bot holds the settings seat; Overlays draws the Settings dialog while it does not.
   const settingsShellHeld = createSource(false)
   let settingsShell = null
   // DSH Agent Session ids from the last pull, so a reload already knows the main
@@ -330,7 +332,7 @@ export function apply(ctx) {
     }, 'ds-bot: app update status')
   }
 
-  // The DS Bot app's own updater; its state goes beside the host's answer as ownApp,
+  // The Jubala Bot app's own updater; its state goes beside the host's answer as ownApp,
   // which the About row turns into the app's update state and buttons.
   const ownAppUpdates = globalThis.dsBotApp?.updates ?? null
   if (ownAppUpdates?.state && ownAppUpdates.subscribe) {
@@ -373,7 +375,7 @@ export function apply(ctx) {
 
   // Mentions wear each Bot's color and character silhouette (or its photo). User text
   // DSH draws (a message waiting to be sent or to join a running turn, and since DSH
-  // 0.2.1-alpha.3 the contents of DS Bot's own user bubble, .bt-uhost) shows "@Name" as
+  // 0.2.1-alpha.3 the contents of Jubala Bot's own user bubble, .bt-uhost) shows "@Name" as
   // a file reference; one whose label is a whole Bot name wears the Bot's mark there too
   // (a name with a space is cut by DSH, so it stays as DSH draws it).
   const installMentions = () => {
@@ -422,7 +424,7 @@ export function apply(ctx) {
       const snapshot = roster.getSnapshot()
       const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs
       const themes = allThemes()
-      const id = themes[prefs.theme] ? prefs.theme : 'deepseek'
+      const id = themes[prefs.theme] ? prefs.theme : 'jubala'
       const accent = isHex(prefs.accent) ? prefs.accent : undefined
       const motion = prefs.motion === 'quiet' || prefs.motion === 'lively' ? prefs.motion : 'normal'
       const layout = layoutOf(prefs)
@@ -545,6 +547,22 @@ export function apply(ctx) {
   }
   const openingWait = bindOpeningWait(ui, {
     onSlow: () => { void Promise.resolve(ctx.sessions.refresh?.()).catch(quietly('refresh sessions')) },
+    // A Bot's chat that never lands may be gone from DSH: the host gives the Bot a new
+    // Session and it opens; anything else says what happened.
+    onGiveUp: async (pending) => {
+      const say = text => ui.set(state => ({ ...state, toast: { text, token: Date.now() } }))
+      const name = pending.name || pending.id
+      if (roster.getSnapshot().byId[pending.id] === undefined) return say(t('{name} could not be opened.', { name }))
+      try {
+        const { sessionId } = await call('bot-recover-chat', { botId: pending.id })
+        if (sessionId === null) return say(t('{name} could not be opened.', { name }))
+        await pull()
+        say(t('The conversation of {name} was gone, so it starts a new one.', { name }))
+        actions.openSession(pending.id)
+      } catch (error) {
+        say(error?.message ?? String(error))
+      }
+    },
   })
   const beginOpening = (target) => {
     const owner = ownerOfSession(target)
@@ -716,7 +734,7 @@ export function apply(ctx) {
         return
       }
       if (mode === 'agent') {
-        ui.set(state => ({ ...state, details: null, view: 'details', settings: null, palette: null, groupSearch: null, newChat: null, menu: null, voice: null, exchange: null, memory: null, toast: null }))
+        ui.set(state => ({ ...state, details: null, view: 'details', settings: null, palette: null, groupSearch: null, newChat: null, menu: null, voice: null, exchange: null, memory: null, toast: null, goalOpen: null, goalCompose: null, approvalOpen: null }))
       }
       writeMode(mode)
       surface.set(state => ({ ...state, mode }))
@@ -798,13 +816,17 @@ export function apply(ctx) {
         await bridge.views.hold(botId, false)
         return result
       } : undefined,
-      // Cookie imports, only where the bridge offers them (the desktop app): a file or an
-      // installed browser's profile is previewed, then applied into the Bot's storage key.
+      // Cookie imports, only where the bridge offers them (the desktop app): an installed
+      // browser profile, a file, or pasted cookies/cURL is previewed, then applied into
+      // the Bot's storage key.
       browserImport: typeof bridge.importSources === 'function' ? {
         sources: () => bridge.importSources(),
+        probe: typeof bridge.importProbe === 'function' ? (source) => bridge.importProbe(source) : null,
         pick: () => bridge.importPick(),
-        live: (source, close) => bridge.importLive(source, close),
-        apply: (botId, pending) => bridge.importApply(`bot:${botId}`, pending),
+        paste: typeof bridge.importPaste === 'function' ? (text, defaultUrl) => bridge.importPaste(text, defaultUrl) : null,
+        launch: typeof bridge.importLaunch === 'function' ? (source) => bridge.importLaunch(source) : null,
+        live: (source, close, requestId) => bridge.importLive(source, close, requestId),
+        apply: (botId, pending, options) => bridge.importApply(`bot:${botId}`, pending, options),
         cancel: (pending) => bridge.importCancel(pending),
       } : null,
     })
@@ -853,7 +875,7 @@ export function apply(ctx) {
     update.set(previous => ({ ...previous, ...value }))
     wakeUpdate()
   }
-  // The DSH the newest released DS Bot verified installs the same way.
+  // The DSH the newest released Jubala Bot verified installs the same way.
   actions.installDshUpdate = async () => {
     const dsh = await call('dsh-update-install')
     update.set(previous => ({ ...previous, dsh }))
@@ -962,11 +984,11 @@ export function apply(ctx) {
   // Since DSH 0.2.1-alpha.3 user text is drawn by rules and a content factory, not the
   // primitives' text projection; the user's bubble draws with either (user-message.js).
   const hostDrawsUserText = typeof ctx.uiConversation.userText?.register === 'function'
-  // DS Bot's own rows in the `/` menu of a Bot chat and a group chat (the DSH rows stay;
+  // Jubala Bot's own rows in the `/` menu of a Bot chat and a group chat (the DSH rows stay;
   // the host module stops their execution there).
   ctx.effect(() => installCommandActions(ctx, { roster, actions }), 'ds-bot: bot command actions')
-  // DS Bot holds the settings seat in every mode, Agent mode included: the bundle patch
-  // turns DSH's own shell off, and this one draws DSH's settings pages in DS Bot's dialog.
+  // Jubala Bot holds the settings seat in every mode, Agent mode included: the bundle patch
+  // turns DSH's own shell off, and this one draws DSH's settings pages in Jubala Bot's dialog.
   ctx.effect(() => {
     const offStyles = installCompiledStyles(SETTINGS_SHELL_CSS, 'settings-shell')
     settingsShell = installSettingsShell(ctx, { face, actions, ui, held: settingsShellHeld })
@@ -1040,6 +1062,8 @@ export function apply(ctx) {
   // A terminal tab in DSH's right column, only where the terminal plugin
   // registered its type and the column face is there.
   actions.canOpenTerminal = () => ctx.get('sidebarRight') !== undefined && ctx.get('sidebarRightTabs')?.get('terminal') !== undefined
+  // The tabs of the terminals a shown Bot starts, as DSH's own header opens them.
+  actions.watchAgentTerminals = sessionId => watchAgentTerminals(ctx.slots, sessionId, error => actions.reportError(error, 'right-sidebar'))
   actions.newTerminal = () => {
     // The column takes the drawer's space: hand it over first.
     actions.closePanel()
@@ -1108,7 +1132,7 @@ export function apply(ctx) {
   const shadow = (name, options, component) => ctx.slots.inject(name, () => ctx.slots.register({
     name, ...options, ...(options.priority === undefined ? {} : { priority: freePriority(ctx.slots.entries(name), options) }),
   }, component))
-  const installHeader = () => ctx.slots.inject('conversation.session.header', () => installHeaderNavigation(ctx.slots, face, HeaderPill, BOT_PRIORITY))
+  const installHeader = () => ctx.slots.inject('conversation.session.header', () => installHeaderNavigation(ctx.slots, () => ({ ...face(), PendingLearning }), HeaderPill, BOT_PRIORITY))
 
   // The "@" menu's Bot group and the chats "+" references. The composer's controller
   // for a Session is the shell's own, so the chats open at its caret.
@@ -1194,7 +1218,7 @@ export function apply(ctx) {
     [SIDE_CSS, 'side'],
     [BROWSER_CSS, 'browser'],
   ]
-  // Settings outside Bot mode (Agent mode) brings DS Bot's own rules and colors while it
+  // Settings outside Bot mode (Agent mode) brings Jubala Bot's own rules and colors while it
   // shows; the shell overrides and DSH's tokens stay as Agent mode has them.
   let shellSheets = 0
   actions.holdSettingsLook = () => {
@@ -1207,7 +1231,7 @@ export function apply(ctx) {
     const snapshot = roster.getSnapshot()
     const prefs = snapshot.ready ? snapshot.prefs ?? {} : savedPrefs
     const themes = allThemes()
-    const theme = themes[prefs.theme] ?? themes.deepseek
+    const theme = themes[prefs.theme] ?? themes.jubala
     const offs = [
       roster.subscribe(syncEffects),
       ...SHELL_SHEETS.map(([text, tag]) => installCompiledStyles(botOwnCss(text), `settings-${tag}`)),
@@ -1229,7 +1253,7 @@ export function apply(ctx) {
     () => shadow('sidebar.brand.name', { priority: BOT_PRIORITY }, BrandName),
     () => shadow('sidebar.footer.action', { id: 'bot-account', order: -200, inject: face }, FooterAccount),
     () => shadow('settings.trigger', { priority: BOT_PRIORITY }, YouAvatar),
-    // The whale wins the seat over a shell account plugin's own launcher (the
+    // The orange wins the seat over a shell account plugin's own launcher (the
     // Desktop's "··· More"), which comes back in Agent mode.
     () => shadow('settings.launcher', { priority: BOT_PRIORITY, inject: face }, AccountLauncher),
     () => shadow('shell.overlay', { id: 'bot-computer', order: 40, inject: face }, ComputerIndicator),
@@ -1318,10 +1342,35 @@ export function apply(ctx) {
   ctx.effect(() => installCompiledStyles(COMPUTER_CSS, 'computer'), 'ds-bot: computer styles')
   shadow('sidebar.footer.action', { id: 'bot-return', order: -300, inject: face }, BotReturn)
 
+  ctx.effect(() => {
+    const forks = installAgentForks({
+      sessions: ctx.sessions,
+      ownerOf: id => roster.getSnapshot().agentOf[id],
+      hasAgent: id => roster.getSnapshot().agentsById[id] !== undefined,
+      pending: pendingAdopt,
+      ready: async () => { if (!roster.getSnapshot().ready) await pull() },
+      adopt: (agentId, sessionId) => call('agent-adopt', { agentId, sessionId }),
+      refresh: pull,
+      report: (error, source) => actions.reportError(error, source),
+      storage: globalThis.localStorage,
+    })
+    const reconcile = () => { void forks.reconcile().catch(error => actions.reportError(error, 'agent-fork-reconcile')) }
+    const offRoster = roster.subscribe(reconcile)
+    const offList = ctx.sessions.list.subscribe(reconcile)
+    const timer = setInterval(reconcile, 5000)
+    reconcile()
+    return () => {
+      offRoster()
+      offList()
+      clearInterval(timer)
+      return forks.dispose()
+    }
+  }, 'ds-bot: Agent forks')
+
   // The main view decides `plain`: a DSH Agent Session keeps the Bot shell but
-  // withdraws the conversation replacements, so the native dsh page shows. A jump
-  // this plugin did not start — the hero's workspace picker or a fork — opens an
-  // unowned Session; coming from a DSH Agent Session it is adopted into that Agent.
+  // withdraws the conversation replacements, so the native dsh page shows. The
+  // hero's workspace picker creates a blank Session, adopted into the same Agent;
+  // forks are captured at creation above, without depending on list metadata.
   ctx.effect(() => {
     let previous
     const sync = () => {
@@ -1343,18 +1392,13 @@ export function apply(ctx) {
       if (agentId === undefined) return
       const snapshot = roster.getSnapshot()
       if (snapshot.byId[main] !== undefined || snapshot.roomsById[main] !== undefined || agentOfSession(main) !== undefined) return
-      // Only a Session this jump created joins the Agent: a blank one from the
-      // workspace picker, or a fork of a Session the same Agent owns. An existing
-      // Session the user opened from the sidebar keeps its team tools and stays out.
+      // Only a blank Session from the workspace picker joins here. Existing
+      // Sessions opened from the native sidebar keep their tools and stay out.
       const row = list.byId[main]
       // A subagent child reports the Agent Session as its parent, but adopting it
       // would steal it from subagent routing — the Host refuses anyway, so skip.
       if (row?.origin === 'subagent') return
-      // The client list maps the fork's parent to `parentId`; the raw field is
-      // the fallback for shapes that skip the mapping.
-      const parent = row?.parentId ?? row?.parentSessionId
-      const forkedFromAgent = parent !== undefined && agentOfSession(parent) === agentId
-      if (row?.blank !== true && !forkedFromAgent) return
+      if (row?.blank !== true) return
       pendingAdopt.set(main, agentId)
       setPlain(true)
       void call('agent-adopt', { agentId, sessionId: main }).then(() => pull()).catch((error) => {

@@ -56,6 +56,17 @@ test('OpenCode provider and detected local OpenCode CLI coexist (#1390)', async 
   assert.ok(llm.listProviders().some(p => p.id === 'local-opencode'))
 })
 
+test('Claude Code is never offered or served, even to a Bot saved on it', async (t) => {
+  const { llm, rt } = await localHost(t)
+  rt.state.bots.saved = { model: 'local-claude-code/default' }
+  install(rt)
+  await setImmediate()
+  assert.ok(llm.listProviders().some(p => p.id === 'local-codex-cli'))
+  assert.ok(!llm.listProviders().some(p => p.id === 'local-claude-code'))
+  const list = await rt.localAgentsEndpoint('local-agents', {})
+  assert.ok(!list.detected.some(entry => entry.route === 'local-claude-code'))
+})
+
 test('replace skips a newly taken custom route and retains its own routes (#1390)', async (t) => {
   const { llm, rt } = await localHost(t)
   install(rt)
